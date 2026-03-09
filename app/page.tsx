@@ -2,7 +2,7 @@ import { Github, Linkedin } from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-6 relative overflow-hidden bg-black text-white">
+    <div className="min-h-dvh flex flex-col items-center justify-center px-6 relative overflow-hidden bg-black text-white">
       <div className="text-center space-y-8 relative z-10">
         {/* Name */}
         <div className="space-y-3">
