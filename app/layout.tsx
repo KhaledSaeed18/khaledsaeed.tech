@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Quantico } from "next/font/google";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next"
 
 const quantico = Quantico({
   subsets: ["latin"],
@@ -70,6 +71,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={quantico.className}>
         {children}
+        <Analytics />
       </body>
     </html>
   );
