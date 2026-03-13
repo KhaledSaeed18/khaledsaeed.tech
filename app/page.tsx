@@ -11,6 +11,7 @@ import {
 export default function Home() {
   return (
     <div className="min-h-dvh flex flex-col items-center justify-center px-6 relative overflow-hidden bg-black text-white">
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_20%_20%,rgba(34,197,94,0.14),transparent_35%),radial-gradient(circle_at_80%_80%,rgba(34,197,94,0.12),transparent_30%)]" />
       <div className="text-center space-y-8 relative z-10">
         {/* Name */}
         <div className="space-y-3">
