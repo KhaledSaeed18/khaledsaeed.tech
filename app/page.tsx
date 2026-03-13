@@ -1,5 +1,11 @@
 import { Github, Linkedin } from "lucide-react";
 
+export const metadata = {
+  alternates: {
+    canonical: "/",
+  },
+};
+
 export default function Home() {
   return (
     <div className="min-h-dvh flex flex-col items-center justify-center px-6 relative overflow-hidden bg-black text-white">
