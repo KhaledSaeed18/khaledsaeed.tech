@@ -1,4 +1,12 @@
-import { Github, Linkedin } from "lucide-react";
+import {
+  ExternalLink,
+  FileText,
+  Github,
+  Instagram,
+  Linkedin,
+  Mail,
+  Twitter,
+} from "lucide-react";
 
 export default function Home() {
   return (
@@ -24,27 +32,77 @@ export default function Home() {
         </div>
 
         {/* Social links */}
-        <div className="flex items-center justify-center gap-4 pt-2">
+        <div className="flex flex-col items-center justify-center gap-3 pt-2 w-full max-w-md mx-auto">
           <a
             href="https://github.com/KhaledSaeed18"
             target="_blank"
             rel="noopener noreferrer"
-            className="group flex items-center gap-2 px-4 py-2 rounded-lg border border-green-500/50 bg-white/5 hover:bg-white/10 transition-colors"
+            className="group relative flex items-center justify-center gap-3 px-5 py-3 rounded-lg border border-green-500/50 bg-white/5 hover:bg-white/10 transition-colors w-full"
           >
             <Github className="size-5 text-white/60 group-hover:text-white transition-colors" />
-            <span className="text-sm text-white/60 group-hover:text-white transition-colors">
+            <span className="text-sm sm:text-base text-white/60 group-hover:text-white transition-colors">
               GitHub
             </span>
+            <ExternalLink className="absolute right-4 size-5 text-green-500/50 opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 ease-out" />
           </a>
           <a
             href="https://www.linkedin.com/in/khaled-s-saeed/"
             target="_blank"
             rel="noopener noreferrer"
-            className="group flex items-center gap-2 px-4 py-2 rounded-lg border border-green-500/50 bg-white/5 hover:bg-white/10 transition-colors"
+            className="group relative flex items-center justify-center gap-3 px-5 py-3 rounded-lg border border-green-500/50 bg-white/5 hover:bg-white/10 transition-colors w-full"
           >
             <Linkedin className="size-5 text-white/60 group-hover:text-white transition-colors" />
-            <span className="text-sm text-white/60 group-hover:text-white transition-colors">
+            <span className="text-sm sm:text-base text-white/60 group-hover:text-white transition-colors">
               LinkedIn
+            </span>
+            <ExternalLink className="absolute right-4 size-5 text-green-500/50 opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 ease-out" />
+          </a>
+          <a
+            href="https://www.instagram.com/khaledd.saeed"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group relative flex items-center justify-center gap-3 px-5 py-3 rounded-lg border border-green-500/50 bg-white/5 hover:bg-white/10 transition-colors w-full"
+          >
+            <Instagram className="size-5 text-white/60 group-hover:text-white transition-colors" />
+            <span className="text-sm sm:text-base text-white/60 group-hover:text-white transition-colors">
+              Instagram
+            </span>
+            <ExternalLink className="absolute right-4 size-5 text-green-500/50 opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 ease-out" />
+          </a>
+          <a
+            href="https://x.com/KhaleddSaeed18"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group relative flex items-center justify-center gap-3 px-5 py-3 rounded-lg border border-green-500/50 bg-white/5 hover:bg-white/10 transition-colors w-full"
+          >
+            <Twitter className="size-5 text-white/60 group-hover:text-white transition-colors" />
+            <span className="text-sm sm:text-base text-white/60 group-hover:text-white transition-colors">
+              X
+            </span>
+            <ExternalLink className="absolute right-4 size-5 text-green-500/50 opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 ease-out" />
+          </a>
+          <a
+            href="https://dev.to/khaledsaeed18"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group relative flex items-center justify-center gap-3 px-5 py-3 rounded-lg border border-green-500/50 bg-white/5 hover:bg-white/10 transition-colors w-full"
+          >
+            <FileText className="size-5 text-white/60 group-hover:text-white transition-colors" />
+            <span className="text-sm sm:text-base text-white/60 group-hover:text-white transition-colors">
+              Dev.to
+            </span>
+            <ExternalLink className="absolute right-4 size-5 text-green-500/50 opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 ease-out" />
+          </a>
+          <div className="h-px w-24 bg-green-500/30" />
+          <a
+            href="mailto:khaled18saeed@gmail.com?subject=Portfolio%20Inquiry&body=Hi%20Khaled%2C%0A%0AI%20came%20across%20your%20portfolio%20and%20wanted%20to%20reach%20out%20about%20%5Btopic%5D.%0A%0ADetails%3A%0A%5Bwrite%20your%20message%20here%5D%0A%0AThanks%2C%0A%5Byour%20name%5D"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group flex items-center justify-center gap-3 px-5 py-3 rounded-lg border border-green-500/50 bg-white/5 hover:bg-white/10 transition-colors w-full"
+          >
+            <Mail className="size-5 text-white/60 group-hover:text-white transition-colors" />
+            <span className="text-sm sm:text-base text-white/60 group-hover:text-white transition-colors">
+              Send Me an Email
             </span>
           </a>
         </div>
