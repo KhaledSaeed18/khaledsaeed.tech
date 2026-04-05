@@ -1,0 +1,273 @@
+---
+title: "Bcrypt Deep Dive: How It Works, How to Use It, and How to Not Mess It Up"
+date: "2025-04-06"
+summary: "A complete breakdown of bcrypt — from the Blowfish internals and cost factor math, to correct Node.js/TypeScript usage and the security pitfalls that silently break your password hashing."
+tags: ["security", "node", "typescript", "authentication"]
+---
+
+Passwords are stored wrong more often than they're stored right. MD5, SHA-256, plain text — all still out there in production systems. Bcrypt exists specifically to make this hard to get wrong, yet there are enough subtle traps that it's worth understanding deeply rather than just copying a snippet.
+
+This post covers how bcrypt actually works under the hood, how to use it correctly in Node.js/TypeScript, and the mistakes that look correct but silently weaken your security.
+
+---
+
+## Why not SHA-256?
+
+Before bcrypt, the common approach was to hash passwords with a general-purpose cryptographic hash function — MD5, SHA-1, SHA-256. These are fast. That's the problem.
+
+A modern GPU can compute **billions of SHA-256 hashes per second**. If your database leaks, an attacker can run a brute-force or dictionary attack against every password hash in parallel, at massive speed.
+
+Bcrypt is intentionally slow. It's a **key derivation function** (KDF), not a hash function. Its entire design goal is to make each computation expensive, so brute-forcing a leaked database takes years instead of hours.
+
+---
+
+## The internals: Blowfish and Eksblowfish
+
+Bcrypt is built on top of **Blowfish**, a symmetric block cipher designed by Bruce Schneier in 1993. Specifically, it uses a modified version called **Eksblowfish** (Expensive Key Schedule Blowfish).
+
+Blowfish's key schedule is already relatively expensive to initialize — it does 521 iterations of a keying function to set up its internal state. Eksblowfish amplifies this by running the key schedule `2^cost` times.
+
+The algorithm looks like this at a high level:
+
+```
+state = initBlowfish(password, salt)
+repeat 2^cost times:
+    state = expandKey(state, salt)
+    state = expandKey(state, password)
+output = encrypt("OrpheanBeholderScryDoubt", state, 64 times)
+```
+
+The string `"OrpheanBeholderScryDoubt"` is a fixed 24-byte magic constant that gets encrypted 64 times with the derived key state. The result is your hash.
+
+### The salt
+
+The salt is 16 bytes of cryptographically random data generated fresh for every password. It gets embedded directly into the output hash string, which is why you don't need to store the salt separately — it's already in there.
+
+### The cost factor
+
+The cost factor (also called work factor) is an integer, typically between 10 and 14. It controls how many times the key schedule runs:
+
+| Cost | Iterations | Approx. time (modern CPU) |
+|------|------------|---------------------------|
+| 10   | 1,024      | ~100ms                    |
+| 12   | 4,096      | ~400ms                    |
+| 14   | 16,384     | ~1.5s                     |
+
+The time roughly quadruples for each increment of 1. This is the **adaptive** property of bcrypt — as hardware gets faster, you increase the cost factor to keep the hashing time constant.
+
+### The output format
+
+A bcrypt hash looks like this:
+
+```
+$2b$12$R9h/cIPz0gi.URNNX3kh2OPST9/PgBkqquzi.Ss7KIUgO2t0jWMUW
+```
+
+Breaking it down:
+
+```
+$2b$       — algorithm version (2b is current, prefer over 2a)
+12$        — cost factor
+R9h/cIPz0gi.URNNX3kh2OP  — 22 chars = 128-bit salt (base64 encoded)
+ST9/PgBkqquzi.Ss7KIUgO2t0jWMUW  — 31 chars = 184-bit hash (base64 encoded)
+```
+
+The entire 60-character string is self-contained. You store it, compare against it, and can extract the cost factor from it later.
+
+---
+
+## Using bcrypt in Node.js/TypeScript
+
+Install the package:
+
+```bash
+npm install bcrypt
+npm install -D @types/bcrypt
+```
+
+### Hashing a password
+
+```ts
+import bcrypt from "bcrypt";
+
+const SALT_ROUNDS = 12;
+
+export async function hashPassword(plaintext: string): Promise<string> {
+  return bcrypt.hash(plaintext, SALT_ROUNDS);
+}
+```
+
+`bcrypt.hash` generates a fresh random salt internally and returns the full hash string. You never touch the salt directly.
+
+### Verifying a password
+
+```ts
+export async function verifyPassword(
+  plaintext: string,
+  hash: string
+): Promise<boolean> {
+  return bcrypt.compare(plaintext, hash);
+}
+```
+
+`bcrypt.compare` extracts the salt and cost factor from the stored hash, re-derives the hash from the plaintext, and compares. Internally it uses a constant-time comparison — same principle as `timingSafeEqual` in the HMAC post.
+
+### In an auth service
+
+```ts
+// Registration
+async function register(email: string, password: string) {
+  const hash = await hashPassword(password);
+  await db.user.create({ data: { email, passwordHash: hash } });
+}
+
+// Login
+async function login(email: string, password: string) {
+  const user = await db.user.findUnique({ where: { email } });
+  if (!user) {
+    // Still run a compare to prevent timing-based user enumeration
+    await bcrypt.compare(password, "$2b$12$invalidhashpadding000000000000000000000000000000000000000");
+    throw new Error("Invalid credentials");
+  }
+
+  const valid = await verifyPassword(password, user.passwordHash);
+  if (!valid) throw new Error("Invalid credentials");
+
+  return user;
+}
+```
+
+Note the dummy compare when the user doesn't exist — more on that in the pitfalls section.
+
+---
+
+## Security pitfalls
+
+### 1. Using a cost factor that's too low
+
+Cost 10 was the recommended default around 2011. Hardware is significantly faster now. Use **12 as your minimum** for new projects. For anything handling sensitive data (financial, medical, admin accounts), consider 13 or 14.
+
+```ts
+// ❌ Too low
+const SALT_ROUNDS = 8;
+
+// ✅ Current baseline
+const SALT_ROUNDS = 12;
+```
+
+Benchmark on your own hardware:
+
+```ts
+import bcrypt from "bcrypt";
+
+for (let cost = 10; cost <= 14; cost++) {
+  const start = Date.now();
+  await bcrypt.hash("benchmark", cost);
+  console.log(`cost ${cost}: ${Date.now() - start}ms`);
+}
+```
+
+Pick the highest cost where login latency is still acceptable (under 300–500ms for most apps).
+
+### 2. Timing-based user enumeration
+
+If your login logic returns immediately when the user doesn't exist, but takes ~100ms when the user exists (bcrypt comparison time), an attacker can probe your API to enumerate valid email addresses.
+
+The fix is to always run a bcrypt compare, even when the user isn't found — as shown in the login example above. The dummy hash string just needs to be a valid bcrypt hash format so the compare doesn't short-circuit.
+
+### 3. The 72-byte password truncation
+
+Bcrypt silently truncates passwords to **72 bytes**. A user with a 100-character password and a user with the same first 72 characters will have the same hash. Most users will never hit this, but it's worth knowing.
+
+If you want to handle long passwords, pre-hash with SHA-256 before bcrypt:
+
+```ts
+import { createHash } from "crypto";
+
+function preparePassword(password: string): string {
+  // SHA-256 output is always 64 hex chars = 64 bytes, safely under 72
+  return createHash("sha256").update(password).digest("hex");
+}
+
+export async function hashPassword(password: string): Promise<string> {
+  return bcrypt.hash(preparePassword(password), SALT_ROUNDS);
+}
+
+export async function verifyPassword(password: string, hash: string): Promise<boolean> {
+  return bcrypt.compare(preparePassword(password), hash);
+}
+```
+
+### 4. Synchronous bcrypt in a Node.js server
+
+The `bcrypt` package exposes both sync and async methods. Never use the sync version in a server:
+
+```ts
+// ❌ Blocks the event loop for ~100ms
+const hash = bcrypt.hashSync(password, 12);
+
+// ✅ Non-blocking
+const hash = await bcrypt.hash(password, 12);
+```
+
+A single synchronous bcrypt call blocks your entire Node.js process, meaning no other requests can be handled for the duration of the operation.
+
+### 5. Storing the cost factor separately
+
+You don't need to and shouldn't. The cost factor is embedded in the hash string. When you call `bcrypt.compare`, it reads the cost factor directly from the stored hash. This means you can increase your cost factor over time and old hashes still verify correctly — you just re-hash on next login.
+
+```ts
+async function loginWithRehash(email: string, password: string) {
+  const user = await db.user.findUnique({ where: { email } });
+  const valid = await bcrypt.compare(password, user.passwordHash);
+  if (!valid) throw new Error("Invalid credentials");
+
+  // Transparently upgrade old hashes to current cost factor
+  const currentRounds = bcrypt.getRounds(user.passwordHash);
+  if (currentRounds < SALT_ROUNDS) {
+    const newHash = await hashPassword(password);
+    await db.user.update({
+      where: { id: user.id },
+      data: { passwordHash: newHash },
+    });
+  }
+
+  return user;
+}
+```
+
+---
+
+## Bcrypt vs. Argon2
+
+Bcrypt is excellent but not the newest option. **Argon2** won the Password Hashing Competition in 2015 and is worth knowing about.
+
+| | Bcrypt | Argon2id |
+|---|---|---|
+| Memory hardness | No | Yes — resists GPU/ASIC attacks |
+| Configurable | Cost only | Time, memory, parallelism |
+| Battle tested | 25+ years | ~10 years |
+| Node support | `bcrypt` (mature) | `argon2` package |
+
+Argon2id's memory hardness makes it significantly harder to attack with specialized hardware. If you're starting a new project today, it's worth considering. That said, bcrypt with a cost of 12+ is still considered secure and is far more widely deployed.
+
+---
+
+## Quick reference
+
+```ts
+import bcrypt from "bcrypt";
+import { createHash } from "crypto";
+
+const COST = 12;
+
+function prepare(password: string) {
+  return createHash("sha256").update(password).digest("hex");
+}
+
+export const hash   = (p: string) => bcrypt.hash(prepare(p), COST);
+export const verify = (p: string, h: string) => bcrypt.compare(prepare(p), h);
+export const needsRehash = (h: string) => bcrypt.getRounds(h) < COST;
+```
+
+Store the output of `hash()`. Use `verify()` on login. Check `needsRehash()` on successful login and transparently upgrade if true. That's the full pattern.

@@ -117,13 +117,6 @@
 }
 
 @layer base {
-
-  html,
-  body {
-    overscroll-behavior-y: none;
-    background-color: #000;
-  }
-
   * {
     @apply border-border outline-ring/50;
   }

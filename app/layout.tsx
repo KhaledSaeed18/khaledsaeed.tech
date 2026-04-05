@@ -65,8 +65,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="bg-black overscroll-none">
-      <body className={`${quantico.className} bg-black overscroll-none`}>
+    <html lang="en">
+      <body className={`${quantico.className}`}>
         {children}
         <Analytics />
       </body>
