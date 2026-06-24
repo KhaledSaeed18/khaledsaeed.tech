@@ -125,7 +125,7 @@ function hexToRgb(hex: string): [number, number, number] {
 const PALETTE = {
   fg: hexToRgb("#F5F1EA"),
   accent: hexToRgb("#D9634A"),
-  teal: hexToRgb("#3E8A86"),
+  teal: hexToRgb("#2E6B68"),
 }
 
 function compile(gl: WebGL2RenderingContext, type: number, src: string) {

@@ -33,6 +33,7 @@ export const metadata: Metadata = {
   description: siteConfig.description,
   keywords: [
     "Khaled Saeed",
+    "KhaledSaeed18",
     "full-stack engineer",
     "backend engineer",
     "open-source developer",
