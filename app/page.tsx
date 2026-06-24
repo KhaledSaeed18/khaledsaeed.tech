@@ -4,7 +4,6 @@ import { ChevronField } from "@/components/chevron-field"
 import { FlipLogo } from "@/components/flip-logo"
 import { RollingText } from "@/components/rolling-text"
 import { SocialLinks } from "@/components/social-links"
-import { ThemeToggle } from "@/components/theme-toggle"
 import { siteConfig } from "@/lib/site"
 
 export default function Page() {
@@ -16,8 +15,8 @@ export default function Page() {
         <ChevronField />
       </div>
 
-      {/* Top bar: animated mark + theme toggle. */}
-      <header className="absolute inset-x-0 top-0 z-20 flex items-center justify-between px-6 py-5 sm:px-10">
+      {/* Top bar: animated mark. */}
+      <header className="absolute inset-x-0 top-0 z-20 flex items-center px-6 py-5 sm:px-10">
         <Link
           href="/"
           aria-label={`${siteConfig.name}, home`}
@@ -25,7 +24,6 @@ export default function Page() {
         >
           <FlipLogo size={50} color="var(--brand)" mode="auto" />
         </Link>
-        <ThemeToggle />
       </header>
 
       {/* Hero */}

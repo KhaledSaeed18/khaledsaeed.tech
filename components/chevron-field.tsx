@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import { useTheme } from "next-themes"
 
 import { cn } from "@/lib/utils"
 
@@ -124,16 +123,9 @@ function hexToRgb(hex: string): [number, number, number] {
 
 // Brand tokens from the logo system, kept in sync with globals.css.
 const PALETTE = {
-  light: {
-    fg: hexToRgb("#1A1715"),
-    accent: hexToRgb("#A8553F"),
-    teal: hexToRgb("#2E6B68"),
-  },
-  dark: {
-    fg: hexToRgb("#F5F1EA"),
-    accent: hexToRgb("#D9634A"),
-    teal: hexToRgb("#3E8A86"),
-  },
+  fg: hexToRgb("#F5F1EA"),
+  accent: hexToRgb("#D9634A"),
+  teal: hexToRgb("#3E8A86"),
 }
 
 function compile(gl: WebGL2RenderingContext, type: number, src: string) {
@@ -145,12 +137,6 @@ function compile(gl: WebGL2RenderingContext, type: number, src: string) {
 
 export function ChevronField({ className }: { className?: string }) {
   const canvasRef = React.useRef<HTMLCanvasElement>(null)
-  const { resolvedTheme } = useTheme()
-  const themeRef = React.useRef<"light" | "dark">("dark")
-
-  React.useEffect(() => {
-    themeRef.current = resolvedTheme === "light" ? "light" : "dark"
-  }, [resolvedTheme])
 
   function init(canvas: HTMLCanvasElement, gl: WebGL2RenderingContext) {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -219,14 +205,13 @@ export function ChevronField({ className }: { className?: string }) {
     }
 
     function render(now: number) {
-      const pal = PALETTE[themeRef.current]
       gl.uniform2f(u.res, canvas.width, canvas.height)
       gl.uniform1f(u.time, reduced ? 8.0 : now / 1000)
       gl.uniform2f(u.mouse, mouse.x, mouse.y)
       gl.uniform1f(u.dpr, dpr)
-      gl.uniform3fv(u.fg, pal.fg)
-      gl.uniform3fv(u.accent, pal.accent)
-      gl.uniform3fv(u.teal, pal.teal)
+      gl.uniform3fv(u.fg, PALETTE.fg)
+      gl.uniform3fv(u.accent, PALETTE.accent)
+      gl.uniform3fv(u.teal, PALETTE.teal)
       gl.clearColor(0, 0, 0, 0)
       gl.clear(gl.COLOR_BUFFER_BIT)
       gl.drawArrays(gl.TRIANGLES, 0, 3)

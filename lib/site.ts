@@ -25,7 +25,7 @@ export const siteConfig = {
     "full-stack engineer",
     "frontend engineer",
     "backend engineer",
-    "open-source developer",
+    "open-source contributor",
   ],
   /** Topics surfaced for search engines and answer engines (GEO). */
   knowsAbout: [

@@ -54,50 +54,9 @@
     --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* Warm "bone on near-black" identity palette.
-   Anchors: bone #F5F1EA, near-black #1A1715, terracotta #A8553F/#D9634A, teal #2E6B68. */
+/* Warm "bone on near-black" identity palette — dark only.
+   Anchors: bone #F5F1EA, near-black #1A1715, terracotta #D9634A, teal #3E8A86. */
 :root {
-    --background: oklch(0.9593 0.0103 81.8);
-    --foreground: oklch(0.2300 0.0120 56);
-    --card: oklch(0.9750 0.0090 84);
-    --card-foreground: oklch(0.2300 0.0120 56);
-    --popover: oklch(0.9750 0.0090 84);
-    --popover-foreground: oklch(0.2300 0.0120 56);
-    --primary: oklch(0.2600 0.0120 56);
-    --primary-foreground: oklch(0.9700 0.0100 82);
-    --secondary: oklch(0.9150 0.0120 80);
-    --secondary-foreground: oklch(0.2600 0.0120 56);
-    --muted: oklch(0.9200 0.0100 80);
-    --muted-foreground: oklch(0.5000 0.0130 55);
-    --accent: oklch(0.9050 0.0140 78);
-    --accent-foreground: oklch(0.2600 0.0120 56);
-    --destructive: oklch(0.5770 0.2450 27.325);
-    --border: oklch(0.8850 0.0110 78);
-    --input: oklch(0.8850 0.0110 78);
-    --ring: oklch(0.5456 0.1146 35.84);
-
-    --brand: oklch(0.5456 0.1146 35.84);
-    --brand-foreground: oklch(0.9700 0.0100 82);
-    --brand-muted: oklch(0.5456 0.1146 35.84 / 12%);
-    --teal: oklch(0.4870 0.0630 190.93);
-
-    --chart-1: oklch(0.5456 0.1146 35.84);
-    --chart-2: oklch(0.4870 0.0630 190.93);
-    --chart-3: oklch(0.4390 0.0120 56);
-    --chart-4: oklch(0.6200 0.0120 80);
-    --chart-5: oklch(0.7400 0.0100 82);
-    --radius: 0.45rem;
-    --sidebar: oklch(0.9750 0.0090 84);
-    --sidebar-foreground: oklch(0.2300 0.0120 56);
-    --sidebar-primary: oklch(0.2600 0.0120 56);
-    --sidebar-primary-foreground: oklch(0.9700 0.0100 82);
-    --sidebar-accent: oklch(0.9050 0.0140 78);
-    --sidebar-accent-foreground: oklch(0.2600 0.0120 56);
-    --sidebar-border: oklch(0.8850 0.0110 78);
-    --sidebar-ring: oklch(0.5456 0.1146 35.84);
-}
-
-.dark {
     --background: oklch(0.2074 0.0062 56.02);
     --foreground: oklch(0.9300 0.0090 82);
     --card: oklch(0.2450 0.0070 56);
@@ -116,6 +75,7 @@
     --border: oklch(0.8500 0.0300 70 / 12%);
     --input: oklch(0.8500 0.0300 70 / 15%);
     --ring: oklch(0.6398 0.1539 33.47);
+    --radius: 0.45rem;
 
     --brand: oklch(0.6398 0.1539 33.47);
     --brand-foreground: oklch(0.2074 0.0062 56.02);

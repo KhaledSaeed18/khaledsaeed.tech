@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next"
 import { Hanken_Grotesk, Geist, JetBrains_Mono } from "next/font/google"
 
 import "./globals.css"
-import { ThemeProvider } from "@/components/theme-provider"
 import { PersonJsonLd } from "@/components/person-json-ld"
 import { siteConfig } from "@/lib/site"
 import { cn } from "@/lib/utils"
@@ -79,11 +78,8 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#F5F1EA" },
-    { media: "(prefers-color-scheme: dark)", color: "#1A1715" },
-  ],
-  colorScheme: "light dark",
+  themeColor: "#1A1715",
+  colorScheme: "dark",
 }
 
 export default function RootLayout({
@@ -94,8 +90,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      suppressHydrationWarning
-      className={cn(
+      className={cn("dark",
         "antialiased",
         fontSans.variable,
         fontHeading.variable,
@@ -104,7 +99,7 @@ export default function RootLayout({
       )}
     >
       <body>
-        <ThemeProvider>{children}</ThemeProvider>
+        {children}
         <PersonJsonLd />
       </body>
     </html>
