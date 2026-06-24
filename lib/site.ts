@@ -23,8 +23,8 @@ export const siteConfig = {
   /** Roles cycled by the rolling text. Sentence case, lowercase per brand. */
   roles: [
     "full-stack engineer",
-    "frontend engineer",
-    "backend engineer",
+    "frontend developer",
+    "backend developer",
     "open-source contributor",
   ],
   /** Topics surfaced for search engines and answer engines (GEO). */
