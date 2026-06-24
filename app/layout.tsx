@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next"
 import { Hanken_Grotesk, Geist, JetBrains_Mono } from "next/font/google"
 
 import "./globals.css"
+import { TooltipProvider } from "@/components/ui/tooltip"
 import { PersonJsonLd } from "@/components/person-json-ld"
 import { siteConfig } from "@/lib/site"
 import { cn } from "@/lib/utils"
@@ -100,7 +101,9 @@ export default function RootLayout({
       )}
     >
       <body>
-        {children}
+        <TooltipProvider>
+          {children}
+        </TooltipProvider>
         <PersonJsonLd />
       </body>
     </html>

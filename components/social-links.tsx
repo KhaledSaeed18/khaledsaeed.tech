@@ -8,6 +8,7 @@ import {
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { socialLinks, type SocialLink } from "@/lib/site"
 import { cn } from "@/lib/utils"
 
@@ -41,19 +42,25 @@ export function SocialLinks({ className }: { className?: string }) {
         const isMail = link.key === "email"
         return (
           <li key={link.key}>
-            <a
-              href={link.href}
-              aria-label={`${link.label}: ${link.handle}`}
-              title={link.handle}
-              target={isMail ? undefined : "_blank"}
-              rel={isMail ? undefined : "noopener noreferrer"}
-              className="group inline-flex size-10 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
-            >
-              <LinkIcon
-                link={link}
-                className="size-5 transition-colors group-hover:text-brand"
-              />
-            </a>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <a
+                  href={link.href}
+                  aria-label={`${link.label}: ${link.handle}`}
+                  target={isMail ? undefined : "_blank"}
+                  rel={isMail ? undefined : "noopener noreferrer"}
+                  className="group inline-flex size-10 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+                >
+                  <LinkIcon
+                    link={link}
+                    className="size-6 transition-colors group-hover:text-brand"
+                  />
+                </a>
+              </TooltipTrigger>
+              <TooltipContent side="top" sideOffset={8}>
+                {link.handle}
+              </TooltipContent>
+            </Tooltip>
           </li>
         )
       })}
