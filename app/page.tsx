@@ -11,7 +11,7 @@ export default function Page() {
     <main className="relative isolate min-h-svh overflow-hidden">
       {/* WebGL chevron field, full-bleed behind everything. Interactive on
           devices with a real pointer; a static backdrop on touch screens. */}
-      <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10">
+      <div aria-hidden="true" className="pointer-events-none hidden md:block fixed inset-0 -z-10">
         <ChevronField />
       </div>
 
