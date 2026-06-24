@@ -23,7 +23,7 @@ export default function Page() {
           aria-label={`${siteConfig.name}, home`}
           className="inline-flex items-center rounded-md focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
         >
-          <FlipLogo size={50} color="var(--brand)" />
+          <FlipLogo size={50} color="var(--brand)" mode="auto" />
         </Link>
         <ThemeToggle />
       </header>

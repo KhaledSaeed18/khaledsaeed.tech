@@ -9,10 +9,11 @@ interface FlipLogoProps {
   color?: string
   /**
    * "hover"  — rests as K, flips to forward on hover/focus (default)
+   * "auto"   — rests as K, automatically flips to forward every ~3s and returns
    * "k"      — static K
    * "forward"— static forward glyph
    */
-  mode?: "hover" | LogoState
+  mode?: "hover" | "auto" | LogoState
   /** Accessible label. */
   label?: string
   className?: string
@@ -35,6 +36,7 @@ export function FlipLogo({
 }: FlipLogoProps) {
   const isStaticForward = mode === "forward"
   const interactive = mode === "hover"
+  const auto = mode === "auto"
 
   return (
     <svg
@@ -46,6 +48,7 @@ export function FlipLogo({
       className={className}
       style={style}
       data-interactive={interactive ? "" : undefined}
+      data-auto={auto ? "" : undefined}
     >
       <g
         fill="none"
@@ -57,11 +60,11 @@ export function FlipLogo({
         <line x1={38} y1={28} x2={38} y2={72} />
         <polyline
           points="71,28 51,50 71,72"
-          className={interactive ? "flip-chevron" : undefined}
+          className={interactive ? "flip-chevron" : auto ? "flip-chevron-auto" : undefined}
           // Static modes set the transform inline; interactive mode must drive
           // it from CSS so the :hover rule isn't outranked by an inline style.
           style={
-            interactive
+            interactive || auto
               ? undefined
               : {
                   transformBox: "fill-box",
@@ -83,6 +86,26 @@ export function FlipLogo({
           svg[data-interactive]:focus-visible .flip-chevron { transform: scaleX(-1); }
           @media (prefers-reduced-motion: reduce) {
             .flip-chevron { transition: none; }
+          }
+        `}</style>
+      )}
+      {auto && (
+        <style>{`
+          @keyframes logo-flip {
+            0%   { transform: scaleX(1); }
+            14%  { transform: scaleX(-1); }
+            40%  { transform: scaleX(-1); }
+            54%  { transform: scaleX(1); }
+            100% { transform: scaleX(1); }
+          }
+          .flip-chevron-auto {
+            transform-box: fill-box;
+            transform-origin: center;
+            transform: scaleX(1);
+            animation: logo-flip 5s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+          }
+          @media (prefers-reduced-motion: reduce) {
+            .flip-chevron-auto { animation: none; }
           }
         `}</style>
       )}
