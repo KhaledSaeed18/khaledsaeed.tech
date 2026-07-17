@@ -15,6 +15,8 @@ export const siteConfig = {
   url: "https://khaledsaeed.tech",
   location: "Lebanon",
   twitterHandle: "@KhaleddSaeed18",
+  /** Cal.com booking link (open-source Calendly alternative). Replace with your own handle. */
+  bookingUrl: "https://cal.com/khaledsaeed",
   /** ~155 chars, no em dashes, no emoji. */
   description:
     "Khaled Saeed is a full-stack engineer from Lebanon building pixel-perfect interfaces, backend systems, and developer tooling in TypeScript and Node.js.",

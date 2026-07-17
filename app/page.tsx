@@ -1,3 +1,5 @@
+import { CalendarCheckIcon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import Link from "next/link"
 
 import { ChevronField } from "@/components/chevron-field"
@@ -52,6 +54,22 @@ export default function Page() {
 
           <div className="mt-9 -ml-2">
             <SocialLinks />
+          </div>
+
+          <div className="mt-5">
+            <a
+              href={siteConfig.bookingUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group bg-secondary inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2.5 font-mono text-xs tracking-wide text-muted-foreground transition-colors hover:border-brand/40 hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+            >
+              <HugeiconsIcon
+                icon={CalendarCheckIcon}
+                className="size-4 transition-colors group-hover:text-brand"
+                strokeWidth={1.6}
+              />
+              Book a call
+            </a>
           </div>
         </div>
       </section>
