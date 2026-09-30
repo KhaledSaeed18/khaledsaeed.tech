@@ -42,7 +42,7 @@ export default function Page() {
             <RollingText items={siteConfig.roles} />
           </p>
 
-          <p className="mt-7 max-w-prose text-base leading-relaxed text-muted-foreground sm:text-lg">
+          <p className="mt-7 max-w-prose text-base lg:max-w-[40vw] xl:max-w-prose leading-relaxed text-muted-foreground sm:text-lg">
             {siteConfig.intro}
           </p>
 
