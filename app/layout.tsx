@@ -1,9 +1,14 @@
 import type { Metadata, Viewport } from "next"
 import { Hanken_Grotesk, Geist, JetBrains_Mono } from "next/font/google"
 
+import { ViewTransition } from "react"
+
 import "./globals.css"
-import { TooltipProvider } from "@/components/ui/tooltip"
 import { PersonJsonLd } from "@/components/person-json-ld"
+import { RevealObserver } from "@/components/print/reveal-observer"
+import { SiteFooter } from "@/components/site-footer"
+import { SiteHeader } from "@/components/site-header"
+import { TooltipProvider } from "@/components/ui/tooltip"
 import { siteConfig } from "@/lib/site"
 import { cn } from "@/lib/utils"
 
@@ -42,6 +47,10 @@ export const metadata: Metadata = {
     "Node.js",
     "NestJS",
     "system design",
+    "multi-tenant architecture",
+    "developer tools",
+    "Swift",
+    "macOS apps",
     "Lebanon software engineer",
     "software engineer portfolio",
   ],
@@ -50,18 +59,22 @@ export const metadata: Metadata = {
   publisher: siteConfig.name,
   alternates: {
     canonical: "/",
+    types: {
+      "application/rss+xml": "/writing/rss.xml",
+      "text/plain": "/llms.txt",
+    },
   },
   openGraph: {
     type: "website",
     locale: "en_US",
     url: siteConfig.url,
     siteName: siteConfig.name,
-    title: `${siteConfig.name} — ${siteConfig.role}`,
+    title: `${siteConfig.name} | ${siteConfig.role}`,
     description: siteConfig.description,
   },
   twitter: {
     card: "summary_large_image",
-    title: `${siteConfig.name} — ${siteConfig.role}`,
+    title: `${siteConfig.name} | ${siteConfig.role}`,
     description: siteConfig.description,
     creator: siteConfig.twitterHandle,
   },
@@ -92,7 +105,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={cn("dark",
+      data-scroll-behavior="smooth"
+      className={cn(
+        "dark",
         "antialiased",
         fontSans.variable,
         fontHeading.variable,
@@ -101,9 +116,20 @@ export default function RootLayout({
       )}
     >
       <body>
+        <a
+          href="#content"
+          className="sr-only z-[60] rounded-md bg-background px-3 py-2 font-mono text-xs focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+        >
+          skip to content
+        </a>
         <TooltipProvider>
-          {children}
+          <SiteHeader />
+          <ViewTransition default="dither">
+            <main id="content">{children}</main>
+          </ViewTransition>
+          <SiteFooter />
         </TooltipProvider>
+        <RevealObserver />
         <PersonJsonLd />
       </body>
     </html>

@@ -42,9 +42,26 @@ export const siteConfig = {
     "NestJS",
     "PostgreSQL",
     "REST APIs",
+    "Multi-Tenant Architecture",
+    "PostgreSQL Row Level Security",
+    "Swift",
+    "SwiftUI",
+    "macOS Development",
+    "Developer Tools",
+    "JSON Web Tokens",
     "Open Source",
   ],
 } as const
+
+/** Primary navigation. Order is the print order of the sheets. */
+export const nav = [
+  { href: "/work", label: "work" },
+  { href: "/about", label: "about" },
+  { href: "/writing", label: "writing" },
+  { href: "/open-source", label: "open source" },
+  { href: "/uses", label: "uses" },
+  { href: "/contact", label: "contact" },
+] as const
 
 export const socialLinks: SocialLink[] = [
   {
