@@ -1,0 +1,173 @@
+/*
+ * 1-bit print system. Generated from the 4x4 Bayer matrix used by the
+ * character shader, so every dither on the site shares one lattice.
+ *
+ * --dither-0 .. --dither-16 are mask tiles with k of 16 cells inked.
+ * Use them as mask-image with mask-size: var(--dither-tile) for flat tones,
+ * or through the helpers below.
+ */
+
+:root {
+  --dither-tile: 8px; /* 4 cells of 2px, matching the character */
+  --dither-0: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4' shape-rendering='crispEdges'%3E%3C/svg%3E");
+  --dither-1: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4' shape-rendering='crispEdges'%3E%3Crect x='0' y='0' width='1' height='1'/%3E%3C/svg%3E");
+  --dither-2: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4' shape-rendering='crispEdges'%3E%3Crect x='0' y='0' width='1' height='1'/%3E%3Crect x='2' y='2' width='1' height='1'/%3E%3C/svg%3E");
+  --dither-3: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4' shape-rendering='crispEdges'%3E%3Crect x='0' y='0' width='1' height='1'/%3E%3Crect x='2' y='0' width='1' height='1'/%3E%3Crect x='2' y='2' width='1' height='1'/%3E%3C/svg%3E");
+  --dither-4: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4' shape-rendering='crispEdges'%3E%3Crect x='0' y='0' width='1' height='1'/%3E%3Crect x='2' y='0' width='1' height='1'/%3E%3Crect x='0' y='2' width='1' height='1'/%3E%3Crect x='2' y='2' width='1' height='1'/%3E%3C/svg%3E");
+  --dither-5: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4' shape-rendering='crispEdges'%3E%3Crect x='0' y='0' width='1' height='1'/%3E%3Crect x='2' y='0' width='1' height='1'/%3E%3Crect x='1' y='1' width='1' height='1'/%3E%3Crect x='0' y='2' width='1' height='1'/%3E%3Crect x='2' y='2' width='1' height='1'/%3E%3C/svg%3E");
+  --dither-6: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4' shape-rendering='crispEdges'%3E%3Crect x='0' y='0' width='1' height='1'/%3E%3Crect x='2' y='0' width='1' height='1'/%3E%3Crect x='1' y='1' width='1' height='1'/%3E%3Crect x='0' y='2' width='1' height='1'/%3E%3Crect x='2' y='2' width='1' height='1'/%3E%3Crect x='3' y='3' width='1' height='1'/%3E%3C/svg%3E");
+  --dither-7: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4' shape-rendering='crispEdges'%3E%3Crect x='0' y='0' width='1' height='1'/%3E%3Crect x='2' y='0' width='1' height='1'/%3E%3Crect x='1' y='1' width='1' height='1'/%3E%3Crect x='3' y='1' width='1' height='1'/%3E%3Crect x='0' y='2' width='1' height='1'/%3E%3Crect x='2' y='2' width='1' height='1'/%3E%3Crect x='3' y='3' width='1' height='1'/%3E%3C/svg%3E");
+  --dither-8: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4' shape-rendering='crispEdges'%3E%3Crect x='0' y='0' width='1' height='1'/%3E%3Crect x='2' y='0' width='1' height='1'/%3E%3Crect x='1' y='1' width='1' height='1'/%3E%3Crect x='3' y='1' width='1' height='1'/%3E%3Crect x='0' y='2' width='1' height='1'/%3E%3Crect x='2' y='2' width='1' height='1'/%3E%3Crect x='1' y='3' width='1' height='1'/%3E%3Crect x='3' y='3' width='1' height='1'/%3E%3C/svg%3E");
+  --dither-9: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4' shape-rendering='crispEdges'%3E%3Crect x='0' y='0' width='1' height='1'/%3E%3Crect x='1' y='0' width='1' height='1'/%3E%3Crect x='2' y='0' width='1' height='1'/%3E%3Crect x='1' y='1' width='1' height='1'/%3E%3Crect x='3' y='1' width='1' height='1'/%3E%3Crect x='0' y='2' width='1' height='1'/%3E%3Crect x='2' y='2' width='1' height='1'/%3E%3Crect x='1' y='3' width='1' height='1'/%3E%3Crect x='3' y='3' width='1' height='1'/%3E%3C/svg%3E");
+  --dither-10: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4' shape-rendering='crispEdges'%3E%3Crect x='0' y='0' width='1' height='1'/%3E%3Crect x='1' y='0' width='1' height='1'/%3E%3Crect x='2' y='0' width='1' height='1'/%3E%3Crect x='1' y='1' width='1' height='1'/%3E%3Crect x='3' y='1' width='1' height='1'/%3E%3Crect x='0' y='2' width='1' height='1'/%3E%3Crect x='2' y='2' width='1' height='1'/%3E%3Crect x='3' y='2' width='1' height='1'/%3E%3Crect x='1' y='3' width='1' height='1'/%3E%3Crect x='3' y='3' width='1' height='1'/%3E%3C/svg%3E");
+  --dither-11: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4' shape-rendering='crispEdges'%3E%3Crect x='0' y='0' width='1' height='1'/%3E%3Crect x='1' y='0' width='1' height='1'/%3E%3Crect x='2' y='0' width='1' height='1'/%3E%3Crect x='3' y='0' width='1' height='1'/%3E%3Crect x='1' y='1' width='1' height='1'/%3E%3Crect x='3' y='1' width='1' height='1'/%3E%3Crect x='0' y='2' width='1' height='1'/%3E%3Crect x='2' y='2' width='1' height='1'/%3E%3Crect x='3' y='2' width='1' height='1'/%3E%3Crect x='1' y='3' width='1' height='1'/%3E%3Crect x='3' y='3' width='1' height='1'/%3E%3C/svg%3E");
+  --dither-12: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4' shape-rendering='crispEdges'%3E%3Crect x='0' y='0' width='1' height='1'/%3E%3Crect x='1' y='0' width='1' height='1'/%3E%3Crect x='2' y='0' width='1' height='1'/%3E%3Crect x='3' y='0' width='1' height='1'/%3E%3Crect x='1' y='1' width='1' height='1'/%3E%3Crect x='3' y='1' width='1' height='1'/%3E%3Crect x='0' y='2' width='1' height='1'/%3E%3Crect x='1' y='2' width='1' height='1'/%3E%3Crect x='2' y='2' width='1' height='1'/%3E%3Crect x='3' y='2' width='1' height='1'/%3E%3Crect x='1' y='3' width='1' height='1'/%3E%3Crect x='3' y='3' width='1' height='1'/%3E%3C/svg%3E");
+  --dither-13: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4' shape-rendering='crispEdges'%3E%3Crect x='0' y='0' width='1' height='1'/%3E%3Crect x='1' y='0' width='1' height='1'/%3E%3Crect x='2' y='0' width='1' height='1'/%3E%3Crect x='3' y='0' width='1' height='1'/%3E%3Crect x='0' y='1' width='1' height='1'/%3E%3Crect x='1' y='1' width='1' height='1'/%3E%3Crect x='3' y='1' width='1' height='1'/%3E%3Crect x='0' y='2' width='1' height='1'/%3E%3Crect x='1' y='2' width='1' height='1'/%3E%3Crect x='2' y='2' width='1' height='1'/%3E%3Crect x='3' y='2' width='1' height='1'/%3E%3Crect x='1' y='3' width='1' height='1'/%3E%3Crect x='3' y='3' width='1' height='1'/%3E%3C/svg%3E");
+  --dither-14: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4' shape-rendering='crispEdges'%3E%3Crect x='0' y='0' width='1' height='1'/%3E%3Crect x='1' y='0' width='1' height='1'/%3E%3Crect x='2' y='0' width='1' height='1'/%3E%3Crect x='3' y='0' width='1' height='1'/%3E%3Crect x='0' y='1' width='1' height='1'/%3E%3Crect x='1' y='1' width='1' height='1'/%3E%3Crect x='3' y='1' width='1' height='1'/%3E%3Crect x='0' y='2' width='1' height='1'/%3E%3Crect x='1' y='2' width='1' height='1'/%3E%3Crect x='2' y='2' width='1' height='1'/%3E%3Crect x='3' y='2' width='1' height='1'/%3E%3Crect x='1' y='3' width='1' height='1'/%3E%3Crect x='2' y='3' width='1' height='1'/%3E%3Crect x='3' y='3' width='1' height='1'/%3E%3C/svg%3E");
+  --dither-15: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4' shape-rendering='crispEdges'%3E%3Crect x='0' y='0' width='1' height='1'/%3E%3Crect x='1' y='0' width='1' height='1'/%3E%3Crect x='2' y='0' width='1' height='1'/%3E%3Crect x='3' y='0' width='1' height='1'/%3E%3Crect x='0' y='1' width='1' height='1'/%3E%3Crect x='1' y='1' width='1' height='1'/%3E%3Crect x='2' y='1' width='1' height='1'/%3E%3Crect x='3' y='1' width='1' height='1'/%3E%3Crect x='0' y='2' width='1' height='1'/%3E%3Crect x='1' y='2' width='1' height='1'/%3E%3Crect x='2' y='2' width='1' height='1'/%3E%3Crect x='3' y='2' width='1' height='1'/%3E%3Crect x='1' y='3' width='1' height='1'/%3E%3Crect x='2' y='3' width='1' height='1'/%3E%3Crect x='3' y='3' width='1' height='1'/%3E%3C/svg%3E");
+  --dither-16: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4' shape-rendering='crispEdges'%3E%3Crect x='0' y='0' width='1' height='1'/%3E%3Crect x='1' y='0' width='1' height='1'/%3E%3Crect x='2' y='0' width='1' height='1'/%3E%3Crect x='3' y='0' width='1' height='1'/%3E%3Crect x='0' y='1' width='1' height='1'/%3E%3Crect x='1' y='1' width='1' height='1'/%3E%3Crect x='2' y='1' width='1' height='1'/%3E%3Crect x='3' y='1' width='1' height='1'/%3E%3Crect x='0' y='2' width='1' height='1'/%3E%3Crect x='1' y='2' width='1' height='1'/%3E%3Crect x='2' y='2' width='1' height='1'/%3E%3Crect x='3' y='2' width='1' height='1'/%3E%3Crect x='0' y='3' width='1' height='1'/%3E%3Crect x='1' y='3' width='1' height='1'/%3E%3Crect x='2' y='3' width='1' height='1'/%3E%3Crect x='3' y='3' width='1' height='1'/%3E%3C/svg%3E");
+}
+
+@keyframes dither-in {
+  0.0% { mask-image: var(--dither-0); -webkit-mask-image: var(--dither-0); }
+  6.25% { mask-image: var(--dither-1); -webkit-mask-image: var(--dither-1); }
+  12.5% { mask-image: var(--dither-2); -webkit-mask-image: var(--dither-2); }
+  18.75% { mask-image: var(--dither-3); -webkit-mask-image: var(--dither-3); }
+  25.0% { mask-image: var(--dither-4); -webkit-mask-image: var(--dither-4); }
+  31.25% { mask-image: var(--dither-5); -webkit-mask-image: var(--dither-5); }
+  37.5% { mask-image: var(--dither-6); -webkit-mask-image: var(--dither-6); }
+  43.75% { mask-image: var(--dither-7); -webkit-mask-image: var(--dither-7); }
+  50.0% { mask-image: var(--dither-8); -webkit-mask-image: var(--dither-8); }
+  56.25% { mask-image: var(--dither-9); -webkit-mask-image: var(--dither-9); }
+  62.5% { mask-image: var(--dither-10); -webkit-mask-image: var(--dither-10); }
+  68.75% { mask-image: var(--dither-11); -webkit-mask-image: var(--dither-11); }
+  75.0% { mask-image: var(--dither-12); -webkit-mask-image: var(--dither-12); }
+  81.25% { mask-image: var(--dither-13); -webkit-mask-image: var(--dither-13); }
+  87.5% { mask-image: var(--dither-14); -webkit-mask-image: var(--dither-14); }
+  93.75% { mask-image: var(--dither-15); -webkit-mask-image: var(--dither-15); }
+  100.0% { mask-image: none; -webkit-mask-image: none; }
+}
+
+@keyframes dither-out {
+  0.0% { mask-image: none; -webkit-mask-image: none; }
+  6.25% { mask-image: var(--dither-15); -webkit-mask-image: var(--dither-15); }
+  12.5% { mask-image: var(--dither-14); -webkit-mask-image: var(--dither-14); }
+  18.75% { mask-image: var(--dither-13); -webkit-mask-image: var(--dither-13); }
+  25.0% { mask-image: var(--dither-12); -webkit-mask-image: var(--dither-12); }
+  31.25% { mask-image: var(--dither-11); -webkit-mask-image: var(--dither-11); }
+  37.5% { mask-image: var(--dither-10); -webkit-mask-image: var(--dither-10); }
+  43.75% { mask-image: var(--dither-9); -webkit-mask-image: var(--dither-9); }
+  50.0% { mask-image: var(--dither-8); -webkit-mask-image: var(--dither-8); }
+  56.25% { mask-image: var(--dither-7); -webkit-mask-image: var(--dither-7); }
+  62.5% { mask-image: var(--dither-6); -webkit-mask-image: var(--dither-6); }
+  68.75% { mask-image: var(--dither-5); -webkit-mask-image: var(--dither-5); }
+  75.0% { mask-image: var(--dither-4); -webkit-mask-image: var(--dither-4); }
+  81.25% { mask-image: var(--dither-3); -webkit-mask-image: var(--dither-3); }
+  87.5% { mask-image: var(--dither-2); -webkit-mask-image: var(--dither-2); }
+  93.75% { mask-image: var(--dither-1); -webkit-mask-image: var(--dither-1); }
+  100.0% { mask-image: var(--dither-0); -webkit-mask-image: var(--dither-0); }
+}
+
+/* A flat dithered tone in the current text color: <span class="dither-tone" style="--tone: var(--dither-6)" /> */
+.dither-tone {
+  background-color: currentColor;
+  mask-image: var(--tone, var(--dither-8));
+  -webkit-mask-image: var(--tone, var(--dither-8));
+  mask-size: var(--dither-tile);
+  -webkit-mask-size: var(--dither-tile);
+  image-rendering: pixelated;
+}
+
+/*
+ * Print-in on scroll. Elements with data-reveal start blank only when
+ * scripting is available (never for no-JS visitors) and dissolve in, cell by
+ * cell, when they enter the viewport. If the observer never runs, a failsafe
+ * shows everything after a moment anyway.
+ */
+@media (scripting: enabled) {
+  [data-reveal]:not([data-shown]) {
+    opacity: 0;
+    animation: reveal-failsafe 0s linear 3s forwards;
+  }
+}
+@keyframes reveal-failsafe {
+  to {
+    opacity: 1;
+  }
+}
+[data-reveal][data-shown] {
+  mask-size: var(--dither-tile);
+  -webkit-mask-size: var(--dither-tile);
+  animation: dither-in 560ms linear both;
+  animation-delay: calc(var(--reveal-delay, 0) * 90ms);
+}
+
+/* Page to page: the old sheet dissolves out, the new one prints in. */
+::view-transition-old(.dither) {
+  mask-size: var(--dither-tile);
+  -webkit-mask-size: var(--dither-tile);
+  animation: dither-out 280ms linear both;
+}
+::view-transition-new(.dither) {
+  mask-size: var(--dither-tile);
+  -webkit-mask-size: var(--dither-tile);
+  animation: dither-in 360ms linear 120ms both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal]:not([data-shown]) {
+    opacity: 1 !important;
+  }
+  [data-reveal][data-shown] {
+    animation: none;
+  }
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
+}
+
+/* The masthead stays put while the page under it dissolves. */
+::view-transition-group(site-header) {
+  animation: none;
+  z-index: 100;
+}
+::view-transition-old(site-header) {
+  display: none;
+}
+::view-transition-new(site-header) {
+  animation: none;
+}
+
+/*
+ * Project objects: a 16-frame 1-bit sprite used as a mask and filled with the
+ * card's ink. --obj-w is one frame's rendered width. Frames play on hover and
+ * focus, and loop slowly on touch screens where there is no hover.
+ */
+@keyframes object-swing {
+  to {
+    mask-position: calc(var(--obj-w) * -16) 0;
+    -webkit-mask-position: calc(var(--obj-w) * -16) 0;
+  }
+}
+.dither-object {
+  animation: object-swing 1.5s steps(16) infinite paused;
+}
+.group:hover .dither-object,
+.group:focus-visible .dither-object,
+.dither-object[data-play] {
+  animation-play-state: running;
+}
+@media (hover: none) {
+  .dither-object {
+    animation-duration: 2.6s;
+    animation-play-state: running;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dither-object {
+    animation: none;
+  }
+}

@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@import "./dither.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -82,6 +83,19 @@
     --brand-muted: oklch(0.6398 0.1539 33.47 / 14%);
     --teal: oklch(0.6000 0.0700 190);
 
+    /* Print system: perforation rules, and the card stocks projects are
+       printed on. Each stock has an ink: a near-black of its own hue. */
+    --rule: oklch(0.85 0.03 70 / 24%);
+    --stone: #a6a09a;
+    --stock-terracotta: #d9634a;
+    --ink-terracotta: #2b0d06;
+    --stock-teal: #4f9590;
+    --ink-teal: #04201e;
+    --stock-bone: #ebe7e1;
+    --ink-bone: #1a1715;
+    --stock-stone: #a6a09a;
+    --ink-stone: #1b1815;
+
     --chart-1: oklch(0.6398 0.1539 33.47);
     --chart-2: oklch(0.6000 0.0700 190);
     --chart-3: oklch(0.7100 0.0110 70);
@@ -121,4 +135,130 @@
     background-color: var(--brand);
     color: var(--brand-foreground);
     }
+}
+
+/* Long-form article body (posts imported from DEV). */
+@layer components {
+  .prose-print {
+    color: var(--muted-foreground);
+    font-size: 1.0625rem;
+    line-height: 1.8;
+  }
+  .prose-print > * + * {
+    margin-top: 1.25em;
+  }
+  .prose-print h2,
+  .prose-print h3,
+  .prose-print h4 {
+    color: var(--foreground);
+    font-family: var(--font-heading), var(--font-sans), sans-serif;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+    margin-top: 2.2em;
+  }
+  .prose-print h2 {
+    font-size: 1.75rem;
+  }
+  .prose-print h3 {
+    font-size: 1.35rem;
+  }
+  .prose-print strong {
+    color: var(--foreground);
+    font-weight: 600;
+  }
+  .prose-print a {
+    color: var(--foreground);
+    text-decoration: underline;
+    text-decoration-color: var(--border);
+    text-underline-offset: 4px;
+  }
+  .prose-print a:hover {
+    text-decoration-color: var(--brand);
+  }
+  .prose-print ul,
+  .prose-print ol {
+    padding-left: 1.25em;
+  }
+  .prose-print ul {
+    list-style: square;
+  }
+  .prose-print ol {
+    list-style: decimal;
+  }
+  .prose-print li + li {
+    margin-top: 0.4em;
+  }
+  .prose-print li::marker {
+    color: var(--brand);
+  }
+  .prose-print hr {
+    border: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, var(--rule) 0 2px, transparent 2px);
+    background-size: 6px 1px;
+    margin: 2.5em 0;
+  }
+  .prose-print blockquote {
+    border-left: 2px solid var(--brand);
+    padding-left: 1em;
+    color: var(--foreground);
+  }
+  .prose-print :not(pre) > code {
+    font-family: var(--font-mono), monospace;
+    font-size: 0.85em;
+    color: var(--foreground);
+    background: var(--secondary);
+    border-radius: 4px;
+    padding: 0.15em 0.35em;
+  }
+  .prose-print pre {
+    font-family: var(--font-mono), monospace;
+    font-size: 0.85rem;
+    line-height: 1.7;
+    color: var(--foreground);
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.1em 1.25em;
+    overflow-x: auto;
+  }
+  /* one ink for code, with comments and punctuation pushed back */
+  .prose-print pre .c,
+  .prose-print pre .c1,
+  .prose-print pre .cm {
+    color: var(--muted-foreground);
+    font-style: italic;
+  }
+  .prose-print pre .p,
+  .prose-print pre .o {
+    color: var(--muted-foreground);
+  }
+  .prose-print pre .s,
+  .prose-print pre .s1,
+  .prose-print pre .s2,
+  .prose-print pre .dl {
+    color: var(--brand);
+  }
+  .prose-print img {
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    max-width: 100%;
+    height: auto;
+  }
+  .prose-print table {
+    width: 100%;
+    font-size: 0.9rem;
+    border-collapse: collapse;
+  }
+  .prose-print th,
+  .prose-print td {
+    border-bottom: 1px dashed var(--border);
+    padding: 0.6em 0.75em 0.6em 0;
+    text-align: left;
+  }
+  .prose-print th {
+    color: var(--foreground);
+    font-weight: 500;
+  }
 }
