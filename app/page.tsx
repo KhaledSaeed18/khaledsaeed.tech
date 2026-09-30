@@ -2,7 +2,7 @@ import { CalendarCheckIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import Link from "next/link"
 
-import { ChevronField } from "@/components/chevron-field"
+import { DitherCharacter } from "@/components/dither-character"
 import { FlipLogo } from "@/components/flip-logo"
 import { RollingText } from "@/components/rolling-text"
 import { SocialLinks } from "@/components/social-links"
@@ -11,12 +11,6 @@ import { siteConfig } from "@/lib/site"
 export default function Page() {
   return (
     <main className="relative isolate min-h-svh overflow-hidden">
-      {/* WebGL chevron field, full-bleed behind everything. Interactive on
-          devices with a real pointer; a static backdrop on touch screens. */}
-      <div aria-hidden="true" className="pointer-events-none hidden md:block fixed inset-0 -z-10">
-        <ChevronField />
-      </div>
-
       {/* Top bar: animated mark. */}
       <header className="absolute inset-x-0 top-0 z-20 flex items-center px-6 py-5 sm:px-10">
         <Link
@@ -29,7 +23,7 @@ export default function Page() {
       </header>
 
       {/* Hero */}
-      <section className="mx-auto flex min-h-svh max-w-6xl items-center px-6 py-28 sm:px-10">
+      <section className="mx-auto flex max-w-6xl items-center px-6 pt-28 pb-8 sm:px-10 lg:min-h-svh lg:py-28">
         <div className="max-w-xl lg:max-w-2xl">
           <p className="mb-5 flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-xs tracking-wide text-muted-foreground">
             <span className="text-brand">{siteConfig.role}</span>
@@ -74,12 +68,16 @@ export default function Page() {
         </div>
       </section>
 
+      {/* Dithered self-portrait. Sits beside the content on large screens and
+          below it on small ones; purely decorative, input is read globally. */}
+      <DitherCharacter className="h-[min(100vw,480px)] mb-12 w-full lg:absolute lg:mb-0 lg:right-0 lg:bottom-0 lg:-z-10 lg:h-[94svh] lg:w-[52vw]" />
+
       {/* Footer */}
-      <footer className="absolute inset-x-0 bottom-0  z-20 flex items-center justify-between px-6 py-5 font-mono text-xs text-muted-foreground sm:px-10">
-        <span/>
+      <footer className="absolute inset-x-0 bottom-0 z-20 flex items-center justify-between px-6 py-5 font-mono text-xs text-muted-foreground sm:px-10">
         <span>
           © {new Date().getFullYear()} {siteConfig.name}
         </span>
+        <span className="hidden lg:inline">click me to wave</span>
       </footer>
     </main>
   )
