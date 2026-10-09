@@ -198,3 +198,47 @@
     animation: none;
   }
 }
+
+/*
+ * Footer wordmark: printed light, and inked up on hover. The dither steps
+ * from 5 to 12 of 16 while the ink turns terracotta; leaving runs it back.
+ */
+@keyframes ink-up {
+  0.00% { mask-image: var(--dither-5); -webkit-mask-image: var(--dither-5); }
+  14.29% { mask-image: var(--dither-6); -webkit-mask-image: var(--dither-6); }
+  28.57% { mask-image: var(--dither-7); -webkit-mask-image: var(--dither-7); }
+  42.86% { mask-image: var(--dither-8); -webkit-mask-image: var(--dither-8); }
+  57.14% { mask-image: var(--dither-9); -webkit-mask-image: var(--dither-9); }
+  71.43% { mask-image: var(--dither-10); -webkit-mask-image: var(--dither-10); }
+  85.71% { mask-image: var(--dither-11); -webkit-mask-image: var(--dither-11); }
+  100.00% { mask-image: var(--dither-12); -webkit-mask-image: var(--dither-12); }
+}
+@keyframes ink-down {
+  0.00% { mask-image: var(--dither-12); -webkit-mask-image: var(--dither-12); }
+  14.29% { mask-image: var(--dither-11); -webkit-mask-image: var(--dither-11); }
+  28.57% { mask-image: var(--dither-10); -webkit-mask-image: var(--dither-10); }
+  42.86% { mask-image: var(--dither-9); -webkit-mask-image: var(--dither-9); }
+  57.14% { mask-image: var(--dither-8); -webkit-mask-image: var(--dither-8); }
+  71.43% { mask-image: var(--dither-7); -webkit-mask-image: var(--dither-7); }
+  85.71% { mask-image: var(--dither-6); -webkit-mask-image: var(--dither-6); }
+  100.00% { mask-image: var(--dither-5); -webkit-mask-image: var(--dither-5); }
+}
+.wordmark svg {
+  color: var(--foreground);
+  mask-size: var(--dither-tile);
+  -webkit-mask-size: var(--dither-tile);
+  animation: ink-down 360ms linear both;
+  transition: color 360ms ease;
+}
+.wordmark:hover svg {
+  color: var(--brand);
+  animation: ink-up 360ms linear both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .wordmark svg,
+  .wordmark:hover svg {
+    animation: none;
+    mask-image: var(--dither-5);
+    -webkit-mask-image: var(--dither-5);
+  }
+}

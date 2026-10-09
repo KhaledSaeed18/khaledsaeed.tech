@@ -160,22 +160,14 @@ function DensityStrip({ className }: { className?: string }) {
 /**
  * The name set across the full width of the frame and cut off by the bottom
  * of the page, printed in a light dither. SVG so it fits the width exactly at
- * every size.
+ * every size. Hovering inks it up: the dither thickens and the ink turns
+ * terracotta, then it fades back when the pointer leaves.
  */
 function Wordmark({ className }: { className?: string }) {
   return (
     <div aria-hidden="true" className={className}>
-      <div className="overflow-hidden">
-        <svg
-          viewBox="0 0 1000 150"
-          className="block w-full translate-y-[22%] text-foreground"
-          style={{
-            maskImage: "var(--dither-5)",
-            WebkitMaskImage: "var(--dither-5)",
-            maskSize: "var(--dither-tile)",
-            WebkitMaskSize: "var(--dither-tile)",
-          }}
-        >
+      <div className="wordmark overflow-hidden">
+        <svg viewBox="0 0 1000 150" className="block w-full translate-y-[30%]">
           <text
             x="0"
             y="132"
