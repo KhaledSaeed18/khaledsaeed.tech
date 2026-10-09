@@ -181,26 +181,21 @@
 }
 
 /*
- * Print-in on scroll. Content is visible by default (no-JS visitors and
- * anything on screen at load paint at once, which keeps LCP honest). The
- * observer marks only below-the-fold elements data-pending, which blanks
- * them, then swaps that for data-shown to dissolve them in, cell by cell, as
- * they scroll into view. A failsafe shows pending content after a moment.
+ * Reveal on scroll: a plain fade and a short rise. Content is visible by
+ * default (no-JS visitors and anything on screen at load paint at once,
+ * which keeps LCP honest). The observer marks only below-the-fold elements
+ * data-pending, then swaps that for data-shown as they scroll into view, and
+ * the transition does the rest. --reveal-delay staggers neighbours.
  */
 [data-reveal][data-pending] {
   opacity: 0;
-  animation: reveal-failsafe 0s linear 3s forwards;
-}
-@keyframes reveal-failsafe {
-  to {
-    opacity: 1;
-  }
+  transform: translateY(14px);
 }
 [data-reveal][data-shown] {
-  mask-size: var(--dither-tile);
-  -webkit-mask-size: var(--dither-tile);
-  animation: dither-in 560ms linear both;
-  animation-delay: calc(var(--reveal-delay, 0) * 90ms);
+  transition:
+    opacity 600ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: calc(var(--reveal-delay, 0) * 70ms);
 }
 
 /* Page to page: the old sheet dissolves out, the new one prints in. */
@@ -218,9 +213,10 @@
 @media (prefers-reduced-motion: reduce) {
   [data-reveal][data-pending] {
     opacity: 1 !important;
+    transform: none !important;
   }
   [data-reveal][data-shown] {
-    animation: none;
+    transition: none;
   }
   ::view-transition-old(*),
   ::view-transition-new(*),

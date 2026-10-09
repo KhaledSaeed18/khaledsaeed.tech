@@ -4,7 +4,7 @@ Personal portfolio site, built with Next.js, React, TypeScript, and Tailwind CSS
 
 ## What it is
 
-This project powers [khaledsaeed.tech](https://khaledsaeed.tech). The whole site is designed as a 1-bit print run: square corners, a page frame with dotted rails and full-width rules crossed by registration marks, sections that print in through a 4x4 Bayer dither, and projects printed on colored card stock with their own dithered 3D objects.
+This project powers [khaledsaeed.tech](https://khaledsaeed.tech). The whole site is designed as a 1-bit print run: square corners, a page frame with dotted rails and full-width rules crossed by registration marks, a 4x4 Bayer dither throughout, and projects printed on colored card stock with their own dithered 3D objects.
 
 - `/` hero with the live dithered self-portrait, selected work as a press proof, the stack as a DIP-28 datasheet, writing as a broadsheet front page, and a reply postcard
 - `/work` the job book (filterable ledger with a sticky proof) and `/work/[slug]` a case study per project
@@ -61,8 +61,8 @@ Live data is fetched at build time and revalidated daily: articles from the DEV 
 
 ## The dither system
 
-- `app/dither.css` holds the 17 Bayer mask levels, the print-in reveal (`data-reveal`), the page-to-page dissolve, the press and wordmark animations, and the object sprite animation.
-- The print-in only ever blanks content below the fold (`components/print/reveal-observer.tsx`); anything on screen at load paints at once, so it never delays LCP.
+- `app/dither.css` holds the 17 Bayer mask levels, the scroll reveal (`data-reveal`, a plain fade and rise), the page-to-page dissolve, the press and wordmark animations, and the object sprite animation.
+- The scroll reveal only ever hides content below the fold (`components/print/reveal-observer.tsx`); anything on screen at load paints at once, so it never delays LCP.
 - `components/dither-character.tsx` is the portrait: a signed distance field raymarched in one fragment shader, with adaptive quality tiers and a static fallback (`public/character.png`) when WebGL2 or hardware acceleration is missing.
 
 ### Project objects
