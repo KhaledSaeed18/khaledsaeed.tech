@@ -2,30 +2,32 @@ import Link from "next/link"
 import type * as React from "react"
 
 import { Rule, SpecLabel } from "@/components/print/sheet"
+import { formatDate } from "@/lib/format"
 import { nav, siteConfig, socialLinks } from "@/lib/site"
 
+/** When this build was made (set in next.config.ts). */
+const printed = new Date(process.env.BUILD_DATE as string)
+
 /**
- * The colophon. Ends every page like the last sheet of a print run: a density
- * strip (the 17 Bayer levels the whole site is drawn with), press notes and
- * the usual links.
+ * The back cover. Ends every page like the last sheet of a print run: a short
+ * note, the usual links, a density strip (the 17 Bayer levels the site is
+ * drawn with), and the name printed large and cut off by the page edge.
  */
 export function SiteFooter() {
-  const year = new Date().getFullYear()
   return (
-    <footer className="mt-32 pb-10">
+    <footer className="mt-32">
       <div className="frame">
-        <SpecLabel>colophon</SpecLabel>
+        <SpecLabel>back cover</SpecLabel>
         <Rule className="mt-3" />
 
         <div className="mt-10 grid gap-10 md:grid-cols-12">
           <div className="md:col-span-5">
-            <p className="font-heading text-2xl font-medium tracking-tight">
-              {siteConfig.name}
-            </p>
-            <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted-foreground">
-              Set in Hanken Grotesk, Geist and JetBrains Mono. The portrait is
-              raymarched in a fragment shader and printed through a 4x4 Bayer
-              matrix. Built with Next.js.
+            <p className="max-w-sm font-heading text-xl leading-snug font-medium tracking-tight text-balance sm:text-2xl">
+              Full-stack engineer in Lebanon.{" "}
+              <span className="text-muted-foreground">
+                Interfaces, backends and the tooling in between, built to
+                explain themselves.
+              </span>
             </p>
           </div>
 
@@ -109,12 +111,25 @@ export function SiteFooter() {
 
         <DensityStrip className="mt-14" />
 
-        <div className="mt-6 flex flex-wrap items-center justify-between gap-3 font-mono text-xs text-muted-foreground">
+        <div className="mt-6 grid grid-cols-2 gap-3 font-mono text-xs text-muted-foreground sm:grid-cols-3">
           <span>
-            © {year} {siteConfig.name}
+            © {printed.getFullYear()} {siteConfig.name}
           </span>
-          <span>printed in {siteConfig.location.toLowerCase()}</span>
+          <span className="hidden text-center sm:block">
+            last printed{" "}
+            <time dateTime={printed.toISOString()}>
+              {formatDate(printed.toISOString()).toLowerCase()}
+            </time>
+          </span>
+          <a
+            href="#content"
+            className="justify-self-end transition-colors hover:text-foreground"
+          >
+            back to top
+          </a>
         </div>
+
+        <Wordmark className="mt-14" />
       </div>
     </footer>
   )
@@ -138,9 +153,45 @@ function DensityStrip({ className }: { className?: string }) {
           />
         ))}
       </div>
-      <div className="mt-2 flex justify-between font-mono text-[10px] text-muted-foreground/60">
-        <span>ink / stone / terracotta / teal</span>
-        <span>0 to 16 of 16, bayer 4x4</span>
+    </div>
+  )
+}
+
+/**
+ * The name set across the full width of the frame and cut off by the bottom
+ * of the page, printed in a light dither. SVG so it fits the width exactly at
+ * every size.
+ */
+function Wordmark({ className }: { className?: string }) {
+  return (
+    <div aria-hidden="true" className={className}>
+      <div className="overflow-hidden">
+        <svg
+          viewBox="0 0 1000 150"
+          className="block w-full translate-y-[22%] text-foreground"
+          style={{
+            maskImage: "var(--dither-5)",
+            WebkitMaskImage: "var(--dither-5)",
+            maskSize: "var(--dither-tile)",
+            WebkitMaskSize: "var(--dither-tile)",
+          }}
+        >
+          <text
+            x="0"
+            y="132"
+            textLength="1000"
+            lengthAdjust="spacing"
+            fill="currentColor"
+            style={{
+              fontFamily: "var(--font-heading)",
+              fontSize: 168,
+              fontWeight: 500,
+              letterSpacing: "-0.02em",
+            }}
+          >
+            {siteConfig.name}
+          </text>
+        </svg>
       </div>
     </div>
   )
