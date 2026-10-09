@@ -10,7 +10,6 @@ This project powers [khaledsaeed.tech](https://khaledsaeed.tech). The whole site
 - `/work` and `/work/[slug]` a case study per project
 - `/about` background, education, credentials, principles
 - `/writing` and `/writing/[slug]` articles pulled from DEV (canonical links point back to DEV)
-- `/uses` current focus and setup
 - `/contact`
 - `/llms.txt`, `/writing/rss.xml`, `/sitemap.xml` for answer engines, readers and crawlers
 
@@ -46,7 +45,6 @@ Everything on the site is single-sourced in `lib/content`:
 
 - `projects.ts` projects and case study copy
 - `profile.ts` bio, education, credentials, stack, principles
-- `uses.ts` the now note and setup
 
 Live data is fetched at build time and revalidated daily: articles from the DEV API (`lib/data/devto.ts`) and project star counts from GitHub (`lib/data/github.ts`). Set `GITHUB_TOKEN` for a higher GitHub rate limit; without it star counts are simply omitted.
 

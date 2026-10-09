@@ -32,7 +32,6 @@ ${about.paragraphs.join("\n\n")}
 - [Work](${url("/work")}): all projects with case studies
 - [About](${url("/about")}): background, education, credentials, principles
 - [Writing](${url("/writing")}): articles, originally published on DEV
-- [Uses](${url("/uses")}): current focus and setup
 - [Contact](${url("/contact")}): email and booking
 
 ## Projects
