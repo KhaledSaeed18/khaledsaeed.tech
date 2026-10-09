@@ -57,7 +57,7 @@ export function SiteHeader() {
         <Link
           href="/"
           aria-label={`${siteConfig.name}, home`}
-          className="-ml-1 inline-flex items-center rounded-md p-1 focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+          className="-ml-1 inline-flex items-center p-1 focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
         >
           <FlipLogo size={36} color="var(--brand)" mode="auto" />
         </Link>
@@ -72,7 +72,7 @@ export function SiteHeader() {
                     href={item.href}
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "group inline-flex items-center gap-1.5 rounded-md px-2.5 py-2 transition-colors focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none",
+                      "group inline-flex items-center gap-1.5 px-2.5 py-2 transition-colors focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none",
                       active
                         ? "text-foreground"
                         : "text-muted-foreground hover:text-foreground"
@@ -100,7 +100,7 @@ export function SiteHeader() {
           onClick={() => setOpen(!open)}
           aria-expanded={open}
           aria-controls="mobile-nav"
-          className="rounded-md px-2 py-2 font-mono text-xs text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none md:hidden"
+          className="px-2 py-2 font-mono text-xs text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none md:hidden"
         >
           {open ? "close" : "menu"}
         </button>

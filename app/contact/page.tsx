@@ -42,7 +42,7 @@ export default function ContactPage() {
               href={siteConfig.bookingUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center rounded-lg bg-foreground px-4 py-2.5 font-mono text-xs text-background transition-opacity hover:opacity-85"
+              className="inline-flex items-center bg-foreground px-4 py-2.5 font-mono text-xs text-background transition-opacity hover:opacity-85"
             >
               book a call
             </a>

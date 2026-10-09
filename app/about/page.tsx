@@ -146,7 +146,7 @@ export default function AboutPage() {
           <h2 id="principles" className="sr-only">
             Principles
           </h2>
-          <ol className="mt-10 grid gap-px overflow-hidden rounded-xl border border-border bg-border md:grid-cols-2">
+          <ol className="mt-10 grid gap-px overflow-hidden border border-border bg-border md:grid-cols-2">
             {principles.map((p, i) => (
               <li
                 key={p.title}

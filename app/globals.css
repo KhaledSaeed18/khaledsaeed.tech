@@ -46,13 +46,18 @@
     --color-card: var(--card);
     --color-foreground: var(--foreground);
     --color-background: var(--background);
-    --radius-sm: calc(var(--radius) * 0.6);
-    --radius-md: calc(var(--radius) * 0.8);
-    --radius-lg: var(--radius);
-    --radius-xl: calc(var(--radius) * 1.4);
-    --radius-2xl: calc(var(--radius) * 1.8);
-    --radius-3xl: calc(var(--radius) * 2.2);
-    --radius-4xl: calc(var(--radius) * 2.6);
+    /* Square corners everywhere: the site is a print run, and paper is cut
+       straight. Every radius token resolves to 0, so stock shadcn classes
+       (rounded-lg, rounded-md...) also render square. */
+    --radius: 0;
+    --radius-xs: 0;
+    --radius-sm: 0;
+    --radius-md: 0;
+    --radius-lg: 0;
+    --radius-xl: 0;
+    --radius-2xl: 0;
+    --radius-3xl: 0;
+    --radius-4xl: 0;
 }
 
 /* Warm "bone on near-black" identity palette — dark only.
@@ -76,7 +81,7 @@
     --border: oklch(0.8500 0.0300 70 / 12%);
     --input: oklch(0.8500 0.0300 70 / 15%);
     --ring: oklch(0.6398 0.1539 33.47);
-    --radius: 0.45rem;
+    --radius: 0;
 
     --brand: oklch(0.6398 0.1539 33.47);
     --brand-foreground: oklch(0.2074 0.0062 56.02);
@@ -209,7 +214,6 @@
     font-size: 0.85em;
     color: var(--foreground);
     background: var(--secondary);
-    border-radius: 4px;
     padding: 0.15em 0.35em;
   }
   .prose-print pre {
@@ -219,7 +223,6 @@
     color: var(--foreground);
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 12px;
     padding: 1.1em 1.25em;
     overflow-x: auto;
   }
@@ -241,7 +244,6 @@
     color: var(--brand);
   }
   .prose-print img {
-    border-radius: 12px;
     border: 1px solid var(--border);
     max-width: 100%;
     height: auto;

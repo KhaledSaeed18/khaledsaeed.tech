@@ -27,7 +27,7 @@ export function ContactSheet({ index = 4 }: { index?: number }) {
             href={siteConfig.bookingUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex w-fit items-center gap-2 rounded-lg border border-border bg-secondary px-4 py-2.5 text-muted-foreground transition-colors hover:border-brand/40 hover:bg-accent hover:text-foreground"
+            className="inline-flex w-fit items-center gap-2 border border-border bg-secondary px-4 py-2.5 text-muted-foreground transition-colors hover:border-brand/40 hover:bg-accent hover:text-foreground"
           >
             book a call
           </a>

@@ -45,7 +45,7 @@ export function Hero() {
               href={siteConfig.bookingUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="group inline-flex items-center gap-2 rounded-lg border border-border bg-secondary px-4 py-2.5 font-mono text-xs tracking-wide text-muted-foreground transition-colors hover:border-brand/40 hover:bg-accent hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+              className="group inline-flex items-center gap-2 border border-border bg-secondary px-4 py-2.5 font-mono text-xs tracking-wide text-muted-foreground transition-colors hover:border-brand/40 hover:bg-accent hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
             >
               <HugeiconsIcon
                 icon={CalendarCheckIcon}

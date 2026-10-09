@@ -105,8 +105,8 @@ export default async function ProjectPage({
                   rel="noopener noreferrer"
                   className={
                     k === 0
-                      ? "inline-flex items-center rounded-lg bg-foreground px-4 py-2.5 font-mono text-xs text-background transition-opacity hover:opacity-85"
-                      : "inline-flex items-center rounded-lg border border-border bg-secondary px-4 py-2.5 font-mono text-xs text-muted-foreground transition-colors hover:border-brand/40 hover:text-foreground"
+                      ? "inline-flex items-center bg-foreground px-4 py-2.5 font-mono text-xs text-background transition-opacity hover:opacity-85"
+                      : "inline-flex items-center border border-border bg-secondary px-4 py-2.5 font-mono text-xs text-muted-foreground transition-colors hover:border-brand/40 hover:text-foreground"
                   }
                 >
                   {l.label.toLowerCase()}
@@ -117,7 +117,7 @@ export default async function ProjectPage({
 
           <div className="lg:col-span-5">
             <div
-              className="relative flex aspect-square items-center justify-center rounded-2xl"
+              className="relative flex aspect-square items-center justify-center"
               style={{ backgroundColor: `var(--stock-${p.stock})` }}
             >
               <span
@@ -146,7 +146,7 @@ export default async function ProjectPage({
           </div>
         </div>
 
-        <dl className="relative mt-14 flex flex-wrap gap-px overflow-hidden rounded-xl border border-border bg-border">
+        <dl className="relative mt-14 flex flex-wrap gap-px overflow-hidden border border-border bg-border">
           {facts.map(([k, v]) => (
             <div
               key={k}
@@ -167,7 +167,7 @@ export default async function ProjectPage({
         </Block>
 
         <Block index={2} label="how it works">
-          <ol className="grid gap-px overflow-hidden rounded-xl border border-border bg-border md:grid-cols-2">
+          <ol className="grid gap-px overflow-hidden border border-border bg-border md:grid-cols-2">
             {p.approach.map((a, k) => (
               <li
                 key={a.title}
@@ -208,7 +208,7 @@ export default async function ProjectPage({
                 {p.stack.map((s) => (
                   <li
                     key={s}
-                    className="rounded-md border border-border px-2.5 py-1 font-mono text-xs text-muted-foreground"
+                    className="border border-border px-2.5 py-1 font-mono text-xs text-muted-foreground"
                   >
                     {s}
                   </li>
@@ -303,7 +303,7 @@ function PagerLink({
   return (
     <Link
       href={href}
-      className={`group relative rounded-xl border border-border p-6 transition-colors hover:border-brand/40 ${alignEnd ? "sm:text-right" : ""}`}
+      className={`group relative border border-border p-6 transition-colors hover:border-brand/40 ${alignEnd ? "sm:text-right" : ""}`}
     >
       <CropMarks />
       <span className="font-mono text-xs text-muted-foreground">

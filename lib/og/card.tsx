@@ -149,7 +149,6 @@ export async function ogCard({
             justifyContent: "center",
             width: 490,
             height: "100%",
-            borderRadius: 28,
             background: art.stock ?? "transparent",
           }}
         >
