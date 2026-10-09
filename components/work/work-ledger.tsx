@@ -110,15 +110,17 @@ export function WorkLedger({
             <span>kind</span>
             <span className="text-right">year</span>
           </div>
-          <ol className="border-t border-dashed border-border sm:border-t-0">
-            {rows.map((p) => {
+          <ol
+            key={drawer}
+            className="border-t border-dashed border-border sm:border-t-0"
+          >
+            {rows.map((p, i) => {
               const on = p.slug === proof.slug
               return (
                 <li
                   key={p.slug}
-                  data-reveal
-                  data-shown
-                  className="border-b border-dashed border-border"
+                  style={{ "--i": i } as React.CSSProperties}
+                  className="rise-in border-b border-dashed border-border"
                 >
                   <Link
                     href={`/work/${p.slug}`}
@@ -191,7 +193,7 @@ export function WorkLedger({
             </p>
             <div
               key={proof.slug}
-              className={cn(printing && "plate-print")}
+              className={cn(printing && "fade-in")}
               onAnimationEnd={(e) => {
                 if (e.target === e.currentTarget) setPrinting(false)
               }}

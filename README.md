@@ -61,7 +61,7 @@ Live data is fetched at build time and revalidated daily: articles from the DEV 
 
 ## The dither system
 
-- `app/dither.css` holds the 17 Bayer mask levels, the scroll reveal (`data-reveal`, a plain fade and rise), the page-to-page dissolve, the press and wordmark animations, and the object sprite animation.
+- `app/dither.css` holds the 17 Bayer mask levels, the dithered tone helper, the object sprite animation, and the site's whole motion vocabulary: `fade-in`, `rise-in`, the scroll reveal (`data-reveal`) and the page-to-page crossfade.
 - The scroll reveal only ever hides content below the fold (`components/print/reveal-observer.tsx`); anything on screen at load paints at once, so it never delays LCP.
 - `components/dither-character.tsx` is the portrait: a signed distance field raymarched in one fragment shader, with adaptive quality tiers and a static fallback (`public/character.png`) when WebGL2 or hardware acceleration is missing.
 

@@ -125,7 +125,7 @@ export default function RootLayout({
         </a>
         <TooltipProvider>
           <SiteHeader />
-          <ViewTransition default="dither">
+          <ViewTransition default="page">
             <main id="content">{children}</main>
           </ViewTransition>
           <SiteFooter />

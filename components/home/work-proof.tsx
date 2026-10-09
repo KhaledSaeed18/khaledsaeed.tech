@@ -255,7 +255,7 @@ function Plate({
       className={cn(
         cls,
         "focus-visible:ring-3 focus-visible:ring-ring/60 focus-visible:outline-none",
-        printing && "plate-print"
+        printing && "fade-in"
       )}
       style={style}
     >

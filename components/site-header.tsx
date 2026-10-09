@@ -117,14 +117,14 @@ export function SiteHeader() {
         <nav
           id="mobile-nav"
           aria-label="Primary"
-          className="menu-sheet fixed inset-x-0 top-[calc(4rem+1px)] bottom-0 z-40 overflow-y-auto bg-background pt-8 pb-12 md:hidden"
+          className="fixed inset-x-0 top-[calc(4rem+1px)] bottom-0 z-40 overflow-y-auto bg-background pt-8 pb-12 fade-in md:hidden"
         >
           <ul className="frame flex flex-col">
             {[{ href: "/", label: "home" }, ...nav].map((item, i) => (
               <li
                 key={item.href}
                 style={{ "--i": i } as React.CSSProperties}
-                className="menu-item border-b border-border"
+                className="rise-in border-b border-border"
               >
                 <Link
                   href={item.href}

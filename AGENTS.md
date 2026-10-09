@@ -32,6 +32,15 @@ Every page sits in one frame. Two dotted vertical rails mark its edges from the 
 - Anything that needs to reach the rails, like a horizontal scroller on mobile, bleeds by exactly `--frame-pad` (`mx-[calc(var(--frame-pad)*-1)] px-(--frame-pad)`), never past the rails.
 - `header`, `main` and `footer` clip horizontal overflow (`overflow-x: clip`), which keeps full-width rules from scrolling the page sideways. Do not move that clip to `html`: browsers treat it as `hidden` there, and phones zoom out to fit.
 
+## Motion stays simple
+
+Motion is a plain fade or a fade with a short rise, nothing more. Use the shared pieces in `app/dither.css` instead of new keyframes:
+
+- `fade-in` for one-off swaps (a preview changing project), `rise-in` with a `--i` index for lists that appear (menu links, filtered rows), and `data-reveal` for content entering on scroll.
+- Page changes crossfade (`ViewTransition default="page"`).
+- No dithered reveals, wipes or stepped animations. The dither is a texture, not a transition. The exceptions are the portrait, the logo flip and the project objects turning, which are content.
+- Every animation needs a `prefers-reduced-motion` fallback with no motion.
+
 ## Dev server gotcha
 
 Turbopack dev does not hot-reload changes to the Tailwind theme in `app/globals.css`. Restart `pnpm dev` after editing it, or you will be looking at stale CSS.

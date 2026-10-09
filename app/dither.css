@@ -28,148 +28,6 @@
   --dither-16: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4' shape-rendering='crispEdges'%3E%3Crect x='0' y='0' width='1' height='1'/%3E%3Crect x='1' y='0' width='1' height='1'/%3E%3Crect x='2' y='0' width='1' height='1'/%3E%3Crect x='3' y='0' width='1' height='1'/%3E%3Crect x='0' y='1' width='1' height='1'/%3E%3Crect x='1' y='1' width='1' height='1'/%3E%3Crect x='2' y='1' width='1' height='1'/%3E%3Crect x='3' y='1' width='1' height='1'/%3E%3Crect x='0' y='2' width='1' height='1'/%3E%3Crect x='1' y='2' width='1' height='1'/%3E%3Crect x='2' y='2' width='1' height='1'/%3E%3Crect x='3' y='2' width='1' height='1'/%3E%3Crect x='0' y='3' width='1' height='1'/%3E%3Crect x='1' y='3' width='1' height='1'/%3E%3Crect x='2' y='3' width='1' height='1'/%3E%3Crect x='3' y='3' width='1' height='1'/%3E%3C/svg%3E");
 }
 
-@keyframes dither-in {
-  0.0% {
-    mask-image: var(--dither-0);
-    -webkit-mask-image: var(--dither-0);
-  }
-  6.25% {
-    mask-image: var(--dither-1);
-    -webkit-mask-image: var(--dither-1);
-  }
-  12.5% {
-    mask-image: var(--dither-2);
-    -webkit-mask-image: var(--dither-2);
-  }
-  18.75% {
-    mask-image: var(--dither-3);
-    -webkit-mask-image: var(--dither-3);
-  }
-  25.0% {
-    mask-image: var(--dither-4);
-    -webkit-mask-image: var(--dither-4);
-  }
-  31.25% {
-    mask-image: var(--dither-5);
-    -webkit-mask-image: var(--dither-5);
-  }
-  37.5% {
-    mask-image: var(--dither-6);
-    -webkit-mask-image: var(--dither-6);
-  }
-  43.75% {
-    mask-image: var(--dither-7);
-    -webkit-mask-image: var(--dither-7);
-  }
-  50.0% {
-    mask-image: var(--dither-8);
-    -webkit-mask-image: var(--dither-8);
-  }
-  56.25% {
-    mask-image: var(--dither-9);
-    -webkit-mask-image: var(--dither-9);
-  }
-  62.5% {
-    mask-image: var(--dither-10);
-    -webkit-mask-image: var(--dither-10);
-  }
-  68.75% {
-    mask-image: var(--dither-11);
-    -webkit-mask-image: var(--dither-11);
-  }
-  75.0% {
-    mask-image: var(--dither-12);
-    -webkit-mask-image: var(--dither-12);
-  }
-  81.25% {
-    mask-image: var(--dither-13);
-    -webkit-mask-image: var(--dither-13);
-  }
-  87.5% {
-    mask-image: var(--dither-14);
-    -webkit-mask-image: var(--dither-14);
-  }
-  93.75% {
-    mask-image: var(--dither-15);
-    -webkit-mask-image: var(--dither-15);
-  }
-  100.0% {
-    mask-image: none;
-    -webkit-mask-image: none;
-  }
-}
-
-@keyframes dither-out {
-  0.0% {
-    mask-image: none;
-    -webkit-mask-image: none;
-  }
-  6.25% {
-    mask-image: var(--dither-15);
-    -webkit-mask-image: var(--dither-15);
-  }
-  12.5% {
-    mask-image: var(--dither-14);
-    -webkit-mask-image: var(--dither-14);
-  }
-  18.75% {
-    mask-image: var(--dither-13);
-    -webkit-mask-image: var(--dither-13);
-  }
-  25.0% {
-    mask-image: var(--dither-12);
-    -webkit-mask-image: var(--dither-12);
-  }
-  31.25% {
-    mask-image: var(--dither-11);
-    -webkit-mask-image: var(--dither-11);
-  }
-  37.5% {
-    mask-image: var(--dither-10);
-    -webkit-mask-image: var(--dither-10);
-  }
-  43.75% {
-    mask-image: var(--dither-9);
-    -webkit-mask-image: var(--dither-9);
-  }
-  50.0% {
-    mask-image: var(--dither-8);
-    -webkit-mask-image: var(--dither-8);
-  }
-  56.25% {
-    mask-image: var(--dither-7);
-    -webkit-mask-image: var(--dither-7);
-  }
-  62.5% {
-    mask-image: var(--dither-6);
-    -webkit-mask-image: var(--dither-6);
-  }
-  68.75% {
-    mask-image: var(--dither-5);
-    -webkit-mask-image: var(--dither-5);
-  }
-  75.0% {
-    mask-image: var(--dither-4);
-    -webkit-mask-image: var(--dither-4);
-  }
-  81.25% {
-    mask-image: var(--dither-3);
-    -webkit-mask-image: var(--dither-3);
-  }
-  87.5% {
-    mask-image: var(--dither-2);
-    -webkit-mask-image: var(--dither-2);
-  }
-  93.75% {
-    mask-image: var(--dither-1);
-    -webkit-mask-image: var(--dither-1);
-  }
-  100.0% {
-    mask-image: var(--dither-0);
-    -webkit-mask-image: var(--dither-0);
-  }
-}
-
 /* A flat dithered tone in the current text color: <span class="dither-tone" style="--tone: var(--dither-6)" /> */
 .dither-tone {
   background-color: currentColor;
@@ -198,16 +56,42 @@
   transition-delay: calc(var(--reveal-delay, 0) * 70ms);
 }
 
-/* Page to page: the old sheet dissolves out, the new one prints in. */
-::view-transition-old(.dither) {
-  mask-size: var(--dither-tile);
-  -webkit-mask-size: var(--dither-tile);
-  animation: dither-out 280ms linear both;
+/*
+ * Motion vocabulary. Everything that animates on the site uses these: a
+ * plain fade, and a fade with a short rise. Keep new motion to them.
+ */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
 }
-::view-transition-new(.dither) {
-  mask-size: var(--dither-tile);
-  -webkit-mask-size: var(--dither-tile);
-  animation: dither-in 360ms linear 120ms both;
+@keyframes fade-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+/* A one-off fade, e.g. a preview swapping to another project. */
+.fade-in {
+  animation: fade-in 260ms ease-out both;
+}
+/* A list item rising in; set --i on each item to stagger them. */
+.rise-in {
+  animation: rise-in 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--i, 0) * 40ms + 40ms);
+}
+
+/* Page to page: a quick crossfade under the pinned masthead. */
+::view-transition-old(.page) {
+  animation: fade-out 160ms ease-in both;
+}
+::view-transition-new(.page) {
+  animation: fade-in 260ms cubic-bezier(0.22, 1, 0.36, 1) 60ms both;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -217,6 +101,10 @@
   }
   [data-reveal][data-shown] {
     transition: none;
+  }
+  .fade-in,
+  .rise-in {
+    animation: none;
   }
   ::view-transition-old(*),
   ::view-transition-new(*),
@@ -269,15 +157,8 @@
   }
 }
 
-/*
- * Selected work press: a new plate prints in over the old one, and the feed
- * line under the active index row fills while the next plate waits.
- */
-.plate-print {
-  mask-size: var(--dither-tile);
-  -webkit-mask-size: var(--dither-tile);
-  animation: dither-in 420ms linear both;
-}
+/* Selected work press: the feed line under the active index row fills
+   while the next plate waits. */
 @keyframes press-feed {
   from {
     transform: scaleX(0);
@@ -290,126 +171,20 @@
   animation: press-feed var(--feed, 5000ms) linear both;
 }
 @media (prefers-reduced-motion: reduce) {
-  .plate-print,
   .press-feed {
     animation: none;
   }
 }
 
-/*
- * Footer wordmark: printed light, and inked up on hover. The dither steps
- * from 5 to 12 of 16 while the ink turns terracotta; leaving runs it back.
- */
-@keyframes ink-up {
-  0.00% {
-    mask-image: var(--dither-5);
-    -webkit-mask-image: var(--dither-5);
-  }
-  14.29% {
-    mask-image: var(--dither-6);
-    -webkit-mask-image: var(--dither-6);
-  }
-  28.57% {
-    mask-image: var(--dither-7);
-    -webkit-mask-image: var(--dither-7);
-  }
-  42.86% {
-    mask-image: var(--dither-8);
-    -webkit-mask-image: var(--dither-8);
-  }
-  57.14% {
-    mask-image: var(--dither-9);
-    -webkit-mask-image: var(--dither-9);
-  }
-  71.43% {
-    mask-image: var(--dither-10);
-    -webkit-mask-image: var(--dither-10);
-  }
-  85.71% {
-    mask-image: var(--dither-11);
-    -webkit-mask-image: var(--dither-11);
-  }
-  100.00% {
-    mask-image: var(--dither-12);
-    -webkit-mask-image: var(--dither-12);
-  }
-}
-@keyframes ink-down {
-  0.00% {
-    mask-image: var(--dither-12);
-    -webkit-mask-image: var(--dither-12);
-  }
-  14.29% {
-    mask-image: var(--dither-11);
-    -webkit-mask-image: var(--dither-11);
-  }
-  28.57% {
-    mask-image: var(--dither-10);
-    -webkit-mask-image: var(--dither-10);
-  }
-  42.86% {
-    mask-image: var(--dither-9);
-    -webkit-mask-image: var(--dither-9);
-  }
-  57.14% {
-    mask-image: var(--dither-8);
-    -webkit-mask-image: var(--dither-8);
-  }
-  71.43% {
-    mask-image: var(--dither-7);
-    -webkit-mask-image: var(--dither-7);
-  }
-  85.71% {
-    mask-image: var(--dither-6);
-    -webkit-mask-image: var(--dither-6);
-  }
-  100.00% {
-    mask-image: var(--dither-5);
-    -webkit-mask-image: var(--dither-5);
-  }
-}
+/* Footer wordmark: printed in a light dither, turning terracotta on hover. */
 .wordmark svg {
   color: var(--foreground);
+  mask-image: var(--dither-5);
+  -webkit-mask-image: var(--dither-5);
   mask-size: var(--dither-tile);
   -webkit-mask-size: var(--dither-tile);
-  animation: ink-down 360ms linear both;
-  transition: color 360ms ease;
+  transition: color 300ms ease;
 }
 .wordmark:hover svg {
   color: var(--brand);
-  animation: ink-up 360ms linear both;
-}
-@media (prefers-reduced-motion: reduce) {
-  .wordmark svg,
-  .wordmark:hover svg {
-    animation: none;
-    mask-image: var(--dither-5);
-    -webkit-mask-image: var(--dither-5);
-  }
-}
-
-/* Mobile menu: the sheet fades in and its links rise in a short stagger. */
-@keyframes menu-fade {
-  from {
-    opacity: 0;
-  }
-}
-@keyframes menu-rise {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-}
-.menu-sheet {
-  animation: menu-fade 200ms ease-out both;
-}
-.menu-item {
-  animation: menu-rise 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-delay: calc(var(--i, 0) * 40ms + 60ms);
-}
-@media (prefers-reduced-motion: reduce) {
-  .menu-sheet,
-  .menu-item {
-    animation: none;
-  }
 }
