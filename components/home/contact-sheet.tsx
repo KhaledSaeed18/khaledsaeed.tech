@@ -24,54 +24,61 @@ const inked = (level: number) =>
 export function ContactSheet({ index = 4 }: { index?: number }) {
   return (
     <Sheet id="contact" index={index} label="contact">
-      <div data-reveal className="grid perforated lg:grid-cols-2">
-        {/* message side */}
-        <div className="flex flex-col justify-between gap-10 p-6 sm:p-10">
-          <div>
-            <p className="font-heading text-4xl font-medium tracking-tight text-balance sm:text-5xl">
-              Say hello.
-              <span className="text-muted-foreground"> I read everything.</span>
-            </p>
-            <p className="mt-5 max-w-md text-base leading-relaxed text-muted-foreground">
-              Email is the fastest way to reach me. For anything that needs a
-              conversation, book a call.
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <a
-              href={siteConfig.bookingUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center bg-foreground px-4 py-2.5 font-mono text-xs text-background transition-opacity hover:opacity-85 focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
-            >
-              book a call
-            </a>
-            <CopyEmail address={email.handle} />
-          </div>
+      <Postcard />
+    </Sheet>
+  )
+}
+
+/** The reply postcard on its own, for the contact page. */
+export function Postcard() {
+  return (
+    <div data-reveal className="grid perforated lg:grid-cols-2">
+      {/* message side */}
+      <div className="flex flex-col justify-between gap-10 p-6 sm:p-10">
+        <div>
+          <p className="font-heading text-4xl font-medium tracking-tight text-balance sm:text-5xl">
+            Say hello.
+            <span className="text-muted-foreground"> I read everything.</span>
+          </p>
+          <p className="mt-5 max-w-md text-base leading-relaxed text-muted-foreground">
+            Email is the fastest way to reach me. For anything that needs a
+            conversation, book a call.
+          </p>
         </div>
-
-        {/* address side */}
-        <div className="relative border-t border-dashed border-border p-6 sm:p-10 lg:border-t-0 lg:rule-v">
-          <div className="flex items-start justify-between gap-6">
-            <p className="pt-1 font-mono text-xs text-muted-foreground">to</p>
-            <Stamp />
-          </div>
-
-          <dl className="mt-8 space-y-0 sm:mt-10">
-            <AddressLine label="name">{siteConfig.name}</AddressLine>
-            <AddressLine label="email">
-              <a
-                href={email.href}
-                className="break-all transition-colors hover:text-brand"
-              >
-                {email.handle}
-              </a>
-            </AddressLine>
-            <AddressLine label="country">{siteConfig.location}</AddressLine>
-          </dl>
+        <div className="flex flex-wrap gap-3">
+          <a
+            href={siteConfig.bookingUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center bg-foreground px-4 py-2.5 font-mono text-xs text-background transition-opacity hover:opacity-85 focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+          >
+            book a call
+          </a>
+          <CopyEmail address={email.handle} />
         </div>
       </div>
-    </Sheet>
+
+      {/* address side */}
+      <div className="relative border-t border-dashed border-border p-6 sm:p-10 lg:border-t-0 lg:rule-v">
+        <div className="flex items-start justify-between gap-6">
+          <p className="pt-1 font-mono text-xs text-muted-foreground">to</p>
+          <Stamp />
+        </div>
+
+        <dl className="mt-8 space-y-0 sm:mt-10">
+          <AddressLine label="name">{siteConfig.name}</AddressLine>
+          <AddressLine label="email">
+            <a
+              href={email.href}
+              className="break-all transition-colors hover:text-brand"
+            >
+              {email.handle}
+            </a>
+          </AddressLine>
+          <AddressLine label="country">{siteConfig.location}</AddressLine>
+        </dl>
+      </div>
+    </div>
   )
 }
 

@@ -39,7 +39,7 @@ const ICONS = {
   email: Mail01Icon,
 } as const
 
-function LinkIcon({
+export function LinkIcon({
   link,
   className,
 }: {
