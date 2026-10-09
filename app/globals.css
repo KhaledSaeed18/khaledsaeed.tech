@@ -277,6 +277,10 @@
     height: auto;
   }
   .prose-print table {
+    /* wide tables scroll inside the column instead of the page */
+    display: block;
+    overflow-x: auto;
+    max-width: 100%;
     width: 100%;
     font-size: 0.9rem;
     border-collapse: collapse;
@@ -342,6 +346,16 @@
     left bottom,
     left top,
     right top;
+}
+/* A larger, invisible tap target around a small inline link (24px minimum,
+   WCAG 2.2), without changing the layout around it. */
+@utility hit-area {
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    inset: -0.375rem -0.5rem;
+  }
 }
 /* Same edges on small screens, a reading column on large ones. */
 @utility frame-narrow {

@@ -123,16 +123,16 @@ export default async function AboutPage() {
                 key={s.term}
                 data-reveal
                 style={{ "--reveal-delay": i % 4 } as React.CSSProperties}
-                className="grid grid-cols-[7.5rem_1fr] items-baseline gap-4 border-b border-dashed border-border py-4 sm:grid-cols-[9rem_1fr]"
+                className="grid grid-cols-[6.5rem_minmax(0,1fr)] items-baseline gap-4 border-b border-dashed border-border py-4 sm:grid-cols-[9rem_minmax(0,1fr)]"
               >
                 <dt className="font-mono text-xs text-muted-foreground">
                   {s.term}
                 </dt>
-                <dd className="text-foreground">
+                <dd className="break-words text-foreground">
                   {s.href ? (
                     <Link
                       href={s.href}
-                      className="underline decoration-border underline-offset-4 transition-colors hover:decoration-brand"
+                      className="hit-area underline decoration-border underline-offset-4 transition-colors hover:decoration-brand"
                     >
                       {s.value}
                     </Link>

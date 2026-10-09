@@ -33,7 +33,7 @@ export function PageIntro({
                 {c.href ? (
                   <Link
                     href={c.href}
-                    className="transition-colors hover:text-foreground"
+                    className="hit-area transition-colors hover:text-foreground"
                   >
                     {c.label}
                   </Link>

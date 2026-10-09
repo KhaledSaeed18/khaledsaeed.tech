@@ -41,7 +41,7 @@ export function SiteFooter() {
                 <li>
                   <Link
                     href="/"
-                    className="text-muted-foreground transition-colors hover:text-foreground"
+                    className="hit-area inline-block min-w-6 text-muted-foreground transition-colors hover:text-foreground"
                   >
                     home
                   </Link>
@@ -50,7 +50,7 @@ export function SiteFooter() {
                   <li key={n.href}>
                     <Link
                       href={n.href}
-                      className="text-muted-foreground transition-colors hover:text-foreground"
+                      className="hit-area inline-block min-w-6 text-muted-foreground transition-colors hover:text-foreground"
                     >
                       {n.label}
                     </Link>
@@ -69,7 +69,7 @@ export function SiteFooter() {
                         href={l.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-muted-foreground transition-colors hover:text-foreground"
+                        className="hit-area inline-block min-w-6 text-muted-foreground transition-colors hover:text-foreground"
                       >
                         {l.label.toLowerCase()}
                       </a>
@@ -83,7 +83,7 @@ export function SiteFooter() {
                 <li>
                   <a
                     href="/writing/rss.xml"
-                    className="text-muted-foreground transition-colors hover:text-foreground"
+                    className="hit-area inline-block min-w-6 text-muted-foreground transition-colors hover:text-foreground"
                   >
                     rss
                   </a>
@@ -91,7 +91,7 @@ export function SiteFooter() {
                 <li>
                   <a
                     href="/llms.txt"
-                    className="text-muted-foreground transition-colors hover:text-foreground"
+                    className="hit-area inline-block min-w-6 text-muted-foreground transition-colors hover:text-foreground"
                   >
                     llms.txt
                   </a>
@@ -99,7 +99,7 @@ export function SiteFooter() {
                 <li>
                   <a
                     href="/sitemap.xml"
-                    className="text-muted-foreground transition-colors hover:text-foreground"
+                    className="hit-area inline-block min-w-6 text-muted-foreground transition-colors hover:text-foreground"
                   >
                     sitemap
                   </a>
@@ -123,7 +123,7 @@ export function SiteFooter() {
           </span>
           <a
             href="#content"
-            className="justify-self-end transition-colors hover:text-foreground"
+            className="hit-area justify-self-end transition-colors hover:text-foreground"
           >
             back to top
           </a>

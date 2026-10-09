@@ -70,7 +70,7 @@ export function Postcard() {
           <AddressLine label="email">
             <a
               href={email.href}
-              className="break-all transition-colors hover:text-brand"
+              className="hit-area break-all transition-colors hover:text-brand"
             >
               {email.handle}
             </a>

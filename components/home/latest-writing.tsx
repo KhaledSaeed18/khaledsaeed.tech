@@ -28,7 +28,7 @@ export async function LatestWriting() {
       meta={
         <Link
           href="/writing"
-          className="transition-colors hover:text-foreground"
+          className="hit-area transition-colors hover:text-foreground"
         >
           all articles
         </Link>

@@ -17,7 +17,7 @@ export function Hero() {
             {siteConfig.location.toLowerCase()}
           </SpecLabel>
 
-          <h1 className="mt-6 font-heading text-5xl leading-[1.02] font-medium tracking-tight text-balance sm:text-6xl 2xl:text-7xl">
+          <h1 className="mt-6 font-heading text-[clamp(2.25rem,12vw,3rem)] leading-[1.02] font-medium tracking-tight text-balance sm:text-6xl 2xl:text-7xl">
             <span className="block whitespace-nowrap">{siteConfig.name}</span>
             <span className="text-muted-foreground">
               builds software that

@@ -475,10 +475,18 @@ function hexToRgb(hex: string): [number, number, number] {
  * Writes the inverse of Ry(yaw) * Rx(pitch) * Rz(roll) into `out`, column-major.
  * R^T in column-major order is simply R in row-major order.
  */
-function headInverse(out: Float32Array, yaw: number, pitch: number, roll: number) {
-  const cy = Math.cos(yaw), sy = Math.sin(yaw)
-  const cp = Math.cos(pitch), sp = Math.sin(pitch)
-  const cr = Math.cos(roll), sr = Math.sin(roll)
+function headInverse(
+  out: Float32Array,
+  yaw: number,
+  pitch: number,
+  roll: number
+) {
+  const cy = Math.cos(yaw),
+    sy = Math.sin(yaw)
+  const cp = Math.cos(pitch),
+    sp = Math.sin(pitch)
+  const cr = Math.cos(roll),
+    sr = Math.sin(roll)
   out[0] = cy * cr + sy * sp * sr
   out[1] = -cy * sr + sy * sp * cr
   out[2] = sy * cp
@@ -496,8 +504,21 @@ const damp = (v: number, target: number, rate: number, dt: number) =>
   v + (target - v) * (1 - Math.exp(-rate * dt))
 
 const UNIFORMS = [
-  "u_res", "u_breath", "u_headInv", "u_eyes", "u_blink", "u_brow", "u_smile", "u_arm",
-  "u_glint", "u_intro", "u_ink", "u_paper", "u_accent", "u_mode", "u_quality",
+  "u_res",
+  "u_breath",
+  "u_headInv",
+  "u_eyes",
+  "u_blink",
+  "u_brow",
+  "u_smile",
+  "u_arm",
+  "u_glint",
+  "u_intro",
+  "u_ink",
+  "u_paper",
+  "u_accent",
+  "u_mode",
+  "u_quality",
 ] as const
 type Uniforms = Record<(typeof UNIFORMS)[number], WebGLUniformLocation | null>
 
@@ -507,7 +528,9 @@ type Uniforms = Record<(typeof UNIFORMS)[number], WebGLUniformLocation | null>
  * poll for completion, so a slow compiler (ANGLE on Windows can take hundreds
  * of milliseconds for a raymarcher) never freezes the page.
  */
-function buildProgram(gl: WebGL2RenderingContext): Promise<{ program: WebGLProgram; u: Uniforms } | null> {
+function buildProgram(
+  gl: WebGL2RenderingContext
+): Promise<{ program: WebGLProgram; u: Uniforms } | null> {
   const parallel = gl.getExtension("KHR_parallel_shader_compile")
   const shader = (type: number, src: string) => {
     const sh = gl.createShader(type)!
@@ -534,12 +557,17 @@ function buildProgram(gl: WebGL2RenderingContext): Promise<{ program: WebGLProgr
       gl.useProgram(program)
       // one full-screen triangle
       gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer())
-      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW)
+      gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array([-1, -1, 3, -1, -1, 3]),
+        gl.STATIC_DRAW
+      )
       const loc = gl.getAttribLocation(program, "a_pos")
       gl.enableVertexAttribArray(loc)
       gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0)
       const u = {} as Uniforms
-      for (const name of UNIFORMS) u[name] = gl.getUniformLocation(program, name)
+      for (const name of UNIFORMS)
+        u[name] = gl.getUniformLocation(program, name)
       gl.uniform3fv(u.u_ink, INK)
       gl.uniform3fv(u.u_paper, PAPER)
       gl.uniform3fv(u.u_accent, ACCENT)
@@ -548,7 +576,8 @@ function buildProgram(gl: WebGL2RenderingContext): Promise<{ program: WebGLProgr
     if (!parallel) return finish()
     const poll = () => {
       if (gl.isContextLost()) return resolve(null)
-      if (gl.getProgramParameter(program, parallel.COMPLETION_STATUS_KHR)) finish()
+      if (gl.getProgramParameter(program, parallel.COMPLETION_STATUS_KHR))
+        finish()
       else setTimeout(poll, 16)
     }
     poll()
@@ -577,12 +606,16 @@ export function DitherCharacter({ className }: { className?: string }) {
     const wrap = wrapRef.current
     const canvas = canvasRef.current
     if (!wrap || !canvas) return
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    const reduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches
     // Dev-only views: ?shade (no dither), ?zoom (head close-up), ?still (skip
     // the print-in), ?fallback (the no-WebGL image), ?q=0|1|2 (force a quality).
     const params = new URLSearchParams(window.location.search)
     const dev = process.env.NODE_ENV !== "production"
-    const view = !dev ? 0 : (params.has("shade") ? 1 : 0) + (params.has("zoom") ? 2 : 0)
+    const view = !dev
+      ? 0
+      : (params.has("shade") ? 1 : 0) + (params.has("zoom") ? 2 : 0)
     const shaderMode = view === 1 ? 1 : view === 3 ? 2 : view === 2 ? 3 : 0
     const still = dev && params.has("still")
 
@@ -621,7 +654,11 @@ export function DitherCharacter({ className }: { className?: string }) {
       dpr = window.devicePixelRatio || 1
       // finer dots on phones, where the figure is small
       const base = (r.width < 640 ? CELL * 0.7 : CELL) * TIERS[tier].cellScale
-      cellDev = Math.max(1, Math.round(base * dpr), Math.ceil((r.height * dpr) / MAX_ROWS))
+      cellDev = Math.max(
+        1,
+        Math.round(base * dpr),
+        Math.ceil((r.height * dpr) / MAX_ROWS)
+      )
       cols = Math.max(1, Math.floor((r.width * dpr) / cellDev))
       rows = Math.max(1, Math.floor((r.height * dpr) / cellDev))
       if (cnv.width !== cols || cnv.height !== rows) {
@@ -705,12 +742,18 @@ export function DitherCharacter({ className }: { className?: string }) {
       }
       const bt = t - s.blinkAt
       let blink = bt < 0.16 ? Math.sin((bt / 0.16) * Math.PI) : 0
-      if (s.doubleBlink && bt > 0.24 && bt < 0.4) blink = Math.sin(((bt - 0.24) / 0.16) * Math.PI)
+      if (s.doubleBlink && bt > 0.24 && bt < 0.4)
+        blink = Math.sin(((bt - 0.24) / 0.16) * Math.PI)
       s.blink = blink
 
       const waving = t - s.waveAt < WAVE
       s.brow = damp(s.brow, waving || s.excited ? 1 : s.hover ? 0.5 : 0, 10, dt)
-      s.smile = damp(s.smile, waving || s.excited ? 1 : s.hover ? 0.6 : 0.25, 8, dt)
+      s.smile = damp(
+        s.smile,
+        waving || s.excited ? 1 : s.hover ? 0.6 : 0.25,
+        8,
+        dt
+      )
     }
 
     const WAVE = 2.2
@@ -726,35 +769,65 @@ export function DitherCharacter({ className }: { className?: string }) {
       // wave: lift from the resting pose, wag, lower
       const wt = t - s.waveAt
       let raise = 0
-      if (wt < WAVE) raise = ease(wt / 0.35) * (1 - ease((wt - (WAVE - 0.45)) / 0.45))
+      if (wt < WAVE)
+        raise = ease(wt / 0.35) * (1 - ease((wt - (WAVE - 0.45)) / 0.45))
       const wag = Math.sin(wt * 13) * 0.32 * raise
       const gt = t - s.glintAt
-      const intro = reduced || still ? 1 : s.introAt < 0 ? 0 : Math.min(1, (t - s.introAt) / 1.6)
+      const intro =
+        reduced || still
+          ? 1
+          : s.introAt < 0
+            ? 0
+            : Math.min(1, (t - s.introAt) / 1.6)
 
       ctx.uniform2f(u.u_res, cols, rows)
       ctx.uniform1f(u.u_breath, reduced ? 0 : 0.014 * Math.sin(t * 1.6))
-      ctx.uniformMatrix3fv(u.u_headInv, false, headInverse(headInv, s.yaw, s.pitch, s.roll))
+      ctx.uniformMatrix3fv(
+        u.u_headInv,
+        false,
+        headInverse(headInv, s.yaw, s.pitch, s.roll)
+      )
       ctx.uniform2f(u.u_eyes, s.eyeX, s.eyeY)
       ctx.uniform1f(u.u_blink, s.blink)
       ctx.uniform1f(u.u_brow, s.brow)
       ctx.uniform1f(u.u_smile, s.smile)
-      ctx.uniform3f(u.u_arm, 0.4 + (2.45 - 0.4) * raise, -0.45 + (0.75 + 0.45) * raise + wag, 1 - raise)
+      ctx.uniform3f(
+        u.u_arm,
+        0.4 + (2.45 - 0.4) * raise,
+        -0.45 + (0.75 + 0.45) * raise + wag,
+        1 - raise
+      )
       ctx.uniform1f(u.u_glint, gt < 0.9 ? -0.7 + gt * 2.4 : -9)
       ctx.uniform1f(u.u_intro, intro)
       ctx.uniform1i(u.u_mode, shaderMode)
-      ctx.uniform1i(u.u_quality, dev && params.has("q") ? Number(params.get("q")) : TIERS[tier].quality)
+      ctx.uniform1i(
+        u.u_quality,
+        dev && params.has("q") ? Number(params.get("q")) : TIERS[tier].quality
+      )
       ctx.drawArrays(ctx.TRIANGLES, 0, 3)
 
       // Hit test the dot under the pointer (alpha is 1 only on the figure).
       // readPixels stalls the pipeline, so only when the pointer moved, and
       // otherwise a few times a second to catch him moving under a still cursor.
       frame++
-      if (!s.pointer.seen || !(forceHitTest || s.pointer.dirty || frame % 12 === 0)) return
+      if (
+        !s.pointer.seen ||
+        !(forceHitTest || s.pointer.dirty || frame % 12 === 0)
+      )
+        return
       s.pointer.dirty = false
       const cx = ((s.pointer.x - rect.left) / rect.width) * cols
       const cy = (1 - (s.pointer.y - rect.top) / rect.height) * rows
       if (cx >= 0 && cy >= 0 && cx < cols && cy < rows) {
-        ctx.readPixels(Math.floor(cx), Math.floor(cy), 1, 1, ctx.RGBA, ctx.UNSIGNED_BYTE, px)
+        ctx.readPixels(
+          Math.floor(cx),
+          Math.floor(cy),
+          1,
+          1,
+          ctx.RGBA,
+          ctx.UNSIGNED_BYTE,
+          px
+        )
         setHover(px[3] > 0)
       } else setHover(false)
     }
@@ -810,7 +883,9 @@ export function DitherCharacter({ className }: { className?: string }) {
       // 60fps while someone is interacting, 30fps when he is just idling
       const t = now + dtMs / 1000
       const active =
-        t - s.pointer.lastMove < 1.5 || t - s.waveAt < WAVE || (s.introAt >= 0 && t - s.introAt < 1.8)
+        t - s.pointer.lastMove < 1.5 ||
+        t - s.waveAt < WAVE ||
+        (s.introAt >= 0 && t - s.introAt < 1.8)
       const fps = active ? TIERS[tier].fps : 30
       now = t
       update(dtMs / 1000)
@@ -856,7 +931,8 @@ export function DitherCharacter({ className }: { className?: string }) {
       if (hitUnderPointer && now - s.waveAt > WAVE) s.waveAt = now
     }
     function onOver(e: PointerEvent) {
-      const el = e.target instanceof Element ? e.target.closest("a, button") : null
+      const el =
+        e.target instanceof Element ? e.target.closest("a, button") : null
       s.excited = !!el
     }
     function onLeaveWindow() {
@@ -890,7 +966,9 @@ export function DitherCharacter({ className }: { className?: string }) {
     let dprQuery: MediaQueryList | null = null
     function watchDpr() {
       dprQuery?.removeEventListener("change", onDprChange)
-      dprQuery = window.matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`)
+      dprQuery = window.matchMedia(
+        `(resolution: ${window.devicePixelRatio}dppx)`
+      )
       dprQuery.addEventListener("change", onDprChange)
     }
     function onDprChange() {
@@ -937,7 +1015,6 @@ export function DitherCharacter({ className }: { className?: string }) {
     }
     init()
 
-
     return () => {
       disposed = true
       stop()
@@ -951,14 +1028,21 @@ export function DitherCharacter({ className }: { className?: string }) {
       window.removeEventListener("pointerdown", onDown)
       window.removeEventListener("scroll", onScroll)
       document.removeEventListener("pointerover", onOver)
-      document.documentElement.removeEventListener("pointerleave", onLeaveWindow)
+      document.documentElement.removeEventListener(
+        "pointerleave",
+        onLeaveWindow
+      )
       document.documentElement.style.cursor = ""
       if (prog) ctx.deleteProgram(prog.program)
     }
   }, [])
 
   return (
-    <div ref={wrapRef} aria-hidden="true" className={cn("pointer-events-none relative", className)}>
+    <div
+      ref={wrapRef}
+      aria-hidden="true"
+      className={cn("pointer-events-none relative", className)}
+    >
       {fallback ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img

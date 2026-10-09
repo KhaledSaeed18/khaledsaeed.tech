@@ -13,7 +13,10 @@ export function SelectedWork() {
       title="Things I built because they should exist."
       lede="Platforms that keep tenants apart at the database, tools that explain what they are doing, and native apps that stay out of the way."
       meta={
-        <Link href="/work" className="transition-colors hover:text-foreground">
+        <Link
+          href="/work"
+          className="hit-area transition-colors hover:text-foreground"
+        >
           all {projects.length} projects
         </Link>
       }

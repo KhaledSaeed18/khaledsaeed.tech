@@ -55,7 +55,7 @@ export default async function WritingPage() {
         meta={
           <a
             href="/writing/rss.xml"
-            className="transition-colors hover:text-foreground"
+            className="hit-area transition-colors hover:text-foreground"
           >
             rss
           </a>

@@ -61,7 +61,13 @@ export function FlipLogo({
         <line x1={35.5} y1={28} x2={35.5} y2={72} />
         <polyline
           points="70.5,28 50.5,50 70.5,72"
-          className={interactive ? "flip-chevron" : auto ? "flip-chevron-auto" : undefined}
+          className={
+            interactive
+              ? "flip-chevron"
+              : auto
+                ? "flip-chevron-auto"
+                : undefined
+          }
           // Static modes set the transform inline; interactive mode must drive
           // it from CSS so the :hover rule isn't outranked by an inline style.
           style={

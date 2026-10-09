@@ -56,14 +56,14 @@ export default async function ArticlePage({
             <SpecLabel>
               <Link
                 href="/"
-                className="transition-colors hover:text-foreground"
+                className="hit-area transition-colors hover:text-foreground"
               >
                 home
               </Link>
               <span className="mx-1.5 text-muted-foreground/40">/</span>
               <Link
                 href="/writing"
-                className="transition-colors hover:text-foreground"
+                className="hit-area transition-colors hover:text-foreground"
               >
                 writing
               </Link>
@@ -85,7 +85,7 @@ export default async function ArticlePage({
               href={a.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-brand hover:underline"
+              className="hit-area text-brand hover:underline"
             >
               originally on dev
             </a>
@@ -110,14 +110,14 @@ export default async function ArticlePage({
               href={a.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-foreground hover:underline"
+              className="hit-area text-foreground hover:underline"
             >
               dev
             </a>
           </span>
           <Link
             href="/writing"
-            className="transition-colors hover:text-foreground"
+            className="hit-area transition-colors hover:text-foreground"
           >
             all writing
           </Link>

@@ -75,7 +75,7 @@ export function WorkProof({ projects }: { projects: ProofProject[] }) {
   return (
     <div
       ref={rootRef}
-      className="grid gap-6 lg:grid-cols-12 lg:gap-10"
+      className="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-12 lg:gap-10"
       onMouseLeave={() => setHeld(false)}
       onBlur={(e) => {
         if (!e.currentTarget.contains(e.relatedTarget as Node | null))
@@ -136,7 +136,7 @@ export function WorkProof({ projects }: { projects: ProofProject[] }) {
                 <span className="min-w-0 flex-1">
                   <span
                     className={cn(
-                      "block truncate font-heading text-2xl font-medium tracking-tight transition-colors sm:text-3xl",
+                      "block font-heading text-2xl font-medium tracking-tight text-balance transition-colors sm:text-3xl lg:text-2xl xl:text-3xl",
                       on
                         ? "text-foreground"
                         : "text-muted-foreground group-hover:text-foreground"
@@ -203,7 +203,7 @@ function Plate({
   }
   const body = (
     <>
-      <div className="flex items-center justify-between font-mono text-xs">
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 font-mono text-xs">
         <span>
           {"// "}
           {p.kind.toLowerCase()}
