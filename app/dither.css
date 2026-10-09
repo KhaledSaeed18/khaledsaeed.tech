@@ -181,16 +181,15 @@
 }
 
 /*
- * Print-in on scroll. Elements with data-reveal start blank only when
- * scripting is available (never for no-JS visitors) and dissolve in, cell by
- * cell, when they enter the viewport. If the observer never runs, a failsafe
- * shows everything after a moment anyway.
+ * Print-in on scroll. Content is visible by default (no-JS visitors and
+ * anything on screen at load paint at once, which keeps LCP honest). The
+ * observer marks only below-the-fold elements data-pending, which blanks
+ * them, then swaps that for data-shown to dissolve them in, cell by cell, as
+ * they scroll into view. A failsafe shows pending content after a moment.
  */
-@media (scripting: enabled) {
-  [data-reveal]:not([data-shown]) {
-    opacity: 0;
-    animation: reveal-failsafe 0s linear 3s forwards;
-  }
+[data-reveal][data-pending] {
+  opacity: 0;
+  animation: reveal-failsafe 0s linear 3s forwards;
 }
 @keyframes reveal-failsafe {
   to {
@@ -217,7 +216,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  [data-reveal]:not([data-shown]) {
+  [data-reveal][data-pending] {
     opacity: 1 !important;
   }
   [data-reveal][data-shown] {

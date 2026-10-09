@@ -114,7 +114,6 @@ export function WorkProof({ projects }: { projects: ProofProject[] }) {
             >
               <Link
                 href={`/work/${proj.slug}`}
-                aria-label={`${proj.name}: ${proj.tagline}`}
                 onMouseEnter={() => {
                   setHeld(true)
                   show(i)
@@ -222,11 +221,11 @@ function Plate({
         <p className="font-heading text-3xl leading-tight font-medium tracking-tight sm:text-4xl">
           {p.name}
         </p>
-        <p className="mt-2 max-w-md text-sm leading-relaxed opacity-80 sm:text-base">
+        <p className="mt-2 max-w-md text-sm leading-relaxed sm:text-base">
           {p.tagline}
         </p>
         <div className="mt-5 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 font-mono text-xs">
-          <span className="opacity-75">
+          <span>
             {p.year} / {p.stack.slice(0, 3).join(", ").toLowerCase()}
           </span>
           <span className="underline underline-offset-4">
@@ -249,7 +248,6 @@ function Plate({
   return (
     <Link
       href={`/work/${p.slug}`}
-      aria-label={`${p.name}: ${p.tagline}`}
       onMouseEnter={onEnter}
       onAnimationEnd={(e) => {
         if (e.target === e.currentTarget) onPrinted?.()

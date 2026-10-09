@@ -7,7 +7,10 @@ import * as React from "react"
  * One IntersectionObserver for the whole site. Any element with `data-reveal`
  * dissolves in (see app/dither.css) the first time it scrolls into view, so
  * server components can opt in with an attribute instead of a client wrapper.
- * Re-scans after every navigation.
+ *
+ * Only content below the fold is ever hidden: whatever is on screen when a
+ * page loads stays painted, so the print-in never delays the largest paint.
+ * Re-scans after every navigation and for content streamed in later.
  */
 export function RevealObserver() {
   const pathname = usePathname()
@@ -17,6 +20,7 @@ export function RevealObserver() {
       (entries) => {
         for (const e of entries) {
           if (!e.isIntersecting) continue
+          e.target.removeAttribute("data-pending")
           e.target.setAttribute("data-shown", "")
           io.unobserve(e.target)
         }
@@ -25,8 +29,19 @@ export function RevealObserver() {
     )
     const scan = () =>
       document
-        .querySelectorAll("[data-reveal]:not([data-shown])")
-        .forEach((el) => io.observe(el))
+        .querySelectorAll(
+          "[data-reveal]:not([data-shown]):not([data-pending]):not([data-static])"
+        )
+        .forEach((el) => {
+          const r = el.getBoundingClientRect()
+          if (r.top < window.innerHeight && r.bottom > 0) {
+            // already on screen: leave it painted
+            el.setAttribute("data-static", "")
+            return
+          }
+          el.setAttribute("data-pending", "")
+          io.observe(el)
+        })
     scan()
     // content streamed in after the first paint
     const mo = new MutationObserver(scan)

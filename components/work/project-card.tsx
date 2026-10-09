@@ -47,7 +47,7 @@ export function ProjectCard({
         <p className="font-heading text-2xl leading-tight font-medium tracking-tight sm:text-[1.7rem]">
           {project.name}
         </p>
-        <p className="mt-1.5 font-mono text-xs opacity-75">
+        <p className="mt-1.5 font-mono text-xs">
           {project.year} / {project.stack.slice(0, 2).join(", ").toLowerCase()}
         </p>
       </div>
@@ -60,12 +60,7 @@ export function ProjectCard({
       </div>
     )
   return (
-    <Link
-      href={`/work/${project.slug}`}
-      aria-label={`${project.name}: ${project.tagline}`}
-      className={cls}
-      style={style}
-    >
+    <Link href={`/work/${project.slug}`} className={cls} style={style}>
       {body}
     </Link>
   )

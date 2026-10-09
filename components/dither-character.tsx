@@ -1054,7 +1054,9 @@ export function DitherCharacter({ className }: { className?: string }) {
       ) : (
         <canvas
           ref={canvasRef}
-          className="absolute right-0 bottom-0 block"
+          // full size from the first paint, so sizing it in script is not a
+          // layout shift
+          className="absolute right-0 bottom-0 block h-full w-full"
           style={{ imageRendering: "pixelated" }}
         />
       )}

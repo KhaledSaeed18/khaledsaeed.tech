@@ -52,7 +52,7 @@ export function WorkLedger({
       <div
         role="group"
         aria-label="Filter projects"
-        className="flex flex-wrap gap-x-1 gap-y-2 font-mono text-xs"
+        className="mx-[calc(var(--frame-pad)*-1)] flex [scrollbar-width:none] gap-1 overflow-x-auto px-(--frame-pad) pb-1 font-mono text-xs sm:mx-0 sm:flex-wrap sm:px-0"
       >
         {[
           { key: "all" as const, title: "all", count: projects.length },
@@ -70,14 +70,14 @@ export function WorkLedger({
               aria-pressed={on}
               onClick={() => pick(d.key)}
               className={cn(
-                "inline-flex items-center gap-2 border px-3 py-2 transition-colors focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none",
+                "inline-flex shrink-0 items-center gap-2 border px-3 py-2 whitespace-nowrap transition-colors focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none",
                 on
                   ? "border-foreground bg-foreground text-background"
                   : "border-border text-muted-foreground hover:border-muted-foreground/60 hover:text-foreground"
               )}
             >
               {d.title}
-              <span className={on ? "opacity-60" : "opacity-50"}>
+              <span className={on ? "opacity-80" : "opacity-70"}>
                 {d.count}
               </span>
             </button>
@@ -122,7 +122,6 @@ export function WorkLedger({
                 >
                   <Link
                     href={`/work/${p.slug}`}
-                    aria-label={`${p.name}: ${p.tagline}`}
                     onMouseEnter={() => show(p.slug)}
                     onFocus={() => show(p.slug)}
                     className="group grid grid-cols-[4rem_1fr_auto] items-center gap-4 py-4 focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none sm:grid-cols-[3rem_1fr_11rem_4rem] sm:py-5"
