@@ -426,3 +426,26 @@
     outline-offset: -2px;
   }
 }
+
+/*
+ * Print: ⌘P on any page prints the one-page résumé (components/print/
+ * print-resume.tsx) instead of the screen layout.
+ */
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+  html,
+  body {
+    background: #fff !important;
+  }
+  body > *:not(.print-resume) {
+    display: none !important;
+  }
+  .print-resume {
+    display: block !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

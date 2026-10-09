@@ -5,6 +5,7 @@ import { ViewTransition } from "react"
 
 import "./globals.css"
 import { ConsoleProof } from "@/components/console-proof"
+import { PrintResume } from "@/components/print/print-resume"
 import { PersonJsonLd } from "@/components/person-json-ld"
 import { RevealObserver } from "@/components/print/reveal-observer"
 import { SiteFooter } from "@/components/site-footer"
@@ -134,6 +135,7 @@ export default function RootLayout({
         {/* the frame rails, top to bottom */}
         <div aria-hidden="true" className="rails" />
         <ConsoleProof />
+        <PrintResume />
         <RevealObserver />
         <PersonJsonLd />
       </body>
