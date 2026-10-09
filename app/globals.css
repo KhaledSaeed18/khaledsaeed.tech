@@ -310,6 +310,25 @@
   background-repeat: repeat-y;
   background-position: left top;
 }
+/* A perforated edge all round, like a tear-off card. */
+@utility perforated {
+  background-image:
+    linear-gradient(to right, var(--rule) 0 2px, transparent 2px),
+    linear-gradient(to right, var(--rule) 0 2px, transparent 2px),
+    linear-gradient(to bottom, var(--rule) 0 2px, transparent 2px),
+    linear-gradient(to bottom, var(--rule) 0 2px, transparent 2px);
+  background-size:
+    6px 1px,
+    6px 1px,
+    1px 6px,
+    1px 6px;
+  background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+  background-position:
+    left top,
+    left bottom,
+    left top,
+    right top;
+}
 /* Same edges on small screens, a reading column on large ones. */
 @utility frame-narrow {
   margin-inline: max(var(--gutter), calc((100% - var(--frame-narrow)) / 2));
@@ -363,5 +382,13 @@
     background:
       linear-gradient(var(--mark), var(--mark)) center / 1px 100% no-repeat,
       linear-gradient(var(--mark), var(--mark)) center / 100% 1px no-repeat;
+  }
+}
+
+@layer components {
+  /* Stamp perforations: square notches punched along every edge. */
+  .stamp {
+    outline: 3px dashed var(--background);
+    outline-offset: -2px;
   }
 }
