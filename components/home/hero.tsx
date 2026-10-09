@@ -26,7 +26,16 @@ export function Hero() {
           </h1>
 
           <p className="mt-7 text-base leading-relaxed text-muted-foreground sm:text-lg">
-            I design and build products end to end: interfaces people enjoy
+            Known online as{" "}
+            <a
+              href={`https://github.com/${siteConfig.username}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-brand"
+            >
+              {siteConfig.username}
+            </a>
+            . I design and build products end to end: interfaces people enjoy
             using, backends that hold up in production, and the tooling in
             between. Some of it ships with a team, some of it stays private, and
             some of it I give away. All of it gets the same standard: clear

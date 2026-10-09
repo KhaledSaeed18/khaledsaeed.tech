@@ -72,7 +72,9 @@ export function SiteFooter() {
                         rel="noopener noreferrer"
                         className="hit-area inline-block min-w-6 text-muted-foreground transition-colors hover:text-foreground"
                       >
-                        {l.label.toLowerCase()}
+                        {l.key === "github"
+                          ? `github / ${siteConfig.username}`
+                          : l.label.toLowerCase()}
                       </a>
                     </li>
                   ))}

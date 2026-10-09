@@ -7,16 +7,18 @@ import { siteConfig } from "@/lib/site"
 export default function sitemap(): MetadataRoute.Sitemap {
   // Dates describe content changes, never the time an unrelated build ran.
   // Omit lastModified when a page has no recorded content-update date.
-  const latestUpdate = (entries: typeof projects) =>
-    entries
-      .flatMap((p) => (p.updatedAt ? [p.updatedAt] : []))
+  const latestUpdate = (entries: typeof projects, pageUpdatedAt?: string) =>
+    [
+      ...entries.flatMap((p) => (p.updatedAt ? [p.updatedAt] : [])),
+      ...(pageUpdatedAt ? [pageUpdatedAt] : []),
+    ]
       .sort()
       .at(-1)
   const url = (p: string) => `${siteConfig.url}${p}`
   const pages: MetadataRoute.Sitemap = [
     {
       url: siteConfig.url,
-      lastModified: latestUpdate(featuredProjects),
+      lastModified: latestUpdate(featuredProjects, siteConfig.profileUpdatedAt),
       changeFrequency: "weekly",
       priority: 1,
     },
@@ -28,6 +30,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: url("/about"),
+      lastModified: siteConfig.profileUpdatedAt,
       changeFrequency: "monthly",
       priority: 0.8,
     },

@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 
-import { siteConfig } from "@/lib/site"
+import { siteConfig, siteIdentity } from "@/lib/site"
 
 /**
  * Complete per-page metadata: title, description, canonical, and Open Graph
@@ -29,7 +29,7 @@ export function pageMeta({
   modifiedTime?: string
   tags?: string[]
 }): Metadata {
-  const full = `${title} | ${siteConfig.name}`
+  const full = `${title} | ${siteIdentity}`
   return {
     title,
     description,

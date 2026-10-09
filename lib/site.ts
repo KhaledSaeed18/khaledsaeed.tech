@@ -10,6 +10,10 @@ export type SocialLink = {
 
 export const siteConfig = {
   name: "Khaled Saeed",
+  /** Primary public handle, also used as the person's alternate name. */
+  username: "KhaledSaeed18",
+  /** Recorded date of a meaningful update to the home and about profile. */
+  profileUpdatedAt: "2026-10-10",
   /** Short role used in the title tag and OG. */
   role: "Full-Stack Engineer",
   url: "https://khaledsaeed.tech",
@@ -19,7 +23,7 @@ export const siteConfig = {
   bookingUrl: "https://cal.com/khaledsaeed",
   /** ~155 chars, no em dashes, no emoji. */
   description:
-    "Khaled Saeed is a full-stack engineer in Lebanon building software that explains itself: interfaces, backends and the developer tooling in between.",
+    "Khaled Saeed (KhaledSaeed18) is a full-stack engineer in Lebanon building interfaces, backends and open-source developer tools.",
   /** Topics surfaced for search engines and answer engines (GEO). */
   knowsAbout: [
     "Software Engineering",
@@ -47,6 +51,9 @@ export const siteConfig = {
   ],
 } as const
 
+/** Shared identity in page titles and social previews. */
+export const siteIdentity = `${siteConfig.name} (${siteConfig.username})`
+
 /** Primary navigation. Order is the print order of the sheets. */
 export const nav = [
   { href: "/work", label: "work" },
@@ -59,8 +66,8 @@ export const socialLinks: SocialLink[] = [
   {
     key: "github",
     label: "GitHub",
-    handle: "KhaledSaeed18",
-    href: "https://github.com/KhaledSaeed18",
+    handle: siteConfig.username,
+    href: `https://github.com/${siteConfig.username}`,
   },
   {
     key: "linkedin",

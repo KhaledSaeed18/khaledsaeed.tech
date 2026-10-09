@@ -5,11 +5,11 @@ import { PageIntro } from "@/components/print/page-intro"
 import { WorkLedger } from "@/components/work/work-ledger"
 import { catalog, groupOrder, groups } from "@/lib/content/projects"
 import { pageMeta } from "@/lib/metadata"
+import { siteConfig, siteIdentity } from "@/lib/site"
 
 export const metadata: Metadata = pageMeta({
   title: "Work",
-  description:
-    "Projects by Khaled Saeed: multi-tenant platforms, developer CLIs, native macOS apps, and Linux and embedded systems work, each with a case study.",
+  description: `Open-source projects by ${siteIdentity}: web platforms, developer CLIs, native macOS apps, Linux tools and embedded systems.`,
   path: "/work",
 })
 
@@ -19,7 +19,7 @@ export default function WorkPage() {
       <PageIntro
         crumbs={[{ href: "/", label: "home" }, { label: "work" }]}
         title="Work"
-        lede="Everything here is open source. Each job opens a short case study: the problem, how it works, and what I would point a reviewer at."
+        lede={`Everything here is open source, published as ${siteConfig.username}. Each job opens a short case study: the problem, how it works, and what I would point a reviewer at.`}
         meta={`${catalog.length} projects`}
       />
 

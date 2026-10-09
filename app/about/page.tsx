@@ -10,13 +10,12 @@ import { ContactSheet } from "@/components/home/contact-sheet"
 import { about, credentials, education } from "@/lib/content/profile"
 import { projects } from "@/lib/content/projects"
 import { getArticles } from "@/lib/data/devto"
-import { siteConfig } from "@/lib/site"
+import { sameAs, siteConfig, siteIdentity } from "@/lib/site"
 import { pageMeta } from "@/lib/metadata"
 
 export const metadata: Metadata = pageMeta({
   title: "About",
-  description:
-    "Khaled Saeed, full-stack engineer in Lebanon: background, education at the Lebanese International University, certifications and the facts at a glance.",
+  description: `About ${siteIdentity}: full-stack engineer in Lebanon, education at the Lebanese International University, certifications and open-source work.`,
   path: "/about",
   type: "profile",
 })
@@ -59,6 +58,11 @@ const years = [...new Set(log.map((e) => e.year))]
 export default async function AboutPage() {
   const articles = await getArticles()
   const specs: { term: string; value: string; href?: string }[] = [
+    {
+      term: "online as",
+      value: siteConfig.username,
+      href: `https://github.com/${siteConfig.username}`,
+    },
     { term: "role", value: siteConfig.role },
     { term: "based in", value: siteConfig.location },
     {
@@ -241,6 +245,8 @@ export default async function AboutPage() {
             ...personRef,
             "@type": "Person",
             name: siteConfig.name,
+            alternateName: siteConfig.username,
+            sameAs,
             description: about.short,
             image: abs("/character.png"),
             alumniOf: {

@@ -54,6 +54,8 @@ Everything on the site is single-sourced in `lib/content`:
 - `projects.ts` projects and case study copy
 - `profile.ts` bio, education, credentials, stack (in pin order), principles
 
+The public identity lives in `lib/site.ts`: `name` is Khaled Saeed and `username` is KhaledSaeed18. Page titles, profile structured data, visible identity links and `llms.txt` use those shared values. Keep platform-specific handles in `socialLinks` accurate; they do not all use the same spelling. Update `profileUpdatedAt` when the home/about profile changes significantly so their sitemap dates describe the content.
+
 ### Adding a project
 
 1. Add an entry to `projects` in `lib/content/projects.ts` (copy rules: sentence case, no em dashes, no emoji). Set `featured: true` to put it on the home press; keep six featured.

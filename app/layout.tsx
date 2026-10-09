@@ -13,7 +13,7 @@ import { SiteFooter } from "@/components/site-footer"
 import { SiteHeader } from "@/components/site-header"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { siteRoutes } from "@/lib/routes"
-import { siteConfig, socialLinks } from "@/lib/site"
+import { siteConfig, siteIdentity, socialLinks } from "@/lib/site"
 import { cn } from "@/lib/utils"
 
 const fontSans = Geist({
@@ -37,13 +37,13 @@ const fontMono = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: `${siteConfig.name} | ${siteConfig.role}`,
-    template: `%s | ${siteConfig.name}`,
+    default: `${siteIdentity} | ${siteConfig.role}`,
+    template: `%s | ${siteIdentity}`,
   },
   description: siteConfig.description,
   keywords: [
-    "Khaled Saeed",
-    "KhaledSaeed18",
+    siteConfig.name,
+    siteConfig.username,
     "full-stack engineer",
     "backend engineer",
     "open-source developer",
@@ -73,12 +73,12 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: siteConfig.url,
     siteName: siteConfig.name,
-    title: `${siteConfig.name} | ${siteConfig.role}`,
+    title: `${siteIdentity} | ${siteConfig.role}`,
     description: siteConfig.description,
   },
   twitter: {
     card: "summary_large_image",
-    title: `${siteConfig.name} | ${siteConfig.role}`,
+    title: `${siteIdentity} | ${siteConfig.role}`,
     description: siteConfig.description,
     site: siteConfig.twitterHandle,
     creator: siteConfig.twitterHandle,

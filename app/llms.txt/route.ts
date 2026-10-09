@@ -7,7 +7,7 @@ import {
 import { groups, projects } from "@/lib/content/projects"
 import { getArticle, getArticles } from "@/lib/data/devto"
 import { standfirst } from "@/lib/writing"
-import { siteConfig, socialLinks } from "@/lib/site"
+import { siteConfig, siteIdentity, socialLinks } from "@/lib/site"
 
 export const revalidate = 86400
 
@@ -24,7 +24,7 @@ export async function GET() {
     )
   )
 
-  const text = `# ${siteConfig.name}
+  const text = `# ${siteIdentity}
 
 > ${about.short}
 
@@ -32,6 +32,8 @@ ${about.paragraphs.join("\n\n")}
 
 ## Key facts
 
+- Online identity: ${siteConfig.username} is ${siteConfig.name}'s primary public username, used on GitHub and other platforms. These names refer to the same person.
+- GitHub: https://github.com/${siteConfig.username}
 - Role: ${siteConfig.role}, based in ${siteConfig.location}
 - Languages and platforms: TypeScript (Node.js, NestJS, React, Next.js, React Native, Electron), Swift (SwiftUI, macOS), Rust (systemd, eBPF, Linux), Go, Python
 - Education: ${education.map((e) => `${e.degree} in ${e.field}, ${e.school} (${e.start} to ${e.end})`).join("; ")}
