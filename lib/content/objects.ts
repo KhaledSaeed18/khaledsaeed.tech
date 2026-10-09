@@ -18,4 +18,5 @@ export const OBJECTS: ObjectKind[] = [
   "scissors",
   "bubble",
   "bulb",
+  "battery",
 ]

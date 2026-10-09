@@ -8,6 +8,7 @@ import { DitherObject } from "@/components/print/dither-object"
 import { CropMarks, Rule, SpecLabel } from "@/components/print/sheet"
 import { ContactSheet } from "@/components/home/contact-sheet"
 import {
+  catalog,
   getProject,
   groups,
   kindPhrase,
@@ -59,9 +60,9 @@ export default async function ProjectPage({
   if (!p) notFound()
 
   const stars = (await getMyStars())[p.repo]
-  const i = projects.indexOf(p)
-  const next = projects[(i + 1) % projects.length]
-  const prev = projects[(i - 1 + projects.length) % projects.length]
+  const i = catalog.indexOf(p)
+  const next = catalog[(i + 1) % catalog.length]
+  const prev = catalog[(i - 1 + catalog.length) % catalog.length]
 
   const facts: [string, React.ReactNode][] = [
     ["year", p.year],
@@ -145,7 +146,7 @@ export default async function ProjectPage({
                 className="absolute top-4 right-4 font-mono text-xs tabular-nums"
                 style={{ color: `var(--ink-${p.stock})` }}
               >
-                {String(i + 1).padStart(2, "0")}/{projects.length}
+                {String(i + 1).padStart(2, "0")}/{catalog.length}
               </span>
               <div className="[container-type:size] flex size-[92%] items-center justify-center">
                 <DitherObject

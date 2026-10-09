@@ -48,6 +48,13 @@ Everything on the site is single-sourced in `lib/content`:
 - `projects.ts` projects and case study copy
 - `profile.ts` bio, education, credentials, stack (in pin order), principles
 
+### Adding a project
+
+1. Add an entry to `projects` in `lib/content/projects.ts` (copy rules: sentence case, no em dashes, no emoji). Set `featured: true` to put it on the home press; keep six featured.
+2. Pick an existing `object`, or add a new one: a signed distance function in `components/studio/object-studio.tsx`, plus its name in `ObjectKind`, `lib/content/objects.ts` and `scripts/render-objects.mjs`.
+3. With `pnpm dev` running, `node scripts/render-objects.mjs <object>` writes the sprite to `public/objects/` and the social card art to `public/og/<slug>.png`.
+4. Everything else (work ledger, case study, sitemap, JSON-LD, llms.txt, project counts) follows from the entry. A new group also needs a place in `groupOrder`.
+
 Shared article helpers (the tag kicker and the standfirst taken from an article's opening) are in `lib/writing.ts`.
 
 Live data is fetched at build time and revalidated daily: articles from the DEV API (`lib/data/devto.ts`) and project star counts from GitHub (`lib/data/github.ts`). Set `GITHUB_TOKEN` for a higher GitHub rate limit; without it star counts are simply omitted.

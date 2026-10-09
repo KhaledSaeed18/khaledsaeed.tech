@@ -241,6 +241,21 @@ float oBulb(vec3 p) {
   return min(min(glass, base), tip);
 }
 
+float oBattery(vec3 p) {
+  // an upright cell, leaning a little, with most of its charge gone
+  vec3 q = p;
+  q.xy = rot(-0.12) * q.xy;
+  float body = sdRBox(q - vec3(0.0, -0.08, 0.0), vec3(0.44, 0.78, 0.3), 0.08);
+  float nub = sdRBox(q - vec3(0.0, 0.78, 0.0), vec3(0.18, 0.08, 0.12), 0.03);
+  // a window cut into the front face
+  float win = sdBox(q - vec3(0.0, -0.08, 0.3), vec3(0.32, 0.64, 0.08));
+  float d = max(body, -win);
+  // two charge bars left at the bottom of four slots: the rest has drained
+  for (int i = 0; i < 2; i++)
+    d = min(d, sdRBox(q - vec3(0.0, -0.58 + float(i) * 0.3, 0.24), vec3(0.26, 0.11, 0.05), 0.02));
+  return min(d, nub);
+}
+
 float map(vec3 p) {
   if (u_obj == 0) return oGrid(p);
   if (u_obj == 1) return oLayers(p);
@@ -254,7 +269,8 @@ float map(vec3 p) {
   if (u_obj == 9) return oSquare(p);
   if (u_obj == 10) return oScissors(p);
   if (u_obj == 11) return oBubble(p);
-  return oBulb(p);
+  if (u_obj == 12) return oBulb(p);
+  return oBattery(p);
 }
 
 float mapT(vec3 p, float ang) {

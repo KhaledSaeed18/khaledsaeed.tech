@@ -18,11 +18,12 @@ export type ObjectKind =
   | "scissors"
   | "bubble"
   | "bulb"
+  | "battery"
 
 /** Card stock a project is printed on. Ink is always a near-black of the same hue. */
 export type Stock = "terracotta" | "teal" | "bone" | "stone"
 
-export type ProjectGroup = "platforms" | "tools" | "macos" | "web"
+export type ProjectGroup = "platforms" | "tools" | "macos" | "linux" | "web"
 
 export type Project = {
   slug: string
@@ -62,6 +63,11 @@ export const groups: Record<ProjectGroup, { title: string; blurb: string }> = {
     title: "macOS apps",
     blurb:
       "Small native utilities in Swift and SwiftUI. Menu bar first, no Dock icon, no Electron.",
+  },
+  linux: {
+    title: "Linux desktop",
+    blurb:
+      "System tools for the Linux desktop, from kernel counters to GNOME's quick settings. Rust, least privilege, packaged for Fedora.",
   },
   web: {
     title: "Web",
@@ -288,7 +294,6 @@ export const projects: Project[] = [
       { label: "Live site", href: "https://mcce.khaledsaeed.tech" },
       { label: "Source", href: gh("mcce") },
     ],
-    featured: true,
     problem:
       "Course material lived in three channels that each lost something: official slides with no past exams, and chat groups that were hard to search and not open to everyone.",
     approach: [
@@ -568,6 +573,64 @@ export const projects: Project[] = [
     ],
   },
   {
+    slug: "drainscope",
+    name: "drainscope",
+    tagline:
+      "Per-app battery and energy usage for the Linux desktop, measured from hardware counters.",
+    summary:
+      "drainscope measures energy from RAPL counters and the battery, attributes it to apps, terminal workloads and system services, keeps local history, and shows it on the command line, in GNOME's quick settings and in a desktop app. No component runs as root.",
+    year: 2026,
+    group: "linux",
+    kind: "Energy monitor for Linux",
+    object: "battery",
+    stock: "teal",
+    stack: [
+      "Rust",
+      "eBPF",
+      "systemd",
+      "D-Bus",
+      "SELinux",
+      "GNOME Shell",
+      "TypeScript",
+    ],
+    repo: "drainscope",
+    links: [
+      { label: "Source", href: gh("drainscope") },
+      {
+        label: "Fedora COPR",
+        href: "https://copr.fedorainfracloud.org/coprs/khaledsaeed18/drainscope/",
+      },
+      {
+        label: "Releases",
+        href: "https://github.com/KhaledSaeed18/drainscope/releases",
+      },
+    ],
+    status: "v0.1.2, packaged for Fedora",
+    featured: true,
+    problem:
+      "Windows, macOS and Android have told you which app drained the battery for years. Linux hasn't. The counters exist, but they are root-only, they measure the whole machine, and nothing attributes them to the apps that spent the energy.",
+    approach: [
+      {
+        title: "Measure, then attribute",
+        body: "Every 5 seconds a user service reads RAPL energy counters, the batteries, cgroup v2 CPU time and GPU time from DRM fdinfo. Energy above the machine's learned idle floor goes to whoever was active, reconciled against the battery over 10 second windows, so apps, terminal workloads and systemd services each get their share.",
+      },
+      {
+        title: "Least privilege, by construction",
+        body: "No component runs as root. A sandboxed sampler with a single capability reads the root-only counters and serves them over D-Bus only to the active local session, rate-limited and quantized against the Platypus side channel. An optional eBPF probe counts CPU wakeups and per-app network bytes without ever seeing addresses or contents. Both are confined by SELinux and exit when idle.",
+      },
+      {
+        title: "Where you already look",
+        body: "History stays on your machine. A CLI answers the questions people actually ask (since unplugged, the last 24 hours, live power, battery lost in suspend, what keeps waking the CPU, battery wear), a GNOME Shell quick settings menu shows the same numbers, and a desktop app draws them on a stacked timeline.",
+      },
+    ],
+    highlights: [
+      "No component runs as root; sampler and probe each hold only the capabilities they need",
+      "Signed RPMs for Fedora 44, 45 and rawhide on COPR",
+      "Validated against real hardware, with recorded traces replayed in tests",
+      "Nothing leaves the machine; no component uses the network",
+    ],
+  },
+  {
     slug: "yalla-learn",
     name: "Yalla Learn",
     tagline:
@@ -611,6 +674,23 @@ export const projects: Project[] = [
 ]
 
 export const featuredProjects = projects.filter((p) => p.featured)
+
+/** The order groups appear in on /work. */
+export const groupOrder: ProjectGroup[] = [
+  "platforms",
+  "tools",
+  "macos",
+  "linux",
+  "web",
+]
+
+/**
+ * Every project in catalogue order (by group, then as listed above). Job
+ * numbers on /work, case study numbers and previous/next all follow it.
+ */
+export const catalog = groupOrder.flatMap((g) =>
+  projects.filter((p) => p.group === g)
+)
 
 export function getProject(slug: string) {
   return projects.find((p) => p.slug === slug)

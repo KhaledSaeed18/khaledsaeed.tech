@@ -61,7 +61,10 @@ export default async function AboutPage() {
   const specs: { term: string; value: string; href?: string }[] = [
     { term: "role", value: siteConfig.role },
     { term: "based in", value: siteConfig.location },
-    { term: "languages", value: "TypeScript end to end, Swift on the Mac" },
+    {
+      term: "languages",
+      value: "TypeScript end to end, Swift on the Mac, Rust on Linux",
+    },
     {
       term: "studying",
       value: `${education[0].degree} in ${education[0].field}, until ${education[0].end}`,

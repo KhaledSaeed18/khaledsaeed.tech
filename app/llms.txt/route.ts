@@ -33,7 +33,7 @@ ${about.paragraphs.join("\n\n")}
 ## Key facts
 
 - Role: ${siteConfig.role}, based in ${siteConfig.location}
-- Languages and platforms: TypeScript (Node.js, NestJS, React, Next.js, React Native, Electron), Swift (SwiftUI, macOS), Go, Python
+- Languages and platforms: TypeScript (Node.js, NestJS, React, Next.js, React Native, Electron), Swift (SwiftUI, macOS), Rust (systemd, eBPF, Linux), Go, Python
 - Education: ${education.map((e) => `${e.degree} in ${e.field}, ${e.school} (${e.start} to ${e.end})`).join("; ")}
 - Credentials: ${credentials.map((c) => `${c.name} (${c.issuer}, ${c.date})${c.note ? `: ${c.note.replace(/\.$/, "")}` : ""}`).join("; ")}
 - Approach: software that explains itself. ${principles.map((p) => `${p.title}: ${p.body}`).join(" ")}

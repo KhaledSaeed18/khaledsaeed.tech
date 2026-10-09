@@ -6,10 +6,10 @@
 export const about = {
   /** Short bio used in llms.txt and structured data. */
   short:
-    "Khaled Saeed is a full-stack software engineer from Lebanon, building in TypeScript across web, backend, mobile and desktop, and in Swift for native macOS tools, while completing an M.S. in Computer Engineering at the Lebanese International University.",
+    "Khaled Saeed is a full-stack software engineer from Lebanon, building in TypeScript across web, backend, mobile and desktop, and in Swift and Rust for native macOS and Linux tools, while completing an M.S. in Computer Engineering at the Lebanese International University.",
   paragraphs: [
     "My interest in software started as plain curiosity about how computers work. It turned into building real systems and solving practical problems with code, and it has not stopped since.",
-    "I work across the full stack with TypeScript as the common language: backends in Node.js and NestJS, web apps in React and Next.js, mobile apps in React Native and desktop apps in Electron. When a tool belongs on my own Mac, I write it natively in Swift.",
+    "I work across the full stack with TypeScript as the common language: backends in Node.js and NestJS, web apps in React and Next.js, mobile apps in React Native and desktop apps in Electron. When a tool belongs on my own Mac, I write it natively in Swift; on Linux, in Rust.",
     "I care about clean architecture, data that stays where it belongs, and interfaces that feel precise. Lately I am going deeper into AI and machine learning, and into how intelligent systems fit inside real products.",
   ],
 }
@@ -102,7 +102,10 @@ export const stack: { layer: string; items: string[] }[] = [
     layer: "Services",
     items: ["Node.js", "NestJS", "Express", "Hono", "FastAPI"],
   },
-  { layer: "Native", items: ["Swift", "SwiftUI", "React Native", "Electron"] },
+  {
+    layer: "Native",
+    items: ["Swift", "SwiftUI", "Rust", "React Native", "Electron"],
+  },
   {
     layer: "Data",
     items: ["PostgreSQL", "Prisma", "MongoDB", "SQLite", "MySQL"],

@@ -103,7 +103,7 @@ export function WorkLedger({
         <div className="lg:col-span-8">
           <div
             aria-hidden="true"
-            className="hidden grid-cols-[3rem_1fr_11rem_4rem] gap-4 border-y border-dashed border-border py-2.5 font-mono text-xs text-muted-foreground sm:grid"
+            className="hidden grid-cols-[3rem_1fr_12.5rem_4rem] gap-4 border-y border-dashed border-border py-2.5 font-mono text-xs text-muted-foreground sm:grid"
           >
             <span>job</span>
             <span>project</span>
@@ -124,7 +124,7 @@ export function WorkLedger({
                     href={`/work/${p.slug}`}
                     onMouseEnter={() => show(p.slug)}
                     onFocus={() => show(p.slug)}
-                    className="group grid grid-cols-[4rem_1fr_auto] items-center gap-4 py-4 focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none sm:grid-cols-[3rem_1fr_11rem_4rem] sm:py-5"
+                    className="group grid grid-cols-[4rem_1fr_auto] items-center gap-4 py-4 focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none sm:grid-cols-[3rem_1fr_12.5rem_4rem] sm:py-5"
                   >
                     {/* job number on wide screens, a stock thumbnail on phones */}
                     <span
