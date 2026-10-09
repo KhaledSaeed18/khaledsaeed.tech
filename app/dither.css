@@ -190,7 +190,7 @@
   }
 }
 .press-feed {
-  animation: press-feed var(--feed, 4800ms) linear both;
+  animation: press-feed var(--feed, 5000ms) linear both;
 }
 @media (prefers-reduced-motion: reduce) {
   .plate-print,

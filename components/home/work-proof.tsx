@@ -8,7 +8,7 @@ import type { Project } from "@/lib/content/projects"
 import { cn } from "@/lib/utils"
 
 /** How long each plate stays on the press before the next one prints. */
-const DWELL = 4800
+const DWELL = 5000
 
 export type ProofProject = Pick<
   Project,
@@ -83,7 +83,7 @@ export function WorkProof({ projects }: { projects: ProofProject[] }) {
       }}
     >
       {/* the plate */}
-      <div className="relative isolate aspect-[4/5] sm:aspect-[5/4] lg:col-span-7">
+      <div className="relative isolate aspect-[4/5] sm:aspect-[5/4] lg:col-span-7 lg:aspect-auto lg:min-h-[32rem]">
         {under !== null && under !== active && (
           <Plate
             project={projects[under]}
