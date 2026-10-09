@@ -1,6 +1,5 @@
 import type { Metadata } from "next"
 
-import { DitherCharacter } from "@/components/dither-character"
 import { BreadcrumbJsonLd } from "@/components/json-ld"
 import { PageIntro } from "@/components/print/page-intro"
 import { Rule, SpecLabel } from "@/components/print/sheet"
@@ -25,72 +24,63 @@ export default function ContactPage() {
         lede="Email is the fastest way to reach me. For anything that needs a conversation, book a call."
       />
 
-      <div className="mx-auto mt-16 grid max-w-6xl gap-12 px-6 sm:px-10 lg:grid-cols-12">
-        <div className="space-y-16 lg:col-span-7">
-          <section aria-labelledby="direct">
-            <SpecLabel index={1}>direct</SpecLabel>
-            <Rule className="mt-3" />
-            <h2 id="direct" className="sr-only">
-              Direct contact
-            </h2>
-            <div data-reveal className="mt-8 space-y-6">
-              <a
-                href={email.href}
-                className="block font-mono text-xl break-all underline decoration-border decoration-1 underline-offset-8 transition-colors hover:decoration-brand sm:text-3xl"
-              >
-                {email.handle}
-              </a>
-              <a
-                href={siteConfig.bookingUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center rounded-lg bg-foreground px-4 py-2.5 font-mono text-xs text-background transition-opacity hover:opacity-85"
-              >
-                book a call
-              </a>
-            </div>
-          </section>
+      <div className="mx-auto mt-24 max-w-6xl space-y-28 px-6 sm:px-10">
+        <section aria-labelledby="direct">
+          <SpecLabel index={1}>direct</SpecLabel>
+          <Rule className="mt-3" />
+          <h2 id="direct" className="sr-only">
+            Direct contact
+          </h2>
+          <div data-reveal className="mt-8 space-y-6">
+            <a
+              href={email.href}
+              className="block font-mono text-xl break-all underline decoration-border decoration-1 underline-offset-8 transition-colors hover:decoration-brand sm:text-3xl"
+            >
+              {email.handle}
+            </a>
+            <a
+              href={siteConfig.bookingUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center rounded-lg bg-foreground px-4 py-2.5 font-mono text-xs text-background transition-opacity hover:opacity-85"
+            >
+              book a call
+            </a>
+          </div>
+        </section>
 
-          <section aria-labelledby="profiles">
-            <SpecLabel index={2}>profiles</SpecLabel>
-            <Rule className="mt-3" />
-            <h2 id="profiles" className="sr-only">
-              Profiles
-            </h2>
-            <ul className="mt-4">
-              {socialLinks
-                .filter((l) => l.key !== "email")
-                .map((l) => (
-                  <li
-                    key={l.key}
-                    data-reveal
-                    className="border-b border-dashed border-border"
+        <section aria-labelledby="profiles">
+          <SpecLabel index={2}>profiles</SpecLabel>
+          <Rule className="mt-3" />
+          <h2 id="profiles" className="sr-only">
+            Profiles
+          </h2>
+          <ul className="mt-4">
+            {socialLinks
+              .filter((l) => l.key !== "email")
+              .map((l) => (
+                <li
+                  key={l.key}
+                  data-reveal
+                  className="border-b border-dashed border-border"
+                >
+                  <a
+                    href={l.href}
+                    target="_blank"
+                    rel="me noopener noreferrer"
+                    className="group flex items-baseline justify-between gap-4 py-4"
                   >
-                    <a
-                      href={l.href}
-                      target="_blank"
-                      rel="me noopener noreferrer"
-                      className="group flex items-baseline justify-between gap-4 py-4"
-                    >
-                      <span className="font-medium transition-colors group-hover:text-brand">
-                        {l.label}
-                      </span>
-                      <span className="font-mono text-xs text-muted-foreground">
-                        {l.handle}
-                      </span>
-                    </a>
-                  </li>
-                ))}
-            </ul>
-          </section>
-        </div>
-
-        <div className="lg:col-span-5">
-          <p className="hidden font-mono text-xs text-muted-foreground lg:block">
-            {"// click to wave"}
-          </p>
-          <DitherCharacter className="h-[min(100vw,440px)] w-full lg:h-[560px]" />
-        </div>
+                    <span className="font-medium transition-colors group-hover:text-brand">
+                      {l.label}
+                    </span>
+                    <span className="font-mono text-xs text-muted-foreground">
+                      {l.handle}
+                    </span>
+                  </a>
+                </li>
+              ))}
+          </ul>
+        </section>
       </div>
 
       <BreadcrumbJsonLd
