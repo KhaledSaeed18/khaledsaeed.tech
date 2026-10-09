@@ -87,7 +87,12 @@ export const credentials: Credential[] = [
   { name: "Learning Docker", issuer: "LinkedIn Learning", date: "Dec 2025" },
 ]
 
-/** The datasheet on the home page: what sits at each layer of what I ship. */
+/**
+ * The datasheet on the home page: what sits at each layer of what I ship, in
+ * pin order: the datasheet draws it as a DIP part,
+ * so the first half of the items runs down the left side and the second
+ * half back up the right.
+ */
 export const stack: { layer: string; items: string[] }[] = [
   {
     layer: "Interface",
@@ -97,11 +102,11 @@ export const stack: { layer: string; items: string[] }[] = [
     layer: "Services",
     items: ["Node.js", "NestJS", "Express", "Hono", "FastAPI"],
   },
+  { layer: "Native", items: ["Swift", "SwiftUI", "React Native", "Electron"] },
   {
     layer: "Data",
     items: ["PostgreSQL", "Prisma", "MongoDB", "SQLite", "MySQL"],
   },
-  { layer: "Native", items: ["Swift", "SwiftUI", "React Native", "Electron"] },
   {
     layer: "Tooling",
     items: ["TypeScript", "Go", "Python", "Docker", "GitHub Actions"],
