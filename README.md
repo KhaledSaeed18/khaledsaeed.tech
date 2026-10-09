@@ -57,6 +57,7 @@ Everything on the site is single-sourced in `lib/content`:
 ### Adding a project
 
 1. Add an entry to `projects` in `lib/content/projects.ts` (copy rules: sentence case, no em dashes, no emoji). Set `featured: true` to put it on the home press; keep six featured.
+   Set `updatedAt` to the ISO date (`YYYY-MM-DD`) when the case study's content changes significantly. This supplies stable sitemap and structured-data dates; pages without a recorded date omit it instead of using the deployment time.
 2. Pick an existing `object`, or add a new one: a signed distance function in `components/studio/object-studio.tsx`, plus its name in `ObjectKind`, `lib/content/objects.ts` and `scripts/render-objects.mjs`.
 3. With `pnpm dev` running, `node scripts/render-objects.mjs <object>` writes the sprite to `public/objects/` and the social card art to `public/og/<slug>.png`.
 4. Everything else (work ledger, case study, sitemap, JSON-LD, llms.txt, project counts) follows from the entry. A new group also needs a place in `groupOrder`.

@@ -37,6 +37,8 @@ export type Project = {
   /** Two or three sentences for the case study lede and search snippets. */
   summary: string
   year: number
+  /** ISO date of a significant case study update, used by the sitemap and JSON-LD. */
+  updatedAt?: string
   group: ProjectGroup
   kind: string
   object: ObjectKind
@@ -236,6 +238,7 @@ export const projects: Project[] = [
   {
     slug: "node-authentication-template",
     name: "Node auth template",
+    updatedAt: "2026-10-10",
     tagline:
       "Passkeys, OpenID Connect and revocable sessions in an authentication backend ready to fork.",
     summary:
@@ -528,6 +531,7 @@ export const projects: Project[] = [
   {
     slug: "repo-scout",
     name: "Repo Scout",
+    updatedAt: "2026-10-10",
     tagline:
       "Explore a codebase through architecture maps, searchable files and Git history, all on your machine.",
     summary:
@@ -726,6 +730,7 @@ export const projects: Project[] = [
   {
     slug: "drainscope",
     name: "drainscope",
+    updatedAt: "2026-10-10",
     tagline:
       "Per-app battery and energy usage for the Linux desktop, measured from hardware counters.",
     summary:

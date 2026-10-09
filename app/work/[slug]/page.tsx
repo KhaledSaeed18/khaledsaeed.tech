@@ -268,6 +268,7 @@ export default async function ProjectPage({
           ),
           keywords: p.stack.join(", "),
           dateCreated: String(p.year),
+          dateModified: p.updatedAt,
           author: personRef,
           creator: personRef,
           sameAs: p.links.map((l) => l.href),
