@@ -51,12 +51,12 @@ export function PageIntro({
         )}
       </div>
       <Rule className="mt-3" />
-      <div className="mt-12 grid gap-6 md:grid-cols-12">
-        <h1 className="font-heading text-5xl font-medium tracking-tight text-balance sm:text-6xl md:col-span-7">
+      <div className="mt-12 space-y-6">
+        <h1 className="font-heading text-5xl font-medium tracking-tight text-balance sm:text-6xl">
           {title}
         </h1>
         {lede && (
-          <p className="max-w-prose text-base leading-relaxed text-muted-foreground sm:text-lg md:col-span-5 md:pt-3">
+          <p className="text-base leading-relaxed text-muted-foreground sm:text-lg">
             {lede}
           </p>
         )}

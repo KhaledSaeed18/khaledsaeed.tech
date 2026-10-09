@@ -68,7 +68,8 @@ export function SpecLabel({
 
 /**
  * A page section. Header row with the spec label on the left and optional
- * meta (counts, links) on the right, a title, then content.
+ * meta (counts, links) on the right, a title with its lede below, then
+ * content.
  */
 export function Sheet({
   id,
@@ -106,17 +107,17 @@ export function Sheet({
         </div>
         <Rule className="mt-3" />
         {(title || lede) && (
-          <div data-reveal className="mt-10 grid gap-5 md:grid-cols-12">
+          <div data-reveal className="mt-10 space-y-5">
             {title && (
               <h2
                 id={id ? `${id}-title` : undefined}
-                className="font-heading text-3xl font-medium tracking-tight text-balance sm:text-4xl md:col-span-7"
+                className="font-heading text-3xl font-medium tracking-tight text-balance sm:text-4xl"
               >
                 {title}
               </h2>
             )}
             {lede && (
-              <p className="max-w-prose text-base leading-relaxed text-muted-foreground md:col-span-5 md:pt-2">
+              <p className="text-base leading-relaxed text-muted-foreground">
                 {lede}
               </p>
             )}
