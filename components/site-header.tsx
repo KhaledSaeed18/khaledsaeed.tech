@@ -106,7 +106,7 @@ export function SiteHeader() {
           {open ? "close" : "menu"}
         </button>
       </div>
-      <Rule />
+      <Rule edge />
 
       {open && (
         <nav

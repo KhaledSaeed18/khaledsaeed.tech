@@ -28,6 +28,7 @@ Every page sits in one frame. Two dotted vertical rails mark its edges from the 
 - The numbers live in `app/globals.css` as tokens: `--frame-max` (72rem), `--frame-narrow` (48rem), `--gutter` (screen edge to rail: 16, 24, 32px at base, sm, lg) and `--frame-pad` (rail to content: 20, 32, 40px). Change them there, never per page.
 - The rails are one fixed `.rails` element in `app/layout.tsx`. Nothing else draws them.
 - `Rule` (`components/print/sheet.tsx`) is the horizontal perforation under every section label and the header. It always runs edge to edge, wherever it is placed. Use it for section-level lines only; lines inside content (list separators) stay `border-dashed` at content width.
+- Every `Rule` draws a registration mark (+) where it crosses each rail. The marks are positioned from the rule's own box, so a `Rule` must sit directly on a `frame` content edge (not inside a narrower column or `frame-narrow`). A rule that spans the whole page, like the header's, uses `<Rule edge />`. If a layout needs a rule somewhere else, move the rule into a `frame` instead of adjusting the marks.
 - Anything that needs to reach the rails, like a horizontal scroller on mobile, bleeds by exactly `--frame-pad` (`mx-[calc(var(--frame-pad)*-1)] px-(--frame-pad)`), never past the rails.
 - `header`, `main` and `footer` clip horizontal overflow (`overflow-x: clip`), which keeps full-width rules from scrolling the page sideways. Do not move that clip to `html`: browsers treat it as `hidden` there, and phones zoom out to fit.
 

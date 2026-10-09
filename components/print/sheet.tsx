@@ -26,12 +26,27 @@ export function CropMarks({ className }: { className?: string }) {
 
 /**
  * A dotted rule, like a perforation. It runs edge to edge across the screen,
- * crossing the frame rails, wherever it is placed.
+ * and a registration mark (+) sits where it crosses each frame rail.
+ *
+ * The marks are placed against the rule's own box, so a rule must sit at the
+ * content edge of a `frame` (every section label does). `edge` is for a rule
+ * that already spans the whole page, like the header's.
  */
-export function Rule({ className }: { className?: string }) {
+export function Rule({
+  edge = false,
+  className,
+}: {
+  edge?: boolean
+  className?: string
+}) {
   return (
-    <div aria-hidden="true" className={cn("relative h-px", className)}>
+    <div
+      aria-hidden="true"
+      className={cn("rule relative h-px", edge && "rule-edge", className)}
+    >
       <span className="rule-bleed" />
+      <span className="rule-mark left-(--mark-inset)" />
+      <span className="rule-mark right-(--mark-inset)" />
     </div>
   )
 }

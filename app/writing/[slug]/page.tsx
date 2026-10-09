@@ -47,39 +47,48 @@ export default async function ArticlePage({
 
   return (
     <article>
-      <header className="frame-narrow pt-32 sm:pt-40">
-        <nav aria-label="Breadcrumb">
-          <SpecLabel>
-            <Link href="/" className="transition-colors hover:text-foreground">
-              home
-            </Link>
-            <span className="mx-1.5 text-muted-foreground/40">/</span>
-            <Link
-              href="/writing"
-              className="transition-colors hover:text-foreground"
+      <header className="pt-32 sm:pt-40">
+        {/* breadcrumb and rule span the frame like every page; the article
+            itself sits in the reading column */}
+        <div className="frame">
+          <nav aria-label="Breadcrumb">
+            <SpecLabel>
+              <Link
+                href="/"
+                className="transition-colors hover:text-foreground"
+              >
+                home
+              </Link>
+              <span className="mx-1.5 text-muted-foreground/40">/</span>
+              <Link
+                href="/writing"
+                className="transition-colors hover:text-foreground"
+              >
+                writing
+              </Link>
+            </SpecLabel>
+          </nav>
+          <Rule className="mt-3" />
+        </div>
+        <div className="frame-narrow">
+          <h1 className="mt-12 font-heading text-4xl font-medium tracking-tight text-balance sm:text-5xl">
+            {a.title}
+          </h1>
+          <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
+            {a.description}
+          </p>
+          <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 font-mono text-xs text-muted-foreground">
+            <time dateTime={a.publishedAt}>{formatDate(a.publishedAt)}</time>
+            <span>{a.readingMinutes} min read</span>
+            <a
+              href={a.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-brand hover:underline"
             >
-              writing
-            </Link>
-          </SpecLabel>
-        </nav>
-        <Rule className="mt-3" />
-        <h1 className="mt-12 font-heading text-4xl font-medium tracking-tight text-balance sm:text-5xl">
-          {a.title}
-        </h1>
-        <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
-          {a.description}
-        </p>
-        <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 font-mono text-xs text-muted-foreground">
-          <time dateTime={a.publishedAt}>{formatDate(a.publishedAt)}</time>
-          <span>{a.readingMinutes} min read</span>
-          <a
-            href={a.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-brand hover:underline"
-          >
-            originally on dev
-          </a>
+              originally on dev
+            </a>
+          </div>
         </div>
       </header>
 
@@ -89,9 +98,11 @@ export default async function ArticlePage({
         dangerouslySetInnerHTML={{ __html: a.html }}
       />
 
-      <footer className="frame-narrow mt-16">
-        <Rule />
-        <div className="mt-6 flex flex-wrap items-center justify-between gap-4 font-mono text-xs text-muted-foreground">
+      <footer className="mt-16">
+        <div className="frame">
+          <Rule />
+        </div>
+        <div className="frame-narrow mt-6 flex flex-wrap items-center justify-between gap-4 font-mono text-xs text-muted-foreground">
           <span>
             {a.reactions} reactions and {a.comments} comments on{" "}
             <a

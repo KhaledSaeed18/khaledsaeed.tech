@@ -99,6 +99,8 @@
     /* Print system: perforation rules, and the card stocks projects are
        printed on. Each stock has an ink: a near-black of its own hue. */
     --rule: oklch(0.85 0.03 70 / 24%);
+    /* registration marks where rules cross the rails */
+    --mark: oklch(0.85 0.03 70 / 55%);
     --stone: #a6a09a;
     --stock-terracotta: #d9634a;
     --ink-terracotta: #2b0d06;
@@ -335,5 +337,24 @@
     background-image: linear-gradient(to right, var(--rule) 0 2px, transparent 2px);
     background-size: 6px 1px;
     background-attachment: fixed;
+  }
+  /* Registration marks. A mark is 9px square with 1px arms, centered on the
+     1px rail and the 1px rule, so it starts 4px before the rail line. A rule
+     sits on a frame's content edge, so the rail is --frame-pad outside it;
+     an edge rule spans the page, so the rail is the frame margin inside it. */
+  .rule {
+    --mark-inset: calc(var(--frame-pad) * -1 - 4px);
+  }
+  .rule-edge {
+    --mark-inset: calc(max(var(--gutter), calc((100% - var(--frame-max)) / 2)) - 4px);
+  }
+  .rule-mark {
+    position: absolute;
+    top: -4px;
+    width: 9px;
+    height: 9px;
+    background:
+      linear-gradient(var(--mark), var(--mark)) center / 1px 100% no-repeat,
+      linear-gradient(var(--mark), var(--mark)) center / 100% 1px no-repeat;
   }
 }
