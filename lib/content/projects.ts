@@ -19,11 +19,15 @@ export type ObjectKind =
   | "bubble"
   | "bulb"
   | "battery"
+  | "chip"
+  | "globe"
+  | "moon"
+  | "padlock"
 
 /** Card stock a project is printed on. Ink is always a near-black of the same hue. */
 export type Stock = "terracotta" | "teal" | "bone" | "stone"
 
-export type ProjectGroup = "platforms" | "tools" | "macos" | "linux" | "web"
+export type ProjectGroup = "platforms" | "tools" | "macos" | "systems" | "web"
 
 export type Project = {
   slug: string
@@ -64,10 +68,10 @@ export const groups: Record<ProjectGroup, { title: string; blurb: string }> = {
     blurb:
       "Small native utilities in Swift and SwiftUI. Menu bar first, no Dock icon, no Electron.",
   },
-  linux: {
-    title: "Linux desktop",
+  systems: {
+    title: "Systems",
     blurb:
-      "System tools for the Linux desktop, from kernel counters to GNOME's quick settings. Rust, least privilege, packaged for Fedora.",
+      "Close to the hardware: a least-privilege energy monitor for the Linux desktop, and a real-time OS brought up on RISC-V.",
   },
   web: {
     title: "Web",
@@ -227,6 +231,101 @@ export const projects: Project[] = [
       "JWT access and refresh rotation with OTP email verification",
       "Immutable audit log of all platform activity",
       "Live, documented REST API",
+    ],
+  },
+  {
+    slug: "node-authentication-template",
+    name: "Node auth template",
+    tagline:
+      "A complete authentication backend: email verification, two-factor sign-in, refresh tokens and rate limits, ready to fork.",
+    summary:
+      "An Express and TypeScript authentication service on PostgreSQL and Prisma. It covers sign-up with an emailed one-time code, password reset, TOTP two-factor authentication with QR enrolment, short-lived access tokens with refresh tokens, and a login history, with rate limiting and input sanitization on every endpoint.",
+    year: 2025,
+    group: "platforms",
+    kind: "Backend template",
+    object: "padlock",
+    stock: "teal",
+    stack: [
+      "Node.js",
+      "TypeScript",
+      "Express",
+      "PostgreSQL",
+      "Prisma",
+      "Zod",
+      "JWT",
+    ],
+    repo: "node-authentication-template",
+    links: [{ label: "Source", href: gh("node-authentication-template") }],
+    problem:
+      "Every project needs authentication, and rushed implementations skip the same parts: verifying the email, a second factor, token rotation and rate limits. This template ships them already done.",
+    approach: [
+      {
+        title: "The whole account lifecycle",
+        body: "Sign-up sends a one-time code by email through the Gmail API, with resend, forgot and reset password flows, and a login history per user.",
+      },
+      {
+        title: "Two factors, two tokens",
+        body: "TOTP two-factor authentication with QR code enrolment, verification, sign-in and disable flows. Sessions use 20 minute access tokens and 7 day refresh tokens.",
+      },
+      {
+        title: "Hostile input assumed",
+        body: "Rate limits on every authentication endpoint, Zod validation, HTML sanitization, strong password rules that reject common passwords, bcrypt with configurable rounds, security headers and CORS.",
+      },
+    ],
+    highlights: [
+      "TOTP two-factor authentication with QR enrolment",
+      "Email verification and password reset by one-time code",
+      "Rate limiting on every authentication endpoint",
+      "Short-lived access tokens, longer-lived refresh tokens",
+    ],
+  },
+  {
+    slug: "sleep-track",
+    name: "SleepTrack",
+    tagline:
+      "Sleep logging with weekly analytics: a FastAPI service and a retro-styled Next.js client.",
+    summary:
+      "A FastAPI and PostgreSQL API that logs sleep sessions with quality ratings and computes statistics, a timeline and weekly summaries with a consistency score, paired with a retro-styled Next.js client that charts them.",
+    year: 2025,
+    group: "platforms",
+    kind: "Full-stack app",
+    object: "moon",
+    stock: "stone",
+    stack: [
+      "FastAPI",
+      "PostgreSQL",
+      "Tortoise ORM",
+      "JWT",
+      "Next.js",
+      "Zustand",
+      "Chart.js",
+    ],
+    repo: "sleep-track-backend",
+    links: [
+      { label: "API source", href: gh("sleep-track-backend") },
+      { label: "Client source", href: gh("sleep-track-frontend") },
+    ],
+    problem:
+      "Logging sleep is easy. Turning the log into something you can act on, like how consistent your week was, takes analysis on the server and an account system that holds up.",
+    approach: [
+      {
+        title: "A typed, documented API",
+        body: "FastAPI with Tortoise ORM on PostgreSQL, schema migrations with Aerich, and interactive OpenAPI documentation at /docs and /redoc out of the box.",
+      },
+      {
+        title: "Analytics on the server",
+        body: "Statistics, a timeline and a weekly summary with average hours, quality and a consistency score are computed by the API, so the client only has to draw them.",
+      },
+      {
+        title: "A client with character",
+        body: "A Next.js client in a retro DaisyUI theme, with Zustand for state and Chart.js for the weekly charts, behind JWT authentication with bcrypt password hashing.",
+      },
+    ],
+    highlights: [
+      "Interactive OpenAPI docs generated from the code",
+      "Schema migrations with Aerich",
+      "JWT authentication with bcrypt hashing",
+      "Weekly consistency score computed server-side",
     ],
   },
   {
@@ -580,7 +679,7 @@ export const projects: Project[] = [
     summary:
       "drainscope measures energy from RAPL counters and the battery, attributes it to apps, terminal workloads and system services, keeps local history, and shows it on the command line, in GNOME's quick settings and in a desktop app. No component runs as root.",
     year: 2026,
-    group: "linux",
+    group: "systems",
     kind: "Energy monitor for Linux",
     object: "battery",
     stock: "teal",
@@ -628,6 +727,101 @@ export const projects: Project[] = [
       "Signed RPMs for Fedora 44, 45 and rawhide on COPR",
       "Validated against real hardware, with recorded traces replayed in tests",
       "Nothing leaves the machine; no component uses the network",
+    ],
+  },
+  {
+    slug: "freertos-riscv",
+    name: "FreeRTOS on RISC-V",
+    tagline:
+      "FreeRTOS ported to 64-bit RISC-V and booted on QEMU, from the startup code and linker script up.",
+    summary:
+      "A port of the FreeRTOS kernel to RV64 on QEMU's virt machine: bare-metal startup in assembly, a linker script that lays out RAM from 0x80000000, machine-mode timer interrupts driving a 1 kHz tick, and two preemptive tasks that prove the scheduler. Built for the CENG507 embedded systems course.",
+    year: 2026,
+    group: "systems",
+    kind: "Embedded systems project",
+    object: "chip",
+    stock: "stone",
+    stack: [
+      "C",
+      "RISC-V assembly",
+      "FreeRTOS",
+      "QEMU",
+      "GNU toolchain",
+      "Make",
+    ],
+    repo: "CENG507-Project",
+    links: [{ label: "Source", href: gh("CENG507-Project") }],
+    problem:
+      "A real-time OS hides the hardware from applications, but first someone has to tame the hardware: start the core with no firmware, lay out memory, take the timer interrupt and save every register on a context switch. The goal was to do that by hand on an open instruction set.",
+    approach: [
+      {
+        title: "Bare metal, from the reset vector",
+        body: "An assembly startup file sets up the stack and jumps to C with no BIOS at all. A linker script places code, data and a 64 KB stack in RAM from 0x80000000 on QEMU's virt machine.",
+      },
+      {
+        title: "The timer drives the scheduler",
+        body: "The machine-mode timer, through MTIME and MTIMECMP, raises a 1 kHz tick. mtvec points at the FreeRTOS trap handler, which saves the context in assembly and lets the kernel preempt.",
+      },
+      {
+        title: "Proven by tasks, checked in the disassembly",
+        body: "Two tasks with different periods interleave under preemption. The build emits an ELF with symbols, a raw binary and a full disassembly listing, targeting rv64imac_zicsr with the lp64 ABI.",
+      },
+    ],
+    highlights: [
+      "Boots with no firmware on QEMU's virt machine",
+      "Preemptive scheduling on a 1 kHz tick, stack overflow checks on",
+      "RV64IMAC with Zicsr, medany code model",
+      "Course project for CENG507, Embedded Systems",
+    ],
+  },
+  {
+    slug: "multilingual-translation",
+    name: "Multilingual translation",
+    tagline:
+      "Translation between 200 languages that runs entirely in the browser, with no server and no API key.",
+    summary:
+      "A React app that runs Meta's NLLB-200 model, distilled to 600M parameters, in the browser through Transformers.js and WebAssembly. The model loads in a Web Worker, is cached after the first download, and streams translations back as they are generated.",
+    year: 2025,
+    group: "web",
+    kind: "Browser ML app",
+    object: "globe",
+    stock: "terracotta",
+    stack: [
+      "React",
+      "Transformers.js",
+      "Web Workers",
+      "WebAssembly",
+      "Vite",
+      "Tailwind CSS",
+    ],
+    repo: "multilingual-translation-Transformers.js",
+    links: [
+      {
+        label: "Live demo",
+        href: "https://huggingface.co/spaces/KhaledSaeed18/multilingual-translation",
+      },
+      { label: "Source", href: gh("multilingual-translation-Transformers.js") },
+    ],
+    problem:
+      "Translation usually means sending your text to someone else's server. For quick, private use, the model itself can come to the user instead.",
+    approach: [
+      {
+        title: "The model comes to you",
+        body: "NLLB-200 distilled to 600M parameters runs through Transformers.js on WebAssembly. The first visit downloads it once and the browser caches it, so later translations run fully offline from the page.",
+      },
+      {
+        title: "Never block the page",
+        body: "Inference runs in a Web Worker and talks to the interface by messages, so typing and scrolling stay smooth while the model loads and works.",
+      },
+      {
+        title: "Stream as it translates",
+        body: "Output streams back progressively instead of arriving all at once, so long passages start reading immediately.",
+      },
+    ],
+    highlights: [
+      "200+ languages, including low-resource ones",
+      "No backend: inference runs in a Web Worker",
+      "Live on Hugging Face Spaces",
     ],
   },
   {
@@ -680,7 +874,7 @@ export const groupOrder: ProjectGroup[] = [
   "platforms",
   "tools",
   "macos",
-  "linux",
+  "systems",
   "web",
 ]
 
@@ -699,7 +893,7 @@ export function getProject(slug: string) {
 /** A project's kind mid-sentence: "Open source template" becomes "open source template", acronyms stay. */
 export function kindPhrase(kind: string) {
   // only a plain capitalised first word: "SaaS", "AI", "macOS" stay as they are
-  return /^[A-Z][a-z]*(\s|$)/.test(kind)
+  return /^[A-Z][a-z]*([\s-]|$)/.test(kind)
     ? kind[0].toLowerCase() + kind.slice(1)
     : kind
 }

@@ -9,7 +9,7 @@ import { pageMeta } from "@/lib/metadata"
 export const metadata: Metadata = pageMeta({
   title: "Work",
   description:
-    "Projects by Khaled Saeed: multi-tenant platforms, developer CLIs, native macOS apps and a Linux energy monitor, each with a case study.",
+    "Projects by Khaled Saeed: multi-tenant platforms, developer CLIs, native macOS apps, and Linux and embedded systems work, each with a case study.",
   path: "/work",
 })
 

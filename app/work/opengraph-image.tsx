@@ -9,7 +9,7 @@ export default function Image() {
   return ogCard({
     eyebrow: "khaledsaeed.tech / work",
     title: "Work",
-    subtitle: `${projects.length} open source projects: platforms, developer tools, and native apps for macOS and Linux.`,
+    subtitle: `${projects.length} open source projects: platforms, developer tools, native apps and systems work.`,
     art: { src: "character.png", width: 374, height: 423 },
   })
 }

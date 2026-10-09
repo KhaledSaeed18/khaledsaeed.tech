@@ -60,6 +60,10 @@ const ALL = [
   "bubble",
   "bulb",
   "battery",
+  "chip",
+  "globe",
+  "moon",
+  "padlock",
 ]
 const objs = process.argv.slice(2).length ? process.argv.slice(2) : ALL
 const base = process.env.STUDIO_URL ?? "http://localhost:3000"

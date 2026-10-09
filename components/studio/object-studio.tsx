@@ -256,6 +256,71 @@ float oBattery(vec3 p) {
   return min(d, nub);
 }
 
+float oChip(vec3 p) {
+  // a QFP package lying on the desk, tipped toward the viewer, legs on all sides
+  vec3 q = p - vec3(0.0, -0.05, 0.0);
+  q.yz = rot(0.42) * q.yz;
+  float body = sdRBox(q, vec3(0.6, 0.1, 0.6), 0.04);
+  // pin 1 dimple in one corner
+  body = max(body, -(length(q - vec3(-0.4, 0.12, -0.4)) - 0.08));
+  float legs = 1e5;
+  for (int i = 0; i < 6; i++) {
+    float t = -0.45 + float(i) * 0.18;
+    legs = min(legs, sdBox(q - vec3(t, -0.04, 0.7), vec3(0.04, 0.025, 0.12)));
+    legs = min(legs, sdBox(q - vec3(t, -0.04, -0.7), vec3(0.04, 0.025, 0.12)));
+    legs = min(legs, sdBox(q - vec3(0.7, -0.04, t), vec3(0.12, 0.025, 0.04)));
+    legs = min(legs, sdBox(q - vec3(-0.7, -0.04, t), vec3(0.12, 0.025, 0.04)));
+  }
+  return min(body, legs);
+}
+
+float oGlobe(vec3 p) {
+  // a desk globe: grooved sphere on a tilted axis, a meridian arc and a stand
+  vec3 c = p - vec3(0.0, 0.2, 0.0);
+  vec3 g = c;
+  g.xy = rot(0.41) * g.xy;
+  float ball = length(g) - 0.56;
+  // latitude and meridian grooves read as lines once dithered
+  float lat = min(abs(g.y), abs(abs(g.y) - 0.3)) - 0.012;
+  float lon = min(abs(g.x), abs(g.z)) - 0.012;
+  ball = max(ball, -max(min(lat, lon), length(g) - 0.6));
+  float arc = sdTorus(g.xzy, vec2(0.66, 0.025));
+  arc = max(arc, g.x - 0.1);
+  float stem = sdCapsule(p, vec3(0.0, -0.46, 0.0), vec3(0.0, -0.75, 0.0), 0.05);
+  float base = sdCyl(p - vec3(0.0, -0.8, 0.0), 0.36, 0.04) - 0.02;
+  return min(min(ball, arc), min(stem, base));
+}
+
+float oMoon(vec3 p) {
+  // a crescent with a small four-point star beside it
+  vec3 q = p - vec3(-0.1, 0.0, 0.0);
+  float disc = length(q) - 0.72;
+  float bite = length(q - vec3(0.36, 0.18, 0.0)) - 0.62;
+  float moon = max(max(disc, -bite), abs(q.z) - 0.16) - 0.02;
+  vec3 s = p - vec3(0.62, 0.48, 0.0);
+  float star = min(sdBox(s, vec3(0.03, 0.17, 0.04)), sdBox(s, vec3(0.17, 0.03, 0.04)));
+  vec3 s2 = s; s2.xy = rot(PI * 0.25) * s2.xy;
+  star = min(star, sdBox(s2, vec3(0.025, 0.09, 0.035)));
+  star = min(star, sdBox(s2, vec3(0.09, 0.025, 0.035)));
+  return min(moon, star);
+}
+
+float oPadlock(vec3 p) {
+  // a closed padlock with a keyhole cut through the face
+  vec3 q = p - vec3(0.0, -0.22, 0.0);
+  float body = sdRBox(q, vec3(0.56, 0.44, 0.2), 0.07);
+  vec3 k = q - vec3(0.0, 0.04, 0.2);
+  float hole = min(length(k.xy) - 0.1, sdBox(k - vec3(0.0, -0.16, 0.0), vec3(0.04, 0.14, 1.0)));
+  hole = max(hole, abs(k.z) - 0.12);
+  body = max(body, -hole);
+  vec3 h = q - vec3(0.0, 0.44, 0.0);
+  float shackle = sdTorus(h.xzy, vec2(0.36, 0.08));
+  shackle = max(shackle, -h.y);
+  float legs = min(sdCapsule(h, vec3(0.36, 0.0, 0.0), vec3(0.36, -0.1, 0.0), 0.08),
+                   sdCapsule(h, vec3(-0.36, 0.0, 0.0), vec3(-0.36, -0.1, 0.0), 0.08));
+  return min(body, min(shackle, legs));
+}
+
 float map(vec3 p) {
   if (u_obj == 0) return oGrid(p);
   if (u_obj == 1) return oLayers(p);
@@ -270,7 +335,11 @@ float map(vec3 p) {
   if (u_obj == 10) return oScissors(p);
   if (u_obj == 11) return oBubble(p);
   if (u_obj == 12) return oBulb(p);
-  return oBattery(p);
+  if (u_obj == 13) return oBattery(p);
+  if (u_obj == 14) return oChip(p);
+  if (u_obj == 15) return oGlobe(p);
+  if (u_obj == 16) return oMoon(p);
+  return oPadlock(p);
 }
 
 float mapT(vec3 p, float ang) {
@@ -311,7 +380,7 @@ void main() {
   float f = floor(frag.x / u_cells);
   vec2 local = vec2(mod(frag.x, u_cells), frag.y) / u_cells - 0.5;
   // a gentle swing rather than a full spin, so flat objects never go edge-on
-  bool planar = u_obj == 2 || u_obj == 5 || u_obj == 7 || u_obj == 8 || u_obj == 9 || u_obj == 10 || u_obj == 11;
+  bool planar = u_obj == 2 || u_obj == 5 || u_obj == 7 || u_obj == 8 || u_obj == 9 || u_obj == 10 || u_obj == 11 || u_obj == 16 || u_obj == 17;
   float ang = planar ? 0.3 + 0.36 * sin(f / u_frames * 2.0 * PI) : 0.55 + 0.55 * sin(f / u_frames * 2.0 * PI);
 
   // three-quarter view from slightly above
