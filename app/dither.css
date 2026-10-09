@@ -171,3 +171,30 @@
     animation: none;
   }
 }
+
+/*
+ * Selected work press: a new plate prints in over the old one, and the feed
+ * line under the active index row fills while the next plate waits.
+ */
+.plate-print {
+  mask-size: var(--dither-tile);
+  -webkit-mask-size: var(--dither-tile);
+  animation: dither-in 420ms linear both;
+}
+@keyframes press-feed {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+.press-feed {
+  animation: press-feed var(--feed, 4800ms) linear both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .plate-print,
+  .press-feed {
+    animation: none;
+  }
+}

@@ -1,8 +1,7 @@
 import Link from "next/link"
-import type * as React from "react"
 
 import { Sheet } from "@/components/print/sheet"
-import { ProjectCard } from "@/components/work/project-card"
+import { WorkProof } from "@/components/home/work-proof"
 import { featuredProjects, projects } from "@/lib/content/projects"
 
 export function SelectedWork() {
@@ -19,18 +18,22 @@ export function SelectedWork() {
         </Link>
       }
     >
-      <ul className="mx-[calc(var(--frame-pad)*-1)] flex snap-x snap-mandatory scroll-px-(--frame-pad) gap-4 overflow-x-auto px-(--frame-pad) pb-4 lg:mx-0 lg:grid lg:grid-cols-4 lg:overflow-visible lg:px-0 lg:pb-0">
-        {featuredProjects.map((p, i) => (
-          <li
-            key={p.slug}
-            data-reveal
-            style={{ "--reveal-delay": i } as React.CSSProperties}
-            className="w-[72vw] max-w-[300px] shrink-0 snap-start lg:w-auto lg:max-w-none"
-          >
-            <ProjectCard project={p} index={i + 1} />
-          </li>
-        ))}
-      </ul>
+      <div data-reveal>
+        <WorkProof
+          projects={featuredProjects.map(
+            ({ slug, name, kind, year, tagline, stack, object, stock }) => ({
+              slug,
+              name,
+              kind,
+              year,
+              tagline,
+              stack,
+              object,
+              stock,
+            })
+          )}
+        />
+      </div>
     </Sheet>
   )
 }
