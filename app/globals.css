@@ -83,10 +83,10 @@
     --ring: oklch(0.6398 0.1539 33.47);
     --radius: 0;
 
-    /* Page frame. Content sits inside a 72rem frame whose edges carry the
+    /* Page frame. Content sits inside an 80rem frame whose edges carry the
        vertical rails. --gutter is the space between the screen edge and a
        rail, --frame-pad the space between a rail and the content. */
-    --frame-max: 72rem;
+    --frame-max: 80rem;
     --frame-narrow: 48rem;
     --gutter: 1rem;
     --frame-pad: 1.25rem;
