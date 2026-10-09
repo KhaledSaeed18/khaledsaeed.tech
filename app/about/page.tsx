@@ -3,15 +3,13 @@ import Link from "next/link"
 import type * as React from "react"
 
 import { abs, BreadcrumbJsonLd, JsonLd, personRef } from "@/components/json-ld"
+import { DropCap } from "@/components/print/drop-cap"
 import { PageIntro } from "@/components/print/page-intro"
 import { Rule, SpecLabel } from "@/components/print/sheet"
 import { ContactSheet } from "@/components/home/contact-sheet"
-import {
-  about,
-  credentials,
-  education,
-  principles,
-} from "@/lib/content/profile"
+import { about, credentials, education } from "@/lib/content/profile"
+import { projects } from "@/lib/content/projects"
+import { getArticles } from "@/lib/data/devto"
 import { siteConfig } from "@/lib/site"
 import { pageMeta } from "@/lib/metadata"
 
@@ -23,7 +21,68 @@ export const metadata: Metadata = pageMeta({
   type: "profile",
 })
 
-export default function AboutPage() {
+/** "Sep 2025" -> sortable month index */
+const month = (s: string) => {
+  const d = new Date(`1 ${s}`)
+  return Number.isNaN(d.getTime())
+    ? Number(s) * 12
+    : d.getFullYear() * 12 + d.getMonth()
+}
+
+/** Education and certifications as one press log, newest first. */
+const log = [
+  ...education.map((e) => ({
+    kind: "degree" as const,
+    title: `${e.degree}, ${e.field}`,
+    issuer: e.school,
+    when: `${e.start} to ${e.end}`,
+    at: month(e.start),
+    current: e.current,
+    note: e.note,
+    highlight: false,
+  })),
+  ...credentials.map((c) => ({
+    kind: "certificate" as const,
+    title: c.name,
+    issuer: c.issuer,
+    when: c.date,
+    at: month(c.date),
+    current: false,
+    note: c.note,
+    highlight: !!c.highlight,
+  })),
+]
+  .sort((a, b) => b.at - a.at)
+  .map((e) => ({ ...e, year: Math.floor(e.at / 12) }))
+const years = [...new Set(log.map((e) => e.year))]
+
+export default async function AboutPage() {
+  const articles = await getArticles()
+  const specs: { term: string; value: string; href?: string }[] = [
+    { term: "role", value: siteConfig.role },
+    { term: "based in", value: siteConfig.location },
+    { term: "languages", value: "TypeScript end to end, Swift on the Mac" },
+    {
+      term: "studying",
+      value: `${education[0].degree} in ${education[0].field}, until ${education[0].end}`,
+    },
+    { term: "learning", value: "AI and machine learning inside real products" },
+    {
+      term: "public work",
+      value: `${projects.length} projects`,
+      href: "/work",
+    },
+    ...(articles.length
+      ? [
+          {
+            term: "writing",
+            value: `${articles.length} articles`,
+            href: "/writing",
+          },
+        ]
+      : []),
+    { term: "reach", value: "contact@khaledsaeed.tech", href: "/contact" },
+  ]
   return (
     <>
       <PageIntro
@@ -33,142 +92,141 @@ export default function AboutPage() {
       />
 
       <div className="frame mt-24 space-y-28">
-        <section className="space-y-6 text-lg leading-relaxed text-muted-foreground">
-          {about.paragraphs.map((p, i) => (
-            <p
-              key={i}
-              data-reveal
-              className={
-                i === 0
-                  ? "text-2xl leading-snug text-balance text-foreground"
-                  : ""
-              }
-            >
-              {p}
-            </p>
-          ))}
-          <p data-reveal>
-            The best way to see how I think is the{" "}
-            <Link
-              href="/work"
-              className="text-foreground underline decoration-border underline-offset-4 hover:decoration-brand"
-            >
-              work
-            </Link>
-            , and the fastest way to reach me is{" "}
-            <a
-              href="mailto:contact@khaledsaeed.tech"
-              className="text-foreground underline decoration-border underline-offset-4 hover:decoration-brand"
-            >
-              email
-            </a>
-            .
-          </p>
+        <section
+          aria-label="Bio"
+          className="space-y-6 text-lg leading-relaxed text-muted-foreground"
+        >
+          {about.paragraphs.map((p, i) =>
+            i === 0 ? (
+              <DropCap
+                key={i}
+                text={p}
+                className="text-2xl leading-snug text-foreground"
+              />
+            ) : (
+              <p key={i} data-reveal>
+                {p}
+              </p>
+            )
+          )}
         </section>
 
-        <section aria-labelledby="education">
-          <SpecLabel index={1}>education</SpecLabel>
+        <section aria-labelledby="specifications">
+          <SpecLabel index={1}>specifications</SpecLabel>
           <Rule className="mt-3" />
-          <h2 id="education" className="sr-only">
-            Education
+          <h2 id="specifications" className="sr-only">
+            Specifications
           </h2>
-          <ol className="mt-4">
-            {education.map((e, i) => (
-              <li
-                key={e.degree}
-                data-reveal
-                style={{ "--reveal-delay": i } as React.CSSProperties}
-                className="grid gap-2 border-b border-dashed border-border py-8 md:grid-cols-12 md:gap-6"
-              >
-                <p className="font-mono text-xs text-muted-foreground md:col-span-3">
-                  {e.start} to {e.end}
-                  {e.current && <span className="ml-2 text-brand">now</span>}
-                </p>
-                <div className="md:col-span-9">
-                  <p className="font-heading text-2xl font-medium tracking-tight">
-                    {e.degree}, {e.field}
-                  </p>
-                  <p className="mt-1 text-muted-foreground">{e.school}</p>
-                  {e.note && (
-                    <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-                      {e.note}
-                    </p>
-                  )}
-                </div>
-              </li>
-            ))}
-          </ol>
-        </section>
-
-        <section aria-labelledby="credentials">
-          <SpecLabel index={2}>credentials</SpecLabel>
-          <Rule className="mt-3" />
-          <h2 id="credentials" className="sr-only">
-            Certifications
-          </h2>
-          <ul className="mt-4 grid gap-x-10 md:grid-cols-2">
-            {credentials.map((c, i) => (
-              <li
-                key={c.name}
+          <dl className="mt-4 grid gap-x-10 md:grid-cols-2">
+            {specs.map((s, i) => (
+              <div
+                key={s.term}
                 data-reveal
                 style={{ "--reveal-delay": i % 4 } as React.CSSProperties}
-                className={`border-b border-dashed border-border py-5 ${c.highlight ? "md:col-span-2" : ""}`}
+                className="grid grid-cols-[7.5rem_1fr] items-baseline gap-4 border-b border-dashed border-border py-4 sm:grid-cols-[9rem_1fr]"
               >
-                <div className="flex items-baseline justify-between gap-4">
-                  <p
-                    className={
-                      c.highlight
-                        ? "font-heading text-2xl font-medium tracking-tight"
-                        : "font-medium"
-                    }
-                  >
-                    {c.name}
-                  </p>
-                  <span className="shrink-0 font-mono text-xs text-muted-foreground">
-                    {c.date}
-                  </span>
-                </div>
-                <p className="mt-1 text-sm text-muted-foreground">{c.issuer}</p>
-                {c.note && (
-                  <p className="mt-3 inline-flex items-center gap-2 font-mono text-xs text-brand">
-                    <span aria-hidden="true" className="size-1.5 bg-brand" />
-                    {c.note}
-                  </p>
-                )}
-              </li>
+                <dt className="font-mono text-xs text-muted-foreground">
+                  {s.term}
+                </dt>
+                <dd className="text-foreground">
+                  {s.href ? (
+                    <Link
+                      href={s.href}
+                      className="underline decoration-border underline-offset-4 transition-colors hover:decoration-brand"
+                    >
+                      {s.value}
+                    </Link>
+                  ) : (
+                    s.value
+                  )}
+                </dd>
+              </div>
             ))}
-          </ul>
+          </dl>
         </section>
 
-        <section aria-labelledby="principles">
-          <SpecLabel index={3}>how i work</SpecLabel>
+        <section aria-labelledby="run-log">
+          <div className="flex items-end justify-between gap-6">
+            <SpecLabel index={2}>run log</SpecLabel>
+            <span className="font-mono text-xs text-muted-foreground">
+              {log.length} entries
+            </span>
+          </div>
           <Rule className="mt-3" />
-          <h2 id="principles" className="sr-only">
-            Principles
+          <h2 id="run-log" className="sr-only">
+            Education and certifications
           </h2>
-          <ol className="mt-10 grid gap-px overflow-hidden border border-border bg-border md:grid-cols-2">
-            {principles.map((p, i) => (
-              <li
-                key={p.title}
-                data-reveal
-                className="bg-background p-6 sm:p-8"
-                style={{ "--reveal-delay": i } as React.CSSProperties}
+          <div className="mt-4">
+            {years.map((year) => (
+              <div
+                key={year}
+                className="grid gap-x-10 border-b border-dashed border-border md:grid-cols-12"
               >
-                <span className="font-mono text-xs text-brand tabular-nums">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <h3 className="mt-3 text-lg font-medium">{p.title}</h3>
-                <p className="mt-2 leading-relaxed text-muted-foreground">
-                  {p.body}
+                <p className="pt-6 font-heading text-3xl font-medium tracking-tight text-muted-foreground/60 tabular-nums md:col-span-2 md:pt-7">
+                  {year}
                 </p>
-              </li>
+                <ol className="md:col-span-10">
+                  {log
+                    .filter((e) => e.year === year)
+                    .map((e, i) => (
+                      <li
+                        key={e.title}
+                        data-reveal
+                        style={{ "--reveal-delay": i } as React.CSSProperties}
+                        className="border-b border-dashed border-border py-6 last:border-b-0"
+                      >
+                        <p className="font-mono text-xs text-muted-foreground">
+                          <span
+                            className={
+                              e.kind === "degree"
+                                ? "text-brand"
+                                : "text-muted-foreground"
+                            }
+                          >
+                            {e.kind}
+                          </span>
+                          <span className="mx-2 opacity-50">/</span>
+                          {e.when}
+                          {e.current && (
+                            <span className="ml-2 inline-flex items-center gap-1.5 text-brand">
+                              <span
+                                aria-hidden="true"
+                                className="size-1.5 bg-brand"
+                              />
+                              now
+                            </span>
+                          )}
+                        </p>
+                        <p
+                          className={`mt-2 ${
+                            e.highlight || e.kind === "degree"
+                              ? "font-heading text-2xl font-medium tracking-tight"
+                              : "text-lg font-medium"
+                          }`}
+                        >
+                          {e.title}
+                        </p>
+                        <p className="mt-1 text-sm text-muted-foreground">
+                          {e.issuer}
+                        </p>
+                        {e.note && (
+                          <p
+                            className={`mt-2 max-w-2xl text-sm leading-relaxed ${e.highlight ? "font-mono text-xs text-brand" : "text-muted-foreground"}`}
+                          >
+                            {e.note}
+                          </p>
+                        )}
+                      </li>
+                    ))}
+                </ol>
+              </div>
             ))}
-          </ol>
+          </div>
         </section>
       </div>
 
       <div className="mt-32">
-        <ContactSheet index={4} />
+        <ContactSheet index={3} />
       </div>
 
       <JsonLd

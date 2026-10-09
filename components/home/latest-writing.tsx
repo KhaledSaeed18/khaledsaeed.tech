@@ -1,6 +1,7 @@
 import Link from "next/link"
 import type * as React from "react"
 
+import { DropCap } from "@/components/print/drop-cap"
 import { Sheet } from "@/components/print/sheet"
 import { getArticle, getArticles, type Article } from "@/lib/data/devto"
 import { formatDate } from "@/lib/format"
@@ -100,20 +101,10 @@ export async function LatestWriting() {
             <h3 className="mt-4 font-heading text-3xl leading-[1.08] font-medium tracking-tight text-balance transition-colors group-hover:text-brand sm:text-5xl">
               {lead.title}
             </h3>
-            <p className="mt-6 text-base leading-relaxed text-muted-foreground sm:text-lg">
-              <span
-                className="float-left mt-1.5 mr-3 font-heading text-[4.1em] leading-[0.72] font-medium text-brand"
-                style={{
-                  maskImage: "var(--dither-12)",
-                  WebkitMaskImage: "var(--dither-12)",
-                  maskSize: "var(--dither-tile)",
-                  WebkitMaskSize: "var(--dither-tile)",
-                }}
-              >
-                {deck[0]}
-              </span>
-              {deck.slice(1)}
-            </p>
+            <DropCap
+              text={deck}
+              className="mt-6 text-base leading-relaxed text-muted-foreground sm:text-lg"
+            />
             <p className="mt-6 flex flex-wrap gap-x-4 gap-y-1 font-mono text-xs text-muted-foreground">
               <span>{lead.readingMinutes} min read</span>
               <span aria-hidden="true">/</span>
