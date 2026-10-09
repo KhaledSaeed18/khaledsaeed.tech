@@ -387,3 +387,29 @@
     -webkit-mask-image: var(--dither-5);
   }
 }
+
+/* Mobile menu: the sheet fades in and its links rise in a short stagger. */
+@keyframes menu-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes menu-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+.menu-sheet {
+  animation: menu-fade 200ms ease-out both;
+}
+.menu-item {
+  animation: menu-rise 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--i, 0) * 40ms + 60ms);
+}
+@media (prefers-reduced-motion: reduce) {
+  .menu-sheet,
+  .menu-item {
+    animation: none;
+  }
+}
