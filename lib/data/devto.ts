@@ -62,7 +62,7 @@ function normalize(a: DevListItem): Article {
 }
 
 /** Brand rule: no emoji anywhere in the UI, including imported titles. */
-const stripEmoji = (s: string) =>
+export const stripEmoji = (s: string) =>
   s
     .replace(/[\p{Extended_Pictographic}\u{FE0F}\u{200D}]/gu, "")
     .replace(/\s{2,}/g, " ")

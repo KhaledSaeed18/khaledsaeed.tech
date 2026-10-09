@@ -3,55 +3,9 @@ import type * as React from "react"
 
 import { DropCap } from "@/components/print/drop-cap"
 import { Sheet } from "@/components/print/sheet"
-import { getArticle, getArticles, type Article } from "@/lib/data/devto"
+import { getArticle, getArticles } from "@/lib/data/devto"
+import { kicker, standfirst } from "@/lib/writing"
 import { formatDate } from "@/lib/format"
-
-/** Tags too broad to say what a piece is about. */
-const GENERIC = new Set([
-  "webdev",
-  "javascript",
-  "programming",
-  "software",
-  "productivity",
-  "beginners",
-  "tutorial",
-])
-const kicker = (a: Article) =>
-  a.tags.find((t) => !GENERIC.has(t)) ?? a.tags[0] ?? "notes"
-
-/**
- * The lead's standfirst: the article's own opening, a few sentences long and
- * cut at a sentence end. Falls back to DEV's description, which is an excerpt
- * that can repeat the title and stops mid-sentence.
- */
-function standfirst(a: Article, html?: string) {
-  const text = [...(html ?? "").matchAll(/<p[^>]*>([\s\S]*?)<\/p>/gi)]
-    .map((m) => m[1])
-    .map((p) =>
-      p
-        .replace(/<[^>]+>/g, "")
-        .replace(/\s+/g, " ")
-        .trim()
-    )
-    .filter((p) => p.length > 40)
-    .join(" ")
-    .replace(/&amp;/g, "&")
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;|&#x27;|&rsquo;/g, "’")
-    .replace(/&[a-z#0-9]+;/gi, " ")
-  if (text.length > 120) {
-    const end = [...text.slice(0, 440).matchAll(/[.!?](?=\s|$)/g)]
-      .map((m) => m.index + 1)
-      .filter((i) => i >= 200)
-    return end.length
-      ? text.slice(0, end[end.length - 1])
-      : text.slice(0, 400) + "…"
-  }
-  let s = a.description.replace(/\s+/g, " ").trim()
-  if (s.toLowerCase().startsWith(a.title.toLowerCase()))
-    s = s.slice(a.title.length).replace(/^[\s:.\-]+/, "")
-  return s.replace(/[\s,.;:]*\.\.\.$/, "").trim() + "…"
-}
 
 /**
  * Writing as a broadsheet front page: a folio line, the latest piece as the
