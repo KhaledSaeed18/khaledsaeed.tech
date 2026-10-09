@@ -1,11 +1,10 @@
 import type { Metadata } from "next"
-import Image from "next/image"
 import Link from "next/link"
 import type * as React from "react"
 
 import { abs, BreadcrumbJsonLd, JsonLd, personRef } from "@/components/json-ld"
 import { PageIntro } from "@/components/print/page-intro"
-import { CropMarks, Rule, SpecLabel } from "@/components/print/sheet"
+import { Rule, SpecLabel } from "@/components/print/sheet"
 import { ContactSheet } from "@/components/home/contact-sheet"
 import {
   about,
@@ -34,66 +33,37 @@ export default function AboutPage() {
       />
 
       <div className="mx-auto mt-24 max-w-6xl space-y-28 px-6 sm:px-10">
-        <section className="grid gap-12 lg:grid-cols-12 lg:gap-10">
-          <figure
-            data-reveal
-            className="relative self-start rounded-2xl border border-border p-4 lg:col-span-5"
-          >
-            <CropMarks />
-            <div className="flex items-center justify-between font-mono text-xs text-muted-foreground">
-              <span>{"// specimen 01"}</span>
-              <span>1-bit</span>
-            </div>
-            <div className="mt-4 flex justify-center">
-              <Image
-                src="/character.png"
-                alt="Dithered portrait of Khaled Saeed as a small clay figure with glasses and a beard"
-                width={374}
-                height={423}
-                className="h-auto w-full max-w-[374px]"
-                style={{ imageRendering: "pixelated" }}
-                unoptimized
-                priority
-              />
-            </div>
-            <figcaption className="mt-4 font-mono text-xs text-muted-foreground">
-              raymarched in a fragment shader, printed through a 4x4 bayer
-              matrix
-            </figcaption>
-          </figure>
-
-          <div className="space-y-6 text-lg leading-relaxed text-muted-foreground lg:col-span-7 lg:pt-2">
-            {about.paragraphs.map((p, i) => (
-              <p
-                key={i}
-                data-reveal
-                className={
-                  i === 0
-                    ? "text-2xl leading-snug text-balance text-foreground"
-                    : ""
-                }
-              >
-                {p}
-              </p>
-            ))}
-            <p data-reveal>
-              The best way to see how I think is the{" "}
-              <Link
-                href="/work"
-                className="text-foreground underline decoration-border underline-offset-4 hover:decoration-brand"
-              >
-                work
-              </Link>
-              , and the fastest way to reach me is{" "}
-              <a
-                href="mailto:contact@khaledsaeed.tech"
-                className="text-foreground underline decoration-border underline-offset-4 hover:decoration-brand"
-              >
-                email
-              </a>
-              .
+        <section className="space-y-6 text-lg leading-relaxed text-muted-foreground">
+          {about.paragraphs.map((p, i) => (
+            <p
+              key={i}
+              data-reveal
+              className={
+                i === 0
+                  ? "text-2xl leading-snug text-balance text-foreground"
+                  : ""
+              }
+            >
+              {p}
             </p>
-          </div>
+          ))}
+          <p data-reveal>
+            The best way to see how I think is the{" "}
+            <Link
+              href="/work"
+              className="text-foreground underline decoration-border underline-offset-4 hover:decoration-brand"
+            >
+              work
+            </Link>
+            , and the fastest way to reach me is{" "}
+            <a
+              href="mailto:contact@khaledsaeed.tech"
+              className="text-foreground underline decoration-border underline-offset-4 hover:decoration-brand"
+            >
+              email
+            </a>
+            .
+          </p>
         </section>
 
         <section aria-labelledby="education">
