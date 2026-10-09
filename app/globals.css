@@ -303,6 +303,13 @@
   margin-inline: max(var(--gutter), calc((100% - var(--frame-max)) / 2));
   padding-inline: var(--frame-pad);
 }
+/* A vertical dotted rule on the left edge, like a newspaper column rule. */
+@utility rule-v {
+  background-image: linear-gradient(to bottom, var(--rule) 0 2px, transparent 2px);
+  background-size: 1px 6px;
+  background-repeat: repeat-y;
+  background-position: left top;
+}
 /* Same edges on small screens, a reading column on large ones. */
 @utility frame-narrow {
   margin-inline: max(var(--gutter), calc((100% - var(--frame-narrow)) / 2));
