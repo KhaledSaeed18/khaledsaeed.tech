@@ -5,13 +5,15 @@ import { ViewTransition } from "react"
 
 import "./globals.css"
 import { ConsoleProof } from "@/components/console-proof"
+import { KeyboardLayer } from "@/components/keys/keyboard-layer"
 import { PrintResume } from "@/components/print/print-resume"
 import { PersonJsonLd } from "@/components/person-json-ld"
 import { RevealObserver } from "@/components/print/reveal-observer"
 import { SiteFooter } from "@/components/site-footer"
 import { SiteHeader } from "@/components/site-header"
 import { TooltipProvider } from "@/components/ui/tooltip"
-import { siteConfig } from "@/lib/site"
+import { siteRoutes } from "@/lib/routes"
+import { siteConfig, socialLinks } from "@/lib/site"
 import { cn } from "@/lib/utils"
 
 const fontSans = Geist({
@@ -100,7 +102,7 @@ export const viewport: Viewport = {
   colorScheme: "dark",
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
@@ -135,6 +137,11 @@ export default function RootLayout({
         {/* the frame rails, top to bottom */}
         <div aria-hidden="true" className="rails" />
         <ConsoleProof />
+        <KeyboardLayer
+          routes={await siteRoutes()}
+          email={socialLinks.find((l) => l.key === "email")!.handle}
+          bookingUrl={siteConfig.bookingUrl}
+        />
         <PrintResume />
         <RevealObserver />
         <PersonJsonLd />

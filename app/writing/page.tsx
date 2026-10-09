@@ -109,6 +109,7 @@ export default async function WritingPage() {
                         className="border-b border-dashed border-border last:border-b-0"
                       >
                         <Link
+                          data-nav-item
                           href={`/writing/${a.slug}`}
                           className="group block py-8"
                         >

@@ -76,6 +76,15 @@ node scripts/render-objects.mjs key cap  # only these
 
 Useful dev-only query params on the home page: `?shade` (no dither), `?zoom` (head close-up), `?still` (skip the print-in), `?fallback` (the no-WebGL image), `?q=0|1|2` (force a quality tier).
 
+## Details worth finding
+
+- **Job ticket** (`components/keys/keyboard-layer.tsx`): ⌘K or `/` opens a command palette over pages, projects, articles and actions. `g h/w/a/r/c` navigate, `j`/`k` move through lists, `?` shows the key legend, `p` toggles proof mode (the 12-column grid, frame numbers and live type metrics over the page).
+- **Résumé print** (`components/print/print-resume.tsx`): ⌘P on any page prints a one-page A4 résumé with crop marks.
+- **Misprint 404** (`components/misprint/`): drag the terracotta plate back into register; the closest real pages are suggested. The same game lives at `/register`.
+- **Console proof** (`components/console-proof.tsx`): DevTools shows the mark, `colophon()` and a byte puzzle that leads to `/register`.
+- **Sleeping portrait**: between 01:00 and 07:00 Beirut time the portrait dozes; a click wakes him. `?sleep` forces it.
+- **Save contact**: `/khaled-saeed.vcf` is a vCard with the portrait as its photo. The footer's edition is the build commit; articles show a reading ink bar.
+
 ## Production
 
 - Security headers are set for every route in `next.config.ts`; the footer's "last printed" date is the build time (`BUILD_DATE`).

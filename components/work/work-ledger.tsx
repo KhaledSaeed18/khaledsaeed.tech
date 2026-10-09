@@ -123,6 +123,7 @@ export function WorkLedger({
                   className="rise-in border-b border-dashed border-border"
                 >
                   <Link
+                    data-nav-item
                     href={`/work/${p.slug}`}
                     onMouseEnter={() => show(p.slug)}
                     onFocus={() => show(p.slug)}

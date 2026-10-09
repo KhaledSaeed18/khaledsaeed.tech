@@ -1,14 +1,21 @@
 "use client"
 
-import { usePathname } from "next/navigation"
 import * as React from "react"
 
 /**
  * The slug line at the foot of the printed résumé: which page it was
  * printed from and when. The date is filled in at print time.
  */
+const noop = () => () => {}
+
 export function PrintSlug({ edition }: { edition: string }) {
-  const path = usePathname()
+  // read in the browser: a prerendered page (like the 404) does not know
+  // the address it will be shown at
+  const path = React.useSyncExternalStore(
+    noop,
+    () => window.location.pathname,
+    () => "/"
+  )
   const date = React.useRef<HTMLSpanElement>(null)
 
   React.useEffect(() => {
