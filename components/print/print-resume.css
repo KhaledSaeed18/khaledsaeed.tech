@@ -1,0 +1,23 @@
+/*
+ * Print: ⌘P on any page prints the one-page résumé (print-resume.tsx)
+ * instead of the screen layout. Lives beside the component, so the print
+ * styles always travel and reload with it.
+ */
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+  html,
+  body {
+    background: #fff !important;
+  }
+  body > *:not(.print-resume) {
+    display: none !important;
+  }
+  .print-resume {
+    display: block !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

@@ -1,10 +1,19 @@
 import type { Metadata, Viewport } from "next"
 import { Hanken_Grotesk, Geist, JetBrains_Mono } from "next/font/google"
 
+import { ViewTransition } from "react"
+
 import "./globals.css"
-import { TooltipProvider } from "@/components/ui/tooltip"
+import { ConsoleProof } from "@/components/console-proof"
+import { KeyboardLayer } from "@/components/keys/keyboard-layer"
+import { PrintResume } from "@/components/print/print-resume"
 import { PersonJsonLd } from "@/components/person-json-ld"
-import { siteConfig } from "@/lib/site"
+import { RevealObserver } from "@/components/print/reveal-observer"
+import { SiteFooter } from "@/components/site-footer"
+import { SiteHeader } from "@/components/site-header"
+import { TooltipProvider } from "@/components/ui/tooltip"
+import { siteRoutes } from "@/lib/routes"
+import { siteConfig, socialLinks } from "@/lib/site"
 import { cn } from "@/lib/utils"
 
 const fontSans = Geist({
@@ -42,6 +51,10 @@ export const metadata: Metadata = {
     "Node.js",
     "NestJS",
     "system design",
+    "multi-tenant architecture",
+    "developer tools",
+    "Swift",
+    "macOS apps",
     "Lebanon software engineer",
     "software engineer portfolio",
   ],
@@ -50,19 +63,24 @@ export const metadata: Metadata = {
   publisher: siteConfig.name,
   alternates: {
     canonical: "/",
+    types: {
+      "application/rss+xml": "/writing/rss.xml",
+      "text/plain": "/llms.txt",
+    },
   },
   openGraph: {
     type: "website",
     locale: "en_US",
     url: siteConfig.url,
     siteName: siteConfig.name,
-    title: `${siteConfig.name} — ${siteConfig.role}`,
+    title: `${siteConfig.name} | ${siteConfig.role}`,
     description: siteConfig.description,
   },
   twitter: {
     card: "summary_large_image",
-    title: `${siteConfig.name} — ${siteConfig.role}`,
+    title: `${siteConfig.name} | ${siteConfig.role}`,
     description: siteConfig.description,
+    site: siteConfig.twitterHandle,
     creator: siteConfig.twitterHandle,
   },
   robots: {
@@ -84,7 +102,7 @@ export const viewport: Viewport = {
   colorScheme: "dark",
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
@@ -92,7 +110,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={cn("dark",
+      data-scroll-behavior="smooth"
+      className={cn(
+        "dark",
         "antialiased",
         fontSans.variable,
         fontHeading.variable,
@@ -101,9 +121,29 @@ export default function RootLayout({
       )}
     >
       <body>
+        <a
+          href="#content"
+          className="sr-only z-[60] bg-background px-3 py-2 font-mono text-xs focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+        >
+          skip to content
+        </a>
         <TooltipProvider>
-          {children}
+          <SiteHeader />
+          <ViewTransition default="page">
+            <main id="content">{children}</main>
+          </ViewTransition>
+          <SiteFooter />
         </TooltipProvider>
+        {/* the frame rails, top to bottom */}
+        <div aria-hidden="true" className="rails" />
+        <ConsoleProof />
+        <KeyboardLayer
+          routes={await siteRoutes()}
+          email={socialLinks.find((l) => l.key === "email")!.handle}
+          bookingUrl={siteConfig.bookingUrl}
+        />
+        <PrintResume />
+        <RevealObserver />
         <PersonJsonLd />
       </body>
     </html>

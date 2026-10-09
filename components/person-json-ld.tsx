@@ -18,6 +18,13 @@ export function PersonJsonLd() {
         jobTitle: siteConfig.role,
         description: siteConfig.description,
         knowsAbout: [...siteConfig.knowsAbout],
+        image: `${siteConfig.url}/character.png`,
+        email: "mailto:contact@khaledsaeed.tech",
+        alumniOf: {
+          "@type": "CollegeOrUniversity",
+          name: "Lebanese International University",
+          url: "https://www.liu.edu.lb",
+        },
         sameAs,
         address: {
           "@type": "PostalAddress",

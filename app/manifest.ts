@@ -4,7 +4,7 @@ import { siteConfig } from "@/lib/site"
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: `${siteConfig.name} — ${siteConfig.role}`,
+    name: `${siteConfig.name}, ${siteConfig.role}`,
     short_name: siteConfig.name,
     description: siteConfig.description,
     start_url: "/",
@@ -17,6 +17,12 @@ export default function manifest(): MetadataRoute.Manifest {
         sizes: "512x512",
         type: "image/png",
         purpose: "any",
+      },
+      {
+        src: "/icon-512.png",
+        sizes: "512x512",
+        type: "image/png",
+        purpose: "maskable",
       },
     ],
   }
