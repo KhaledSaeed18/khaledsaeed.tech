@@ -1,3 +1,5 @@
+import "./print-resume.css"
+
 import { PrintSlug } from "@/components/print/print-slug"
 import {
   about,
