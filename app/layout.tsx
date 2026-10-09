@@ -4,6 +4,7 @@ import { Hanken_Grotesk, Geist, JetBrains_Mono } from "next/font/google"
 import { ViewTransition } from "react"
 
 import "./globals.css"
+import { ConsoleProof } from "@/components/console-proof"
 import { PersonJsonLd } from "@/components/person-json-ld"
 import { RevealObserver } from "@/components/print/reveal-observer"
 import { SiteFooter } from "@/components/site-footer"
@@ -132,6 +133,7 @@ export default function RootLayout({
         </TooltipProvider>
         {/* the frame rails, top to bottom */}
         <div aria-hidden="true" className="rails" />
+        <ConsoleProof />
         <RevealObserver />
         <PersonJsonLd />
       </body>

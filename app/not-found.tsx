@@ -1,7 +1,9 @@
 import type { Metadata } from "next"
-import Link from "next/link"
 
+import { Misprint } from "@/components/misprint/misprint"
+import { Suggestions } from "@/components/misprint/suggestions"
 import { Rule, SpecLabel } from "@/components/print/sheet"
+import { siteRoutes } from "@/lib/routes"
 
 export const metadata: Metadata = {
   title: "Page not found",
@@ -10,43 +12,28 @@ export const metadata: Metadata = {
   robots: { index: false, follow: true },
 }
 
-export default function NotFound() {
+/**
+ * The misprint: a 404 that came off the press out of register. Fix the
+ * plates if you like; the closest real pages are listed underneath.
+ */
+export default async function NotFound() {
+  const routes = await siteRoutes()
   return (
     <div className="frame pt-32 sm:pt-40">
-      <SpecLabel>error 404</SpecLabel>
+      <SpecLabel>error 404 / misprint</SpecLabel>
       <Rule className="mt-3" />
-      <p
-        aria-hidden="true"
-        className="mt-12 font-heading text-[clamp(7rem,28vw,18rem)] leading-none font-medium tracking-tighter"
-        style={{
-          maskImage: "var(--dither-9)",
-          WebkitMaskImage: "var(--dither-9)",
-          maskSize: "var(--dither-tile)",
-          WebkitMaskSize: "var(--dither-tile)",
-        }}
-      >
-        404
-      </p>
-      <h1 className="mt-6 font-heading text-3xl font-medium tracking-tight sm:text-4xl">
+      <div className="mt-12 overflow-hidden pb-2">
+        <Misprint text="404" />
+      </div>
+      <h1 className="mt-12 font-heading text-3xl font-medium tracking-tight sm:text-4xl">
         This sheet never made it to print.
       </h1>
-      <p className="mt-4 max-w-prose text-muted-foreground">
-        The page you are looking for moved or never existed. Everything that did
-        get printed is one click away.
+      <p className="mt-4 text-muted-foreground">
+        The page you are looking for moved or never existed. While you are here,
+        the press could use a hand.
       </p>
-      <div className="mt-8 flex flex-wrap gap-3 font-mono text-xs">
-        <Link
-          href="/"
-          className="bg-foreground px-4 py-2.5 text-background transition-opacity hover:opacity-85"
-        >
-          back home
-        </Link>
-        <Link
-          href="/work"
-          className="border border-border bg-secondary px-4 py-2.5 text-muted-foreground transition-colors hover:text-foreground"
-        >
-          see the work
-        </Link>
+      <div className="mt-12">
+        <Suggestions routes={routes} />
       </div>
     </div>
   )
