@@ -100,7 +100,7 @@
        printed on. Each stock has an ink: a near-black of its own hue. */
     --rule: oklch(0.85 0.03 70 / 24%);
     /* registration marks where rules cross the rails */
-    --mark: oklch(0.85 0.03 70 / 55%);
+    --mark: var(--brand);
     --stone: #a6a09a;
     --stock-terracotta: #d9634a;
     --ink-terracotta: #2b0d06;
