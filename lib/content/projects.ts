@@ -294,6 +294,7 @@ export const projects: Project[] = [
       { label: "Live site", href: "https://mcce.khaledsaeed.tech" },
       { label: "Source", href: gh("mcce") },
     ],
+    featured: true,
     problem:
       "Course material lived in three channels that each lost something: official slides with no past exams, and chat groups that were hard to search and not open to everyone.",
     approach: [
@@ -410,7 +411,6 @@ export const projects: Project[] = [
     stack: ["Go", "SQLite", "React", "TypeScript", "Vite"],
     repo: "repo-scout",
     links: [{ label: "Source", href: gh("repo-scout") }],
-    featured: true,
     problem:
       "Understanding an unfamiliar codebase means juggling five tools with five output formats, and some of them want your source uploaded.",
     approach: [
