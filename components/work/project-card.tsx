@@ -7,31 +7,30 @@ import { cn } from "@/lib/utils"
 /**
  * A project printed on card stock: kind and number along the top, the dithered
  * object in the card's own ink, the name at the bottom. Hovering plays the
- * object's swing.
+ * object's swing. `still` renders it as a plain box (no link), for previews.
  */
 export function ProjectCard({
   project,
   index,
+  still = false,
   className,
 }: {
   project: Project
   index: number
+  still?: boolean
   className?: string
 }) {
   const { stock } = project
-  return (
-    <Link
-      href={`/work/${project.slug}`}
-      aria-label={`${project.name}: ${project.tagline}`}
-      className={cn(
-        "group relative flex aspect-[5/7] flex-col overflow-hidden p-4 transition-transform duration-300 ease-out hover:-translate-y-1.5 focus-visible:-translate-y-1.5 focus-visible:ring-3 focus-visible:ring-ring/60 focus-visible:outline-none sm:p-5",
-        className
-      )}
-      style={{
-        backgroundColor: `var(--stock-${stock})`,
-        color: `var(--ink-${stock})`,
-      }}
-    >
+  const style = {
+    backgroundColor: `var(--stock-${stock})`,
+    color: `var(--ink-${stock})`,
+  }
+  const cls = cn(
+    "group relative flex aspect-[5/7] flex-col overflow-hidden p-4 transition-transform duration-300 ease-out hover:-translate-y-1.5 focus-visible:-translate-y-1.5 focus-visible:ring-3 focus-visible:ring-ring/60 focus-visible:outline-none sm:p-5",
+    className
+  )
+  const body = (
+    <>
       <div className="flex items-center justify-between font-mono text-xs">
         <span>
           {"// "}
@@ -41,7 +40,7 @@ export function ProjectCard({
       </div>
 
       <div className="[container-type:size] my-2 flex min-h-0 w-full flex-1 items-center justify-center">
-        <DitherObject kind={project.object} stock={stock} fluid />
+        <DitherObject kind={project.object} stock={stock} play={still} fluid />
       </div>
 
       <div>
@@ -52,6 +51,22 @@ export function ProjectCard({
           {project.year} / {project.stack.slice(0, 2).join(", ").toLowerCase()}
         </p>
       </div>
+    </>
+  )
+  if (still)
+    return (
+      <div className={cls} style={style}>
+        {body}
+      </div>
+    )
+  return (
+    <Link
+      href={`/work/${project.slug}`}
+      aria-label={`${project.name}: ${project.tagline}`}
+      className={cls}
+      style={style}
+    >
+      {body}
     </Link>
   )
 }
