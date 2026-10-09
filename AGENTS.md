@@ -14,6 +14,7 @@ The site is a 1-bit print run, and paper is cut straight. Nothing has a border r
 - Do not write `rounded-*` classes, `border-radius` in CSS, or `borderRadius` in inline styles and `next/og` images. Delete them from shadcn components you add (`pnpm dlx shadcn add ...` ships `rounded-lg`, `rounded-md` and similar).
 - `rounded-full` and circular shapes are not allowed either. A dot or marker is a small square.
 - App icons (`app/icon.svg`, `app/apple-icon.png`, `public/icon-512.png`) are full-bleed squares with no transparent corners. The OS may round them; we don't.
+- The logo mark (`components/flip-logo.tsx` and `app/icon.svg`) uses `square` line caps and a `miter` join, never `round`. Both files share one geometry: stem at x 35.5, chevron `70.5,28 50.5,50 70.5,72`, stroke 11. The chevron must stay detached from the stem in both the `|<` and the flipped `|>` state, so check both if you change the geometry or the stroke. After editing `app/icon.svg`, re-render the PNGs: `rsvg-convert -w 180 -h 180 app/icon.svg -o app/apple-icon.png` and `rsvg-convert -w 512 -h 512 app/icon.svg -o public/icon-512.png`.
 
 ## Headings stack above their text
 

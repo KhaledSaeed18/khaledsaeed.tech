@@ -24,7 +24,8 @@ interface FlipLogoProps {
  * Flip-bracket K mark. A fixed vertical stem with a detached chevron beside it.
  * At rest it reads as "|<" (the letter K); flipped it reads as "|>" (forward/run).
  * The chevron is a single polyline mirrored via scaleX(-1) about its own center,
- * so both states share identical geometry.
+ * so both states share identical geometry. Square caps and a mitred join keep
+ * the mark as cut-straight as the rest of the site.
  */
 export function FlipLogo({
   size = 40,
@@ -54,12 +55,12 @@ export function FlipLogo({
         fill="none"
         stroke={color}
         strokeWidth={11}
-        strokeLinecap="round"
-        strokeLinejoin="round"
+        strokeLinecap="square"
+        strokeLinejoin="miter"
       >
-        <line x1={38} y1={28} x2={38} y2={72} />
+        <line x1={35.5} y1={28} x2={35.5} y2={72} />
         <polyline
-          points="71,28 51,50 71,72"
+          points="70.5,28 50.5,50 70.5,72"
           className={interactive ? "flip-chevron" : auto ? "flip-chevron-auto" : undefined}
           // Static modes set the transform inline; interactive mode must drive
           // it from CSS so the :hover rule isn't outranked by an inline style.
