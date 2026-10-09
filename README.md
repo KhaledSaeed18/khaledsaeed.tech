@@ -1,3 +1,9 @@
+[![Khaled Saeed builds software that explains itself. Full-stack engineer in Lebanon.](.github/assets/readme-header.png)](https://khaledsaeed.tech)
+
+<p align="center">
+  <a href="https://khaledsaeed.tech"><img src=".github/assets/readme-website-badge.svg" alt="Visit khaledsaeed.tech" /></a>
+</p>
+
 # khaledsaeed.tech
 
 Personal portfolio site, built with Next.js, React, TypeScript, and Tailwind CSS.
