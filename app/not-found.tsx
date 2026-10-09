@@ -5,6 +5,8 @@ import { Rule, SpecLabel } from "@/components/print/sheet"
 
 export const metadata: Metadata = {
   title: "Page not found",
+  description: "This page moved or never existed.",
+  alternates: { canonical: null },
   robots: { index: false, follow: true },
 }
 

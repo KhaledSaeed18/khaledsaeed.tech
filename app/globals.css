@@ -6,143 +6,144 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-    --font-sans: var(--font-sans);
-    --font-heading: var(--font-heading);
-    --font-mono: var(--font-mono);
+  --font-sans: var(--font-sans);
+  --font-heading: var(--font-heading);
+  --font-mono: var(--font-mono);
 
-    --color-brand: var(--brand);
-    --color-brand-foreground: var(--brand-foreground);
-    --color-brand-muted: var(--brand-muted);
-    --color-teal: var(--teal);
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-brand-muted: var(--brand-muted);
+  --color-teal: var(--teal);
 
-    --color-sidebar-ring: var(--sidebar-ring);
-    --color-sidebar-border: var(--sidebar-border);
-    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-    --color-sidebar-accent: var(--sidebar-accent);
-    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-    --color-sidebar-primary: var(--sidebar-primary);
-    --color-sidebar-foreground: var(--sidebar-foreground);
-    --color-sidebar: var(--sidebar);
-    --color-chart-5: var(--chart-5);
-    --color-chart-4: var(--chart-4);
-    --color-chart-3: var(--chart-3);
-    --color-chart-2: var(--chart-2);
-    --color-chart-1: var(--chart-1);
-    --color-ring: var(--ring);
-    --color-input: var(--input);
-    --color-border: var(--border);
-    --color-destructive: var(--destructive);
-    --color-accent-foreground: var(--accent-foreground);
-    --color-accent: var(--accent);
-    --color-muted-foreground: var(--muted-foreground);
-    --color-muted: var(--muted);
-    --color-secondary-foreground: var(--secondary-foreground);
-    --color-secondary: var(--secondary);
-    --color-primary-foreground: var(--primary-foreground);
-    --color-primary: var(--primary);
-    --color-popover-foreground: var(--popover-foreground);
-    --color-popover: var(--popover);
-    --color-card-foreground: var(--card-foreground);
-    --color-card: var(--card);
-    --color-foreground: var(--foreground);
-    --color-background: var(--background);
-    /* Square corners everywhere: the site is a print run, and paper is cut
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  /* Square corners everywhere: the site is a print run, and paper is cut
        straight. Every radius token resolves to 0, so stock shadcn classes
        (rounded-lg, rounded-md...) also render square. */
-    --radius: 0;
-    --radius-xs: 0;
-    --radius-sm: 0;
-    --radius-md: 0;
-    --radius-lg: 0;
-    --radius-xl: 0;
-    --radius-2xl: 0;
-    --radius-3xl: 0;
-    --radius-4xl: 0;
+  --radius: 0;
+  --radius-xs: 0;
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
+  --radius-2xl: 0;
+  --radius-3xl: 0;
+  --radius-4xl: 0;
 }
 
 /* Warm "bone on near-black" identity palette — dark only.
    Anchors: bone #F5F1EA, near-black #1A1715, terracotta #D9634A, teal #3E8A86. */
 :root {
-    --background: oklch(0.2074 0.0062 56.02);
-    --foreground: oklch(0.9300 0.0090 82);
-    --card: oklch(0.2450 0.0070 56);
-    --card-foreground: oklch(0.9300 0.0090 82);
-    --popover: oklch(0.2450 0.0070 56);
-    --popover-foreground: oklch(0.9300 0.0090 82);
-    --primary: oklch(0.9300 0.0090 82);
-    --primary-foreground: oklch(0.2300 0.0080 56);
-    --secondary: oklch(0.2900 0.0080 56);
-    --secondary-foreground: oklch(0.9300 0.0090 82);
-    --muted: oklch(0.2900 0.0080 56);
-    --muted-foreground: oklch(0.7100 0.0110 70);
-    --accent: oklch(0.3050 0.0090 56);
-    --accent-foreground: oklch(0.9300 0.0090 82);
-    --destructive: oklch(0.7040 0.1910 22.216);
-    --border: oklch(0.8500 0.0300 70 / 12%);
-    --input: oklch(0.8500 0.0300 70 / 15%);
-    --ring: oklch(0.6398 0.1539 33.47);
-    --radius: 0;
+  --background: oklch(0.2074 0.0062 56.02);
+  --foreground: oklch(0.93 0.009 82);
+  --card: oklch(0.245 0.007 56);
+  --card-foreground: oklch(0.93 0.009 82);
+  --popover: oklch(0.245 0.007 56);
+  --popover-foreground: oklch(0.93 0.009 82);
+  --primary: oklch(0.93 0.009 82);
+  --primary-foreground: oklch(0.23 0.008 56);
+  --secondary: oklch(0.29 0.008 56);
+  --secondary-foreground: oklch(0.93 0.009 82);
+  --muted: oklch(0.29 0.008 56);
+  --muted-foreground: oklch(0.71 0.011 70);
+  --accent: oklch(0.305 0.009 56);
+  --accent-foreground: oklch(0.93 0.009 82);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(0.85 0.03 70 / 12%);
+  --input: oklch(0.85 0.03 70 / 15%);
+  --ring: oklch(0.6398 0.1539 33.47);
+  --radius: 0;
 
-    /* Page frame. Content sits inside an 80rem frame whose edges carry the
+  /* Page frame. Content sits inside an 80rem frame whose edges carry the
        vertical rails. --gutter is the space between the screen edge and a
        rail, --frame-pad the space between a rail and the content. */
-    --frame-max: 80rem;
-    --frame-narrow: 48rem;
-    --gutter: 1rem;
-    --frame-pad: 1.25rem;
+  --frame-max: 80rem;
+  --frame-narrow: 48rem;
+  --gutter: 1rem;
+  --frame-pad: 1.25rem;
 
-    --brand: oklch(0.6398 0.1539 33.47);
-    --brand-foreground: oklch(0.2074 0.0062 56.02);
-    --brand-muted: oklch(0.6398 0.1539 33.47 / 14%);
-    --teal: oklch(0.6000 0.0700 190);
+  --brand: oklch(0.6398 0.1539 33.47);
+  --brand-foreground: oklch(0.2074 0.0062 56.02);
+  --brand-muted: oklch(0.6398 0.1539 33.47 / 14%);
+  --teal: oklch(0.6 0.07 190);
 
-    /* Print system: perforation rules, and the card stocks projects are
+  /* Print system: perforation rules, and the card stocks projects are
        printed on. Each stock has an ink: a near-black of its own hue. */
-    --rule: oklch(0.85 0.03 70 / 24%);
-    /* registration marks where rules cross the rails */
-    --mark: var(--brand);
-    --stone: #a6a09a;
-    --stock-terracotta: #d9634a;
-    --ink-terracotta: #2b0d06;
-    --stock-teal: #4f9590;
-    --ink-teal: #04201e;
-    --stock-bone: #ebe7e1;
-    --ink-bone: #1a1715;
-    --stock-stone: #a6a09a;
-    --ink-stone: #1b1815;
+  --rule: oklch(0.85 0.03 70 / 24%);
+  /* registration marks where rules cross the rails */
+  --mark: var(--brand);
+  --stone: #a6a09a;
+  --stock-terracotta: #d9634a;
+  --ink-terracotta: #2b0d06;
+  --stock-teal: #4f9590;
+  --ink-teal: #04201e;
+  --stock-bone: #ebe7e1;
+  --ink-bone: #1a1715;
+  --stock-stone: #a6a09a;
+  --ink-stone: #1b1815;
 
-    --chart-1: oklch(0.6398 0.1539 33.47);
-    --chart-2: oklch(0.6000 0.0700 190);
-    --chart-3: oklch(0.7100 0.0110 70);
-    --chart-4: oklch(0.4400 0.0120 56);
-    --chart-5: oklch(0.3200 0.0090 56);
-    --sidebar: oklch(0.2450 0.0070 56);
-    --sidebar-foreground: oklch(0.9300 0.0090 82);
-    --sidebar-primary: oklch(0.6398 0.1539 33.47);
-    --sidebar-primary-foreground: oklch(0.2074 0.0062 56.02);
-    --sidebar-accent: oklch(0.3050 0.0090 56);
-    --sidebar-accent-foreground: oklch(0.9300 0.0090 82);
-    --sidebar-border: oklch(0.8500 0.0300 70 / 12%);
-    --sidebar-ring: oklch(0.6398 0.1539 33.47);
+  --chart-1: oklch(0.6398 0.1539 33.47);
+  --chart-2: oklch(0.6 0.07 190);
+  --chart-3: oklch(0.71 0.011 70);
+  --chart-4: oklch(0.44 0.012 56);
+  --chart-5: oklch(0.32 0.009 56);
+  --sidebar: oklch(0.245 0.007 56);
+  --sidebar-foreground: oklch(0.93 0.009 82);
+  --sidebar-primary: oklch(0.6398 0.1539 33.47);
+  --sidebar-primary-foreground: oklch(0.2074 0.0062 56.02);
+  --sidebar-accent: oklch(0.305 0.009 56);
+  --sidebar-accent-foreground: oklch(0.93 0.009 82);
+  --sidebar-border: oklch(0.85 0.03 70 / 12%);
+  --sidebar-ring: oklch(0.6398 0.1539 33.47);
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
-    }
+  }
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "ss01", "cv01", "cv11";
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
-    }
-  button:not(:disabled), [role="button"]:not(:disabled) {
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
     cursor: pointer;
-    }
+  }
   html {
     @apply font-sans;
     scroll-behavior: smooth;
-    }
+  }
   /* Full-bleed rules reach past the frame. Clip them on the page's top-level
      blocks (clipping html would hand it to the viewport as hidden, and
      phones would still zoom out to fit). */
@@ -150,14 +151,19 @@
   body > main,
   body > footer {
     overflow-x: clip;
-    }
-  h1, h2, h3, h4 {
-    font-family: var(--font-heading), var(--font-sans), ui-sans-serif, system-ui, sans-serif;
-    }
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family:
+      var(--font-heading), var(--font-sans), ui-sans-serif, system-ui,
+      sans-serif;
+  }
   ::selection {
     background-color: var(--brand);
     color: var(--brand-foreground);
-    }
+  }
 }
 
 /* Long-form article body (posts imported from DEV). */
@@ -218,7 +224,11 @@
   .prose-print hr {
     border: 0;
     height: 1px;
-    background-image: linear-gradient(to right, var(--rule) 0 2px, transparent 2px);
+    background-image: linear-gradient(
+      to right,
+      var(--rule) 0 2px,
+      transparent 2px
+    );
     background-size: 6px 1px;
     margin: 2.5em 0;
   }
@@ -305,7 +315,11 @@
 }
 /* A vertical dotted rule on the left edge, like a newspaper column rule. */
 @utility rule-v {
-  background-image: linear-gradient(to bottom, var(--rule) 0 2px, transparent 2px);
+  background-image: linear-gradient(
+    to bottom,
+    var(--rule) 0 2px,
+    transparent 2px
+  );
   background-size: 1px 6px;
   background-repeat: repeat-y;
   background-position: left top;
@@ -360,7 +374,11 @@
     inset-block: 0;
     left: -100vw;
     right: -100vw;
-    background-image: linear-gradient(to right, var(--rule) 0 2px, transparent 2px);
+    background-image: linear-gradient(
+      to right,
+      var(--rule) 0 2px,
+      transparent 2px
+    );
     background-size: 6px 1px;
     background-attachment: fixed;
   }
@@ -372,7 +390,9 @@
     --mark-inset: calc(var(--frame-pad) * -1 - 4px);
   }
   .rule-edge {
-    --mark-inset: calc(max(var(--gutter), calc((100% - var(--frame-max)) / 2)) - 4px);
+    --mark-inset: calc(
+      max(var(--gutter), calc((100% - var(--frame-max)) / 2)) - 4px
+    );
   }
   .rule-mark {
     position: absolute;

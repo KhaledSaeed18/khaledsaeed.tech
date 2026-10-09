@@ -7,7 +7,14 @@ import { abs, BreadcrumbJsonLd, JsonLd, personRef } from "@/components/json-ld"
 import { DitherObject } from "@/components/print/dither-object"
 import { CropMarks, Rule, SpecLabel } from "@/components/print/sheet"
 import { ContactSheet } from "@/components/home/contact-sheet"
-import { getProject, groups, projects } from "@/lib/content/projects"
+import {
+  getProject,
+  groups,
+  kindPhrase,
+  projects,
+  withArticle,
+  type Project,
+} from "@/lib/content/projects"
 import { getMyStars } from "@/lib/data/github"
 import { pageMeta } from "@/lib/metadata"
 import { formatNumber } from "@/lib/format"
@@ -18,6 +25,14 @@ export function generateStaticParams() {
 
 export const dynamicParams = false
 
+/** Tagline plus what it is, kept under 160 characters for search results. */
+function caseStudyDescription(p: Project) {
+  const long = `${p.tagline} ${withArticle(kindPhrase(p.kind))[0].toUpperCase()}${withArticle(kindPhrase(p.kind)).slice(1)} by Khaled Saeed: the problem, the approach and the stack.`
+  if (long.length <= 160) return long
+  const mid = `${p.tagline} ${withArticle(kindPhrase(p.kind))[0].toUpperCase()}${withArticle(kindPhrase(p.kind)).slice(1)} by Khaled Saeed.`
+  return mid.length <= 160 ? mid : `${p.tagline} By Khaled Saeed.`
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -27,8 +42,8 @@ export async function generateMetadata({
   const p = getProject(slug)
   if (!p) return {}
   return pageMeta({
-    title: `${p.name}, ${p.kind.toLowerCase()}`,
-    description: `${p.tagline} A ${p.kind.toLowerCase()} by Khaled Saeed, with the problem, the approach and the stack.`,
+    title: `${p.name}, ${kindPhrase(p.kind)}`,
+    description: caseStudyDescription(p),
     path: `/work/${p.slug}`,
     keywords: [p.name, p.kind, ...p.stack],
   })

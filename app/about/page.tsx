@@ -16,7 +16,7 @@ import { pageMeta } from "@/lib/metadata"
 export const metadata: Metadata = pageMeta({
   title: "About",
   description:
-    "About Khaled Saeed: full-stack engineer from Lebanon, M.S. Computer Engineering student at the Lebanese International University, and builder of open source developer tools.",
+    "Khaled Saeed, full-stack engineer in Lebanon: background, education at the Lebanese International University, certifications and the facts at a glance.",
   path: "/about",
   type: "profile",
 })

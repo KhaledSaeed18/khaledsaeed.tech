@@ -615,3 +615,18 @@ export const featuredProjects = projects.filter((p) => p.featured)
 export function getProject(slug: string) {
   return projects.find((p) => p.slug === slug)
 }
+
+/** A project's kind mid-sentence: "Open source template" becomes "open source template", acronyms stay. */
+export function kindPhrase(kind: string) {
+  // only a plain capitalised first word: "SaaS", "AI", "macOS" stay as they are
+  return /^[A-Z][a-z]*(\s|$)/.test(kind)
+    ? kind[0].toLowerCase() + kind.slice(1)
+    : kind
+}
+
+/** "a" or "an" before a kind, by sound: "an npm CLI", "a SaaS platform". */
+export function withArticle(phrase: string) {
+  // mass nouns take no article: "AI developer tooling by ..."
+  if (/tooling$/.test(phrase)) return phrase
+  return `${/^([aeiou]|npm|AI)/i.test(phrase) && !/^(SaaS|use)/.test(phrase) ? "an" : "a"} ${phrase}`
+}

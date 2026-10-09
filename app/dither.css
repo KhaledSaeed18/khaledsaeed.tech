@@ -29,43 +29,145 @@
 }
 
 @keyframes dither-in {
-  0.0% { mask-image: var(--dither-0); -webkit-mask-image: var(--dither-0); }
-  6.25% { mask-image: var(--dither-1); -webkit-mask-image: var(--dither-1); }
-  12.5% { mask-image: var(--dither-2); -webkit-mask-image: var(--dither-2); }
-  18.75% { mask-image: var(--dither-3); -webkit-mask-image: var(--dither-3); }
-  25.0% { mask-image: var(--dither-4); -webkit-mask-image: var(--dither-4); }
-  31.25% { mask-image: var(--dither-5); -webkit-mask-image: var(--dither-5); }
-  37.5% { mask-image: var(--dither-6); -webkit-mask-image: var(--dither-6); }
-  43.75% { mask-image: var(--dither-7); -webkit-mask-image: var(--dither-7); }
-  50.0% { mask-image: var(--dither-8); -webkit-mask-image: var(--dither-8); }
-  56.25% { mask-image: var(--dither-9); -webkit-mask-image: var(--dither-9); }
-  62.5% { mask-image: var(--dither-10); -webkit-mask-image: var(--dither-10); }
-  68.75% { mask-image: var(--dither-11); -webkit-mask-image: var(--dither-11); }
-  75.0% { mask-image: var(--dither-12); -webkit-mask-image: var(--dither-12); }
-  81.25% { mask-image: var(--dither-13); -webkit-mask-image: var(--dither-13); }
-  87.5% { mask-image: var(--dither-14); -webkit-mask-image: var(--dither-14); }
-  93.75% { mask-image: var(--dither-15); -webkit-mask-image: var(--dither-15); }
-  100.0% { mask-image: none; -webkit-mask-image: none; }
+  0.0% {
+    mask-image: var(--dither-0);
+    -webkit-mask-image: var(--dither-0);
+  }
+  6.25% {
+    mask-image: var(--dither-1);
+    -webkit-mask-image: var(--dither-1);
+  }
+  12.5% {
+    mask-image: var(--dither-2);
+    -webkit-mask-image: var(--dither-2);
+  }
+  18.75% {
+    mask-image: var(--dither-3);
+    -webkit-mask-image: var(--dither-3);
+  }
+  25.0% {
+    mask-image: var(--dither-4);
+    -webkit-mask-image: var(--dither-4);
+  }
+  31.25% {
+    mask-image: var(--dither-5);
+    -webkit-mask-image: var(--dither-5);
+  }
+  37.5% {
+    mask-image: var(--dither-6);
+    -webkit-mask-image: var(--dither-6);
+  }
+  43.75% {
+    mask-image: var(--dither-7);
+    -webkit-mask-image: var(--dither-7);
+  }
+  50.0% {
+    mask-image: var(--dither-8);
+    -webkit-mask-image: var(--dither-8);
+  }
+  56.25% {
+    mask-image: var(--dither-9);
+    -webkit-mask-image: var(--dither-9);
+  }
+  62.5% {
+    mask-image: var(--dither-10);
+    -webkit-mask-image: var(--dither-10);
+  }
+  68.75% {
+    mask-image: var(--dither-11);
+    -webkit-mask-image: var(--dither-11);
+  }
+  75.0% {
+    mask-image: var(--dither-12);
+    -webkit-mask-image: var(--dither-12);
+  }
+  81.25% {
+    mask-image: var(--dither-13);
+    -webkit-mask-image: var(--dither-13);
+  }
+  87.5% {
+    mask-image: var(--dither-14);
+    -webkit-mask-image: var(--dither-14);
+  }
+  93.75% {
+    mask-image: var(--dither-15);
+    -webkit-mask-image: var(--dither-15);
+  }
+  100.0% {
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
 }
 
 @keyframes dither-out {
-  0.0% { mask-image: none; -webkit-mask-image: none; }
-  6.25% { mask-image: var(--dither-15); -webkit-mask-image: var(--dither-15); }
-  12.5% { mask-image: var(--dither-14); -webkit-mask-image: var(--dither-14); }
-  18.75% { mask-image: var(--dither-13); -webkit-mask-image: var(--dither-13); }
-  25.0% { mask-image: var(--dither-12); -webkit-mask-image: var(--dither-12); }
-  31.25% { mask-image: var(--dither-11); -webkit-mask-image: var(--dither-11); }
-  37.5% { mask-image: var(--dither-10); -webkit-mask-image: var(--dither-10); }
-  43.75% { mask-image: var(--dither-9); -webkit-mask-image: var(--dither-9); }
-  50.0% { mask-image: var(--dither-8); -webkit-mask-image: var(--dither-8); }
-  56.25% { mask-image: var(--dither-7); -webkit-mask-image: var(--dither-7); }
-  62.5% { mask-image: var(--dither-6); -webkit-mask-image: var(--dither-6); }
-  68.75% { mask-image: var(--dither-5); -webkit-mask-image: var(--dither-5); }
-  75.0% { mask-image: var(--dither-4); -webkit-mask-image: var(--dither-4); }
-  81.25% { mask-image: var(--dither-3); -webkit-mask-image: var(--dither-3); }
-  87.5% { mask-image: var(--dither-2); -webkit-mask-image: var(--dither-2); }
-  93.75% { mask-image: var(--dither-1); -webkit-mask-image: var(--dither-1); }
-  100.0% { mask-image: var(--dither-0); -webkit-mask-image: var(--dither-0); }
+  0.0% {
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
+  6.25% {
+    mask-image: var(--dither-15);
+    -webkit-mask-image: var(--dither-15);
+  }
+  12.5% {
+    mask-image: var(--dither-14);
+    -webkit-mask-image: var(--dither-14);
+  }
+  18.75% {
+    mask-image: var(--dither-13);
+    -webkit-mask-image: var(--dither-13);
+  }
+  25.0% {
+    mask-image: var(--dither-12);
+    -webkit-mask-image: var(--dither-12);
+  }
+  31.25% {
+    mask-image: var(--dither-11);
+    -webkit-mask-image: var(--dither-11);
+  }
+  37.5% {
+    mask-image: var(--dither-10);
+    -webkit-mask-image: var(--dither-10);
+  }
+  43.75% {
+    mask-image: var(--dither-9);
+    -webkit-mask-image: var(--dither-9);
+  }
+  50.0% {
+    mask-image: var(--dither-8);
+    -webkit-mask-image: var(--dither-8);
+  }
+  56.25% {
+    mask-image: var(--dither-7);
+    -webkit-mask-image: var(--dither-7);
+  }
+  62.5% {
+    mask-image: var(--dither-6);
+    -webkit-mask-image: var(--dither-6);
+  }
+  68.75% {
+    mask-image: var(--dither-5);
+    -webkit-mask-image: var(--dither-5);
+  }
+  75.0% {
+    mask-image: var(--dither-4);
+    -webkit-mask-image: var(--dither-4);
+  }
+  81.25% {
+    mask-image: var(--dither-3);
+    -webkit-mask-image: var(--dither-3);
+  }
+  87.5% {
+    mask-image: var(--dither-2);
+    -webkit-mask-image: var(--dither-2);
+  }
+  93.75% {
+    mask-image: var(--dither-1);
+    -webkit-mask-image: var(--dither-1);
+  }
+  100.0% {
+    mask-image: var(--dither-0);
+    -webkit-mask-image: var(--dither-0);
+  }
 }
 
 /* A flat dithered tone in the current text color: <span class="dither-tone" style="--tone: var(--dither-6)" /> */
@@ -204,24 +306,72 @@
  * from 5 to 12 of 16 while the ink turns terracotta; leaving runs it back.
  */
 @keyframes ink-up {
-  0.00% { mask-image: var(--dither-5); -webkit-mask-image: var(--dither-5); }
-  14.29% { mask-image: var(--dither-6); -webkit-mask-image: var(--dither-6); }
-  28.57% { mask-image: var(--dither-7); -webkit-mask-image: var(--dither-7); }
-  42.86% { mask-image: var(--dither-8); -webkit-mask-image: var(--dither-8); }
-  57.14% { mask-image: var(--dither-9); -webkit-mask-image: var(--dither-9); }
-  71.43% { mask-image: var(--dither-10); -webkit-mask-image: var(--dither-10); }
-  85.71% { mask-image: var(--dither-11); -webkit-mask-image: var(--dither-11); }
-  100.00% { mask-image: var(--dither-12); -webkit-mask-image: var(--dither-12); }
+  0.00% {
+    mask-image: var(--dither-5);
+    -webkit-mask-image: var(--dither-5);
+  }
+  14.29% {
+    mask-image: var(--dither-6);
+    -webkit-mask-image: var(--dither-6);
+  }
+  28.57% {
+    mask-image: var(--dither-7);
+    -webkit-mask-image: var(--dither-7);
+  }
+  42.86% {
+    mask-image: var(--dither-8);
+    -webkit-mask-image: var(--dither-8);
+  }
+  57.14% {
+    mask-image: var(--dither-9);
+    -webkit-mask-image: var(--dither-9);
+  }
+  71.43% {
+    mask-image: var(--dither-10);
+    -webkit-mask-image: var(--dither-10);
+  }
+  85.71% {
+    mask-image: var(--dither-11);
+    -webkit-mask-image: var(--dither-11);
+  }
+  100.00% {
+    mask-image: var(--dither-12);
+    -webkit-mask-image: var(--dither-12);
+  }
 }
 @keyframes ink-down {
-  0.00% { mask-image: var(--dither-12); -webkit-mask-image: var(--dither-12); }
-  14.29% { mask-image: var(--dither-11); -webkit-mask-image: var(--dither-11); }
-  28.57% { mask-image: var(--dither-10); -webkit-mask-image: var(--dither-10); }
-  42.86% { mask-image: var(--dither-9); -webkit-mask-image: var(--dither-9); }
-  57.14% { mask-image: var(--dither-8); -webkit-mask-image: var(--dither-8); }
-  71.43% { mask-image: var(--dither-7); -webkit-mask-image: var(--dither-7); }
-  85.71% { mask-image: var(--dither-6); -webkit-mask-image: var(--dither-6); }
-  100.00% { mask-image: var(--dither-5); -webkit-mask-image: var(--dither-5); }
+  0.00% {
+    mask-image: var(--dither-12);
+    -webkit-mask-image: var(--dither-12);
+  }
+  14.29% {
+    mask-image: var(--dither-11);
+    -webkit-mask-image: var(--dither-11);
+  }
+  28.57% {
+    mask-image: var(--dither-10);
+    -webkit-mask-image: var(--dither-10);
+  }
+  42.86% {
+    mask-image: var(--dither-9);
+    -webkit-mask-image: var(--dither-9);
+  }
+  57.14% {
+    mask-image: var(--dither-8);
+    -webkit-mask-image: var(--dither-8);
+  }
+  71.43% {
+    mask-image: var(--dither-7);
+    -webkit-mask-image: var(--dither-7);
+  }
+  85.71% {
+    mask-image: var(--dither-6);
+    -webkit-mask-image: var(--dither-6);
+  }
+  100.00% {
+    mask-image: var(--dither-5);
+    -webkit-mask-image: var(--dither-5);
+  }
 }
 .wordmark svg {
   color: var(--foreground);

@@ -7,6 +7,7 @@ import { Rule, SpecLabel } from "@/components/print/sheet"
 import { getArticle, getArticles } from "@/lib/data/devto"
 import { formatDate } from "@/lib/format"
 import { pageMeta } from "@/lib/metadata"
+import { standfirst } from "@/lib/writing"
 
 export const revalidate = 86400
 
@@ -20,11 +21,11 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>
 }): Promise<Metadata> {
   const { slug } = await params
-  const a = (await getArticles()).find((x) => x.slug === slug)
+  const a = await getArticle(slug)
   if (!a) return {}
   return pageMeta({
     title: a.title,
-    description: a.description,
+    description: standfirst(a, a.html, { min: 70, max: 158 }),
     path: `/writing/${a.slug}`,
     // DEV is the original; this copy points search engines there.
     canonical: a.url,

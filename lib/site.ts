@@ -19,7 +19,7 @@ export const siteConfig = {
   bookingUrl: "https://cal.com/khaledsaeed",
   /** ~155 chars, no em dashes, no emoji. */
   description:
-    "Khaled Saeed is a full-stack engineer from Lebanon building pixel-perfect interfaces, backend systems, and developer tooling in TypeScript and Node.js.",
+    "Khaled Saeed is a full-stack engineer in Lebanon building software that explains itself: interfaces, backends and the developer tooling in between.",
   /** Topics surfaced for search engines and answer engines (GEO). */
   knowsAbout: [
     "Software Engineering",

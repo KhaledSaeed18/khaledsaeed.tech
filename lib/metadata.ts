@@ -50,6 +50,7 @@ export function pageMeta({
       card: "summary_large_image",
       title: full,
       description,
+      site: siteConfig.twitterHandle,
       creator: siteConfig.twitterHandle,
     },
   }
