@@ -55,6 +55,13 @@ export function Postcard() {
             book a call
           </a>
           <CopyEmail address={email.handle} />
+          <a
+            href="/khaled-saeed.vcf"
+            download
+            className="inline-flex items-center border border-border px-4 py-2.5 font-mono text-xs text-muted-foreground transition-colors hover:border-brand/40 hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+          >
+            save contact
+          </a>
         </div>
       </div>
 

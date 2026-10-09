@@ -5,8 +5,9 @@ import { Rule, SpecLabel } from "@/components/print/sheet"
 import { formatDate } from "@/lib/format"
 import { nav, siteConfig, socialLinks } from "@/lib/site"
 
-/** When this build was made (set in next.config.ts). */
+/** When and from which commit this build was made (set in next.config.ts). */
 const printed = new Date(process.env.BUILD_DATE as string)
+const edition = process.env.BUILD_COMMIT ?? ""
 
 /**
  * The back cover. Ends every page like the last sheet of a print run: a short
@@ -116,7 +117,22 @@ export function SiteFooter() {
             © {printed.getFullYear()} {siteConfig.name}
           </span>
           <span className="hidden text-center sm:block">
-            last printed{" "}
+            {edition ? (
+              <>
+                edition{" "}
+                <a
+                  href={`https://github.com/KhaledSaeed18/khaledsaeed.tech/commit/${edition}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hit-area text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-brand"
+                >
+                  {edition.slice(0, 7)}
+                </a>
+                ,{" "}
+              </>
+            ) : (
+              "last printed "
+            )}
             <time dateTime={printed.toISOString()}>
               {formatDate(printed.toISOString()).toLowerCase()}
             </time>

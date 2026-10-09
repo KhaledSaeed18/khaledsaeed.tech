@@ -1,9 +1,27 @@
+import { execSync } from "node:child_process"
 import type { NextConfig } from "next"
+
+/** The commit this build was made from: Vercel's, or the local checkout's. */
+function commit() {
+  if (process.env.VERCEL_GIT_COMMIT_SHA)
+    return process.env.VERCEL_GIT_COMMIT_SHA
+  try {
+    return execSync("git rev-parse HEAD", {
+      stdio: ["ignore", "pipe", "ignore"],
+    })
+      .toString()
+      .trim()
+  } catch {
+    return ""
+  }
+}
 
 const nextConfig: NextConfig = {
   env: {
     // "last printed" in the footer: the moment this build was made
     BUILD_DATE: new Date().toISOString(),
+    // "edition" in the footer and on the printed résumé
+    BUILD_COMMIT: commit(),
   },
   // Page-to-page dither dissolves (app/dither.css) use React's ViewTransition,
   // which the App Router supports without a flag since Next.js 16.3.

@@ -6,6 +6,7 @@ import { abs, BreadcrumbJsonLd, JsonLd, personRef } from "@/components/json-ld"
 import { Rule, SpecLabel } from "@/components/print/sheet"
 import { getArticle, getArticles } from "@/lib/data/devto"
 import { formatDate } from "@/lib/format"
+import { InkBar } from "@/components/writing/ink-bar"
 import { pageMeta } from "@/lib/metadata"
 import { standfirst } from "@/lib/writing"
 
@@ -48,6 +49,7 @@ export default async function ArticlePage({
 
   return (
     <article>
+      <InkBar target="article-body" />
       <header className="pt-32 sm:pt-40">
         {/* breadcrumb and rule span the frame like every page; the article
             itself sits in the reading column */}
@@ -94,6 +96,7 @@ export default async function ArticlePage({
       </header>
 
       <div
+        id="article-body"
         className="prose-print frame-narrow mt-14"
         // Post HTML from DEV (sanitized there, cleaned again in lib/data/devto).
         dangerouslySetInnerHTML={{ __html: a.html }}
