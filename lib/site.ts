@@ -20,15 +20,6 @@ export const siteConfig = {
   /** ~155 chars, no em dashes, no emoji. */
   description:
     "Khaled Saeed is a full-stack engineer from Lebanon building pixel-perfect interfaces, backend systems, and developer tooling in TypeScript and Node.js.",
-  intro:
-    "I build across the full stack: pixel-perfect interfaces on the frontend, solid backend systems, and developer tooling in TypeScript and Node.js. I care about clean design on both sides of the wire.",
-  /** Roles cycled by the rolling text. Sentence case, lowercase per brand. */
-  roles: [
-    "full-stack engineer",
-    "frontend developer",
-    "backend developer",
-    "open-source contributor",
-  ],
   /** Topics surfaced for search engines and answer engines (GEO). */
   knowsAbout: [
     "Software Engineering",
