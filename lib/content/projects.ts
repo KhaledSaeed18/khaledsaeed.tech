@@ -237,12 +237,12 @@ export const projects: Project[] = [
     slug: "node-authentication-template",
     name: "Node auth template",
     tagline:
-      "A complete authentication backend: email verification, two-factor sign-in, refresh tokens and rate limits, ready to fork.",
+      "Passkeys, OpenID Connect and revocable sessions in an authentication backend ready to fork.",
     summary:
-      "An Express and TypeScript authentication service on PostgreSQL and Prisma. It covers sign-up with an emailed one-time code, password reset, TOTP two-factor authentication with QR enrolment, short-lived access tokens with refresh tokens, and a login history, with rate limiting and input sanitization on every endpoint.",
+      "An Express 5 and TypeScript authentication API on PostgreSQL and Prisma 7, with passwordless passkeys, TOTP recovery codes and a headless OpenID Connect provider. Rotating tokens, account self-service, reliable email delivery and tracing cover the work around sign-in too.",
     year: 2025,
     group: "platforms",
-    kind: "Backend template",
+    kind: "Authentication service",
     object: "padlock",
     stock: "teal",
     stack: [
@@ -252,31 +252,61 @@ export const projects: Project[] = [
       "PostgreSQL",
       "Prisma",
       "Zod",
-      "JWT",
+      "WebAuthn",
+      "OpenID Connect",
+      "Argon2id",
+      "Redis",
+      "OpenTelemetry",
+      "Vitest",
+      "Docker",
     ],
     repo: "node-authentication-template",
-    links: [{ label: "Source", href: gh("node-authentication-template") }],
+    links: [
+      { label: "Source", href: gh("node-authentication-template") },
+      {
+        label: "Architecture",
+        href: `${gh("node-authentication-template")}/blob/main/docs/architecture.md`,
+      },
+      {
+        label: "Changelog",
+        href: `${gh("node-authentication-template")}/blob/main/CHANGELOG.md`,
+      },
+    ],
     problem:
-      "Every project needs authentication, and rushed implementations skip the same parts: verifying the email, a second factor, token rotation and rate limits. This template ships them already done.",
+      "Authentication is more than issuing a token. People need passwordless sign-in, a way to recover a second factor, control over their sessions and their data, and an identity other apps can trust. The starter should handle those lifecycles together.",
     approach: [
       {
+        title: "Passkeys and a recoverable second factor",
+        body: "WebAuthn passkeys support sign-in without typing an email or password, with user verification, single-use challenges and clone detection. Password sign-in can require a short-lived TOTP challenge, with encrypted secrets, replay protection and ten one-time recovery codes.",
+      },
+      {
+        title: "An identity other apps can use",
+        body: "A headless OpenID Connect provider supports authorization code flow with PKCE, discovery, userinfo and consent for third-party clients, plus token introspection and revocation endpoints. Access and ID tokens use rotating ES256 signing keys published through JWKS, so other services can verify them.",
+      },
+      {
+        title: "Sessions you can actually end",
+        body: "Opaque refresh tokens rotate on every use; reuse revokes the session. Every authenticated API request checks that its server-side session is active. Users can list sessions, revoke one, log out everywhere and inspect a paginated login history.",
+      },
+      {
         title: "The whole account lifecycle",
-        body: "Sign-up sends a one-time code by email through the Gmail API, with resend, forgot and reset password flows, and a login history per user.",
+        body: "Email verification, password reset and confirmed email changes use single-use codes stored as HMACs, with attempt limits and resend cooldowns. Users can edit their profile, export their account data and delete their account after re-authentication.",
       },
       {
-        title: "Two factors, two tokens",
-        body: "TOTP two-factor authentication with QR code enrolment, verification, sign-in and disable flows. Sessions use 20 minute access tokens and 7 day refresh tokens.",
+        title: "Security at each boundary",
+        body: "Argon2id replaces bcrypt, upgrading existing hashes on sign-in. Breached password screening uses k-anonymity, failed sign-ins trigger account lockout, and recovery endpoints avoid revealing whether an account exists. Rate limits can share a Redis store, with Helmet, strict CORS and validated configuration around the API.",
       },
       {
-        title: "Hostile input assumed",
-        body: "Rate limits on every authentication endpoint, Zod validation, HTML sanitization, strong password rules that reject common passwords, bcrypt with configurable rounds, security headers and CORS.",
+        title: "Delivery and operations built in",
+        body: "A PostgreSQL outbox commits email and security notices with the change that caused them, then retries delivery through workers. OpenTelemetry traces and business metrics, redacted structured logs, health checks and OpenAPI docs make the service inspectable. Integration tests use a real database; CI scans code and container images.",
       },
     ],
     highlights: [
-      "TOTP two-factor authentication with QR enrolment",
-      "Email verification and password reset by one-time code",
-      "Rate limiting on every authentication endpoint",
-      "Short-lived access tokens, longer-lived refresh tokens",
+      "Passwordless WebAuthn passkeys and TOTP with one-time recovery codes",
+      "OpenID Connect with PKCE, consent and rotating ES256 keys",
+      "Refresh token reuse detection and immediate session revocation in the API",
+      "Confirmed email changes, account data export and self-service deletion",
+      "Transactional email outbox, security alerts and an account activity log",
+      "OpenTelemetry, OpenAPI, database integration tests and container security scans",
     ],
   },
   {
@@ -499,37 +529,59 @@ export const projects: Project[] = [
     slug: "repo-scout",
     name: "Repo Scout",
     tagline:
-      "Point it at a folder, see the whole codebase. Local-first repository analytics.",
+      "Explore a codebase through architecture maps, searchable files and Git history, all on your machine.",
     summary:
-      "Repo Scout scans any Git repository on disk and turns it into an interactive dashboard of architecture graphs, code metrics, dependency trees, commit history, contributors and duplicate code. Everything is computed locally and stored in SQLite.",
+      "Repo Scout turns a local Git repository into a navigable atlas of its code and history. A redesigned React interface connects activity calendars, file ownership, searchable source, architecture graphs and duplicate code, backed by a Go scanner and SQLite with live scan progress.",
     year: 2026,
     group: "tools",
     kind: "Analytics platform",
     object: "lens",
     stock: "terracotta",
-    stack: ["Go", "SQLite", "React", "TypeScript", "Vite"],
+    stack: [
+      "Go",
+      "SQLite",
+      "React",
+      "TypeScript",
+      "Vite",
+      "TanStack Query",
+      "React Flow",
+      "WebSocket",
+    ],
     repo: "repo-scout",
-    links: [{ label: "Source", href: gh("repo-scout") }],
+    links: [
+      { label: "Source", href: gh("repo-scout") },
+      { label: "UI showcase", href: `${gh("repo-scout")}#see-it-in-action` },
+    ],
     problem:
       "Understanding an unfamiliar codebase means juggling five tools with five output formats, and some of them want your source uploaded.",
     approach: [
       {
-        title: "One scan, the whole picture",
-        body: "Architecture, metrics, dependencies, history and duplicates all come from a single scan instead of five tools to reconcile.",
+        title: "An interface built for exploration",
+        body: "A survey-map visual identity, a repository switcher and grouped navigation connect dedicated views for overview, activity, commits, contributors, branches, files, search, metrics, dependencies and duplicates. Light, dark and system themes, keyboard-accessible repository picking and a mobile menu carry the same interface across screens.",
+      },
+      {
+        title: "History with the right clock",
+        body: "Commit calendars, hour-of-week activity and streaks use each author's local time. A paginated commit log links to contributors and file ownership, while a lazy file tree and sortable table expose per-file size, complexity and history.",
+      },
+      {
+        title: "Findings you can trace",
+        body: "Architecture graphs collapse imports to folders at a chosen depth, lay out importers beside their dependencies and let you select a node to trace its connections. Cycle and potentially dead-file findings, duplicate code samples with linked locations, and highlighted search matches lead back to the source. Graphs export as SVG.",
+      },
+      {
+        title: "A scan you can watch and control",
+        body: "The Go pipeline streams and batch-inserts files, history, dependencies, imports and duplicate blocks, then builds a SQLite FTS5 content index. Persisted background jobs report progress over WebSocket, support pause, resume and cancel, and re-queue interrupted scans after a crash. Completing a scan refreshes the open views.",
       },
       {
         title: "Never leaves the machine",
-        body: "No external APIs, no telemetry, no uploads. A Go backend and a SQLite file on disk; the frontend only talks to localhost.",
-      },
-      {
-        title: "Built for real sizes",
-        body: "The scanner streams and batch-inserts instead of holding the repository in memory.",
+        body: "No account, external APIs, telemetry or source uploads. The API binds to loopback by default, the frontend talks to localhost, and WebSocket connections are limited to the same origin. Files, commits and contributors export as CSV or JSON.",
       },
     ],
     highlights: [
-      "Local-first, zero upload",
-      "Go scanner with streaming inserts",
-      "Interactive architecture graphs",
+      "Redesigned interface with dedicated code and history views, light and dark themes and mobile navigation",
+      "Folder-level architecture maps with traceable imports and SVG export",
+      "Indexed source search, linked duplicate samples and per-file ownership",
+      "Live scan progress with pause, resume, cancel and crash recovery",
+      "Showcased on a real TanStack Query scan: 3,602 files, 5,517 commits and 1,141 contributors",
     ],
   },
   {
@@ -677,7 +729,7 @@ export const projects: Project[] = [
     tagline:
       "Per-app battery and energy usage for the Linux desktop, measured from hardware counters.",
     summary:
-      "drainscope measures energy from RAPL counters and the battery, attributes it to apps, terminal workloads and system services, keeps local history, and shows it on the command line, in GNOME's quick settings and in a desktop app. No component runs as root.",
+      "drainscope measures energy from RAPL counters and the battery and estimates each app, terminal workload and system service's share. Local history appears in a CLI, GNOME's quick settings and a desktop app, with CSV and JSON exports. The v0.1.3 release improves network attribution and reduces the monitor's own CPU use; no component runs as root.",
     year: 2026,
     group: "systems",
     kind: "Energy monitor for Linux",
@@ -688,8 +740,10 @@ export const projects: Project[] = [
       "eBPF",
       "systemd",
       "D-Bus",
+      "SQLite",
       "SELinux",
       "GNOME Shell",
+      "libadwaita",
       "TypeScript",
     ],
     repo: "drainscope",
@@ -704,14 +758,14 @@ export const projects: Project[] = [
         href: "https://github.com/KhaledSaeed18/drainscope/releases",
       },
     ],
-    status: "v0.1.2, packaged for Fedora",
+    status: "v0.1.3, packaged for Fedora",
     featured: true,
     problem:
       "Windows, macOS and Android have told you which app drained the battery for years. Linux hasn't. The counters exist, but they are root-only, they measure the whole machine, and nothing attributes them to the apps that spent the energy.",
     approach: [
       {
         title: "Measure, then attribute",
-        body: "Every 5 seconds a user service reads RAPL energy counters, the batteries, cgroup v2 CPU time and GPU time from DRM fdinfo. Energy above the machine's learned idle floor goes to whoever was active, reconciled against the battery over 10 second windows, so apps, terminal workloads and systemd services each get their share.",
+        body: "A user service reads RAPL energy counters, the batteries, cgroup v2 CPU time and GPU time from DRM fdinfo. Energy above the machine's learned idle floor goes to whoever was active, reconciled against the battery over 10 second windows, so apps, terminal workloads and systemd services each get their share.",
       },
       {
         title: "Least privilege, by construction",
@@ -719,12 +773,27 @@ export const projects: Project[] = [
       },
       {
         title: "Where you already look",
-        body: "History stays on your machine. A CLI answers the questions people actually ask (since unplugged, the last 24 hours, live power, battery lost in suspend, what keeps waking the CPU, battery wear), a GNOME Shell quick settings menu shows the same numbers, and a desktop app draws them on a stacked timeline.",
+        body: "History stays on your machine. A CLI answers the questions people actually ask: since unplugged, the last 24 hours, live power, battery lost in suspend, CPU wakeups, network traffic and battery wear. GNOME's quick settings shows the same numbers, and a libadwaita desktop app draws a stacked timeline. Short-lived apps, commands and services get explicit labels.",
+      },
+      {
+        title: "Charge network work to the app",
+        body: "Model v3 assigns network softirq and threaded interrupt-handler CPU time to apps by their measured traffic. Hardware trace replays and battery validation keep that estimate testable. Optional network readings can fail without stopping collection, and an older probe remains usable through a compatibility fallback.",
+      },
+      {
+        title: "A monitor with a smaller footprint",
+        body: "The daemon samples every 15 seconds while nobody is watching and every 5 seconds while a view is open. One timer wakeup, batched probe readings and a leaner cgroup walk reduce overhead; the extension subscribes to ticks only while its menu is open. On the development laptop, idle CPU use on battery fell from 0.82–1.0% to 0.28% of one CPU.",
+      },
+      {
+        title: "History you can take with you",
+        body: "The summary, report, sleep, health, wakeups and network commands export every row as CSV or JSON in joules, watts and Unix seconds. JSON includes the period, measured coverage and model version, with unknown amounts kept distinct from zero.",
       },
     ],
     highlights: [
       "No component runs as root; sampler and probe each hold only the capabilities they need",
       "Signed RPMs for Fedora 44, 45 and rawhide on COPR",
+      "Adaptive sampling lowered measured idle CPU use to 0.28% of one CPU on the development laptop",
+      "Model v3 attributes network interrupt work to the apps generating traffic",
+      "CSV and JSON exports across six CLI views, with coverage and model version in JSON",
       "Validated against real hardware, with recorded traces replayed in tests",
       "Nothing leaves the machine; no component uses the network",
     ],
