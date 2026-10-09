@@ -137,7 +137,7 @@ export function SiteFooter() {
               {formatDate(printed.toISOString()).toLowerCase()}
             </time>
           </span>
-          <span className="hidden justify-self-end text-muted-foreground/70 lg:col-start-3 lg:row-start-2 lg:block">
+          <span className="hidden justify-self-end lg:col-start-3 lg:row-start-2 lg:block">
             press <kbd className="border border-border px-1 font-mono">?</kbd>{" "}
             for keys
           </span>
