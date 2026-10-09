@@ -177,7 +177,7 @@ export default async function ProjectPage({
 
       <div className="frame mt-24 space-y-24">
         <Block index={1} label="the problem">
-          <p className="max-w-3xl font-heading text-2xl leading-snug font-medium tracking-tight text-balance sm:text-3xl">
+          <p className="font-heading text-2xl leading-snug font-medium tracking-tight text-pretty sm:text-3xl">
             {p.problem}
           </p>
         </Block>
