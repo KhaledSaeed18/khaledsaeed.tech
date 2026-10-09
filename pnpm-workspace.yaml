@@ -4,3 +4,8 @@ allowBuilds:
   sharp: true
   unrs-resolver: true
   msw: false
+overrides:
+  # patched transitive build tools pulled in by next (pnpm audit, 2026-10-09)
+  browserslist: ^4.28.7
+  baseline-browser-mapping: ^2.11.0
+  source-map-js: ^1.2.2
