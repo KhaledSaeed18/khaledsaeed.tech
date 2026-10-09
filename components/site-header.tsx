@@ -5,11 +5,12 @@ import { usePathname } from "next/navigation"
 import * as React from "react"
 
 import { FlipLogo } from "@/components/flip-logo"
+import { Rule } from "@/components/print/sheet"
 import { nav, siteConfig } from "@/lib/site"
 import { cn } from "@/lib/utils"
 
 /**
- * Fixed masthead. Mono labels on desktop; on small screens a menu button opens
+ * Fixed masthead, closed off by a full-width rule. Mono labels on desktop; on small screens a menu button opens
  * a full-screen sheet of large numbered links that prints in with the dither.
  * Pinned with its own view-transition name so it stays still while pages
  * dissolve underneath.
@@ -53,7 +54,7 @@ export function SiteHeader() {
           : "bg-transparent"
       )}
     >
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6 sm:px-10">
+      <div className="frame flex h-16 items-center justify-between">
         <Link
           href="/"
           aria-label={`${siteConfig.name}, home`}
@@ -105,25 +106,15 @@ export function SiteHeader() {
           {open ? "close" : "menu"}
         </button>
       </div>
-      <div
-        aria-hidden="true"
-        className={cn(
-          "h-px bg-[length:6px_1px] bg-repeat-x transition-opacity duration-300",
-          scrolled && !open ? "opacity-100" : "opacity-0"
-        )}
-        style={{
-          backgroundImage:
-            "linear-gradient(to right, var(--rule) 0 2px, transparent 2px)",
-        }}
-      />
+      <Rule />
 
       {open && (
         <nav
           id="mobile-nav"
           aria-label="Primary"
-          className="fixed inset-x-0 top-16 bottom-0 overflow-y-auto bg-background px-6 pt-8 pb-12 md:hidden"
+          className="fixed inset-x-0 top-[calc(4rem+1px)] bottom-0 overflow-y-auto bg-background pt-8 pb-12 md:hidden"
         >
-          <ul className="flex flex-col">
+          <ul className="frame flex flex-col">
             {[{ href: "/", label: "home" }, ...nav].map((item, i) => (
               <li
                 key={item.href}

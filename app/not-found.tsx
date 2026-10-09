@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function NotFound() {
   return (
-    <div className="mx-auto max-w-6xl px-6 pt-32 sm:px-10 sm:pt-40">
+    <div className="frame pt-32 sm:pt-40">
       <SpecLabel>error 404</SpecLabel>
       <Rule className="mt-3" />
       <p

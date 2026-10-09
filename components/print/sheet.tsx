@@ -24,17 +24,15 @@ export function CropMarks({ className }: { className?: string }) {
   )
 }
 
-/** A dotted rule, like a perforation. */
+/**
+ * A dotted rule, like a perforation. It runs edge to edge across the screen,
+ * crossing the frame rails, wherever it is placed.
+ */
 export function Rule({ className }: { className?: string }) {
   return (
-    <hr
-      aria-hidden="true"
-      className={cn("h-px border-0 bg-[length:6px_1px] bg-repeat-x", className)}
-      style={{
-        backgroundImage:
-          "linear-gradient(to right, var(--rule) 0 2px, transparent 2px)",
-      }}
-    />
+    <div aria-hidden="true" className={cn("relative h-px", className)}>
+      <span className="rule-bleed" />
+    </div>
   )
 }
 
@@ -96,7 +94,7 @@ export function Sheet({
       aria-labelledby={id ? `${id}-title` : undefined}
       className={cn("scroll-mt-24", className)}
     >
-      <div className="mx-auto max-w-6xl px-6 sm:px-10">
+      <div className="frame">
         <div className="flex items-end justify-between gap-6">
           <SpecLabel index={index}>{label}</SpecLabel>
           {meta && (

@@ -28,7 +28,7 @@ export default function WorkPage() {
         meta={`${projects.length} projects`}
       />
 
-      <div className="mx-auto mt-24 max-w-6xl space-y-24 px-6 sm:px-10">
+      <div className="frame mt-24 space-y-24">
         {order.map((g) => {
           const list = projects.filter((p) => p.group === g)
           return (

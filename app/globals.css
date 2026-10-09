@@ -83,6 +83,14 @@
     --ring: oklch(0.6398 0.1539 33.47);
     --radius: 0;
 
+    /* Page frame. Content sits inside a 72rem frame whose edges carry the
+       vertical rails. --gutter is the space between the screen edge and a
+       rail, --frame-pad the space between a rail and the content. */
+    --frame-max: 72rem;
+    --frame-narrow: 48rem;
+    --gutter: 1rem;
+    --frame-pad: 1.25rem;
+
     --brand: oklch(0.6398 0.1539 33.47);
     --brand-foreground: oklch(0.2074 0.0062 56.02);
     --brand-muted: oklch(0.6398 0.1539 33.47 / 14%);
@@ -132,6 +140,14 @@
   html {
     @apply font-sans;
     scroll-behavior: smooth;
+    }
+  /* Full-bleed rules reach past the frame. Clip them on the page's top-level
+     blocks (clipping html would hand it to the viewport as hidden, and
+     phones would still zoom out to fit). */
+  body > header,
+  body > main,
+  body > footer {
+    overflow-x: clip;
     }
   h1, h2, h3, h4 {
     font-family: var(--font-heading), var(--font-sans), ui-sans-serif, system-ui, sans-serif;
@@ -262,5 +278,62 @@
   .prose-print th {
     color: var(--foreground);
     font-weight: 500;
+  }
+}
+
+@media (min-width: 40rem) {
+  :root {
+    --gutter: 1.5rem;
+    --frame-pad: 2rem;
+  }
+}
+@media (min-width: 64rem) {
+  :root {
+    --gutter: 2rem;
+    --frame-pad: 2.5rem;
+  }
+}
+
+/* The page frame. Every top-level container uses it, so content edges and
+   the rails below always agree. Percentages resolve against the full page
+   width, so use it only on blocks that span the page. */
+@utility frame {
+  margin-inline: max(var(--gutter), calc((100% - var(--frame-max)) / 2));
+  padding-inline: var(--frame-pad);
+}
+/* Same edges on small screens, a reading column on large ones. */
+@utility frame-narrow {
+  margin-inline: max(var(--gutter), calc((100% - var(--frame-narrow)) / 2));
+  padding-inline: var(--frame-pad);
+}
+
+@layer components {
+  /* Vertical rails on the frame edges, top to bottom of the window. */
+  .rails {
+    position: fixed;
+    inset-block: 0;
+    inset-inline: max(var(--gutter), calc((100% - var(--frame-max)) / 2));
+    z-index: 55;
+    pointer-events: none;
+    background-image:
+      linear-gradient(to bottom, var(--rule) 0 2px, transparent 2px),
+      linear-gradient(to bottom, var(--rule) 0 2px, transparent 2px);
+    background-size: 1px 6px;
+    background-repeat: repeat-y;
+    background-position:
+      left top,
+      right top;
+  }
+  /* A horizontal perforation that runs the full width of the screen from
+     wherever it sits. The pattern is pinned to the viewport so the dots of
+     every rule line up with each other. */
+  .rule-bleed {
+    position: absolute;
+    inset-block: 0;
+    left: -100vw;
+    right: -100vw;
+    background-image: linear-gradient(to right, var(--rule) 0 2px, transparent 2px);
+    background-size: 6px 1px;
+    background-attachment: fixed;
   }
 }

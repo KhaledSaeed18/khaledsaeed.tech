@@ -129,6 +129,8 @@ export default function RootLayout({
           </ViewTransition>
           <SiteFooter />
         </TooltipProvider>
+        {/* the frame rails, top to bottom */}
+        <div aria-hidden="true" className="rails" />
         <RevealObserver />
         <PersonJsonLd />
       </body>

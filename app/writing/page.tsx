@@ -39,7 +39,7 @@ export default async function WritingPage() {
         }
       />
 
-      <div className="mx-auto mt-20 max-w-6xl px-6 sm:px-10">
+      <div className="frame mt-20">
         {articles.length === 0 ? (
           <p className="text-muted-foreground">
             Articles are loading from DEV. Read them at{" "}

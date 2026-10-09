@@ -19,7 +19,7 @@ export function SelectedWork() {
         </Link>
       }
     >
-      <ul className="-mx-6 flex snap-x snap-mandatory gap-4 overflow-x-auto px-6 pb-4 sm:-mx-10 sm:px-10 lg:mx-0 lg:grid lg:grid-cols-4 lg:overflow-visible lg:px-0 lg:pb-0">
+      <ul className="mx-[calc(var(--frame-pad)*-1)] flex snap-x snap-mandatory scroll-px-(--frame-pad) gap-4 overflow-x-auto px-(--frame-pad) pb-4 lg:mx-0 lg:grid lg:grid-cols-4 lg:overflow-visible lg:px-0 lg:pb-0">
         {featuredProjects.map((p, i) => (
           <li
             key={p.slug}

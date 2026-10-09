@@ -13,7 +13,7 @@ export function SiteFooter() {
   const year = new Date().getFullYear()
   return (
     <footer className="mt-32 pb-10">
-      <div className="mx-auto max-w-6xl px-6 sm:px-10">
+      <div className="frame">
         <SpecLabel>colophon</SpecLabel>
         <Rule className="mt-3" />
 

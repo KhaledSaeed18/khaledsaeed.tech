@@ -21,7 +21,7 @@ export function PageIntro({
   children?: React.ReactNode
 }) {
   return (
-    <header className="mx-auto max-w-6xl px-6 pt-32 sm:px-10 sm:pt-40">
+    <header className="frame pt-32 sm:pt-40">
       <div className="flex items-end justify-between gap-6">
         <nav aria-label="Breadcrumb">
           <SpecLabel>

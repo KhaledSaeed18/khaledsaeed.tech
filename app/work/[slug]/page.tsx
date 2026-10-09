@@ -62,7 +62,7 @@ export default async function ProjectPage({
 
   return (
     <article>
-      <header className="mx-auto max-w-6xl px-6 pt-32 sm:px-10 sm:pt-40">
+      <header className="frame pt-32 sm:pt-40">
         <nav aria-label="Breadcrumb">
           <SpecLabel>
             <Link href="/" className="transition-colors hover:text-foreground">
@@ -159,7 +159,7 @@ export default async function ProjectPage({
         </dl>
       </header>
 
-      <div className="mx-auto mt-24 max-w-6xl space-y-24 px-6 sm:px-10">
+      <div className="frame mt-24 space-y-24">
         <Block index={1} label="the problem">
           <p className="max-w-3xl font-heading text-2xl leading-snug font-medium tracking-tight text-balance sm:text-3xl">
             {p.problem}

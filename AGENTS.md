@@ -20,6 +20,17 @@ The site is a 1-bit print run, and paper is cut straight. Nothing has a border r
 
 Section and page headings sit on their own line with the lede directly below, both at full container width. Do not put a heading and its description in side-by-side columns. `PageIntro` (`components/print/page-intro.tsx`) and `Sheet` (`components/print/sheet.tsx`) already do this; use them instead of hand-rolling a header.
 
+## Page frame, rails and rules
+
+Every page sits in one frame. Two dotted vertical rails mark its edges from the top of the window to the bottom, and section rules run the full screen width across them.
+
+- Use the `frame` utility for every top-level container (and `frame-narrow` for a reading column, as on articles). Never hand-roll `mx-auto max-w-* px-*` for a page block. `frame` only works on blocks that span the page width, because its margins are percentages of the page.
+- The numbers live in `app/globals.css` as tokens: `--frame-max` (72rem), `--frame-narrow` (48rem), `--gutter` (screen edge to rail: 16, 24, 32px at base, sm, lg) and `--frame-pad` (rail to content: 20, 32, 40px). Change them there, never per page.
+- The rails are one fixed `.rails` element in `app/layout.tsx`. Nothing else draws them.
+- `Rule` (`components/print/sheet.tsx`) is the horizontal perforation under every section label and the header. It always runs edge to edge, wherever it is placed. Use it for section-level lines only; lines inside content (list separators) stay `border-dashed` at content width.
+- Anything that needs to reach the rails, like a horizontal scroller on mobile, bleeds by exactly `--frame-pad` (`mx-[calc(var(--frame-pad)*-1)] px-(--frame-pad)`), never past the rails.
+- `header`, `main` and `footer` clip horizontal overflow (`overflow-x: clip`), which keeps full-width rules from scrolling the page sideways. Do not move that clip to `html`: browsers treat it as `hidden` there, and phones zoom out to fit.
+
 ## Dev server gotcha
 
 Turbopack dev does not hot-reload changes to the Tailwind theme in `app/globals.css`. Restart `pnpm dev` after editing it, or you will be looking at stale CSS.

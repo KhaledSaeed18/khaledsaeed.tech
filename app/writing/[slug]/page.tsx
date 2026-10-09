@@ -47,7 +47,7 @@ export default async function ArticlePage({
 
   return (
     <article>
-      <header className="mx-auto max-w-3xl px-6 pt-32 sm:px-10 sm:pt-40">
+      <header className="frame-narrow pt-32 sm:pt-40">
         <nav aria-label="Breadcrumb">
           <SpecLabel>
             <Link href="/" className="transition-colors hover:text-foreground">
@@ -84,12 +84,12 @@ export default async function ArticlePage({
       </header>
 
       <div
-        className="prose-print mx-auto mt-14 max-w-3xl px-6 sm:px-10"
+        className="prose-print frame-narrow mt-14"
         // Post HTML from DEV (sanitized there, cleaned again in lib/data/devto).
         dangerouslySetInnerHTML={{ __html: a.html }}
       />
 
-      <footer className="mx-auto mt-16 max-w-3xl px-6 sm:px-10">
+      <footer className="frame-narrow mt-16">
         <Rule />
         <div className="mt-6 flex flex-wrap items-center justify-between gap-4 font-mono text-xs text-muted-foreground">
           <span>

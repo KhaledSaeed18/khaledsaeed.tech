@@ -24,7 +24,7 @@ export default function ContactPage() {
         lede="Email is the fastest way to reach me. For anything that needs a conversation, book a call."
       />
 
-      <div className="mx-auto mt-24 max-w-6xl space-y-28 px-6 sm:px-10">
+      <div className="frame mt-24 space-y-28">
         <section aria-labelledby="direct">
           <SpecLabel index={1}>direct</SpecLabel>
           <Rule className="mt-3" />

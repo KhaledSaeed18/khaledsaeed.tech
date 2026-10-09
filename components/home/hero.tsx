@@ -10,7 +10,7 @@ import { siteConfig } from "@/lib/site"
 export function Hero() {
   return (
     <section aria-label="Introduction" className="relative isolate">
-      <div className="mx-auto grid max-w-6xl items-center gap-y-6 px-6 pt-28 pb-8 sm:px-10 lg:min-h-svh lg:grid-cols-12 lg:gap-x-10 lg:py-20">
+      <div className="frame grid items-center gap-y-6 pt-28 pb-8 lg:min-h-svh lg:grid-cols-12 lg:gap-x-10 lg:py-20">
         <div className="lg:col-span-6">
           <SpecLabel>
             {siteConfig.role.toLowerCase()} /{" "}

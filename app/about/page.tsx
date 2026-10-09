@@ -32,7 +32,7 @@ export default function AboutPage() {
         lede={about.short}
       />
 
-      <div className="mx-auto mt-24 max-w-6xl space-y-28 px-6 sm:px-10">
+      <div className="frame mt-24 space-y-28">
         <section className="space-y-6 text-lg leading-relaxed text-muted-foreground">
           {about.paragraphs.map((p, i) => (
             <p
