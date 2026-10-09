@@ -18,8 +18,10 @@ export function Hero() {
           </SpecLabel>
 
           <h1 className="mt-6 font-heading text-5xl leading-[1.02] font-medium tracking-tight text-balance sm:text-6xl 2xl:text-7xl">
-            {siteConfig.name}{" "}
-            <span className="text-muted-foreground">builds software that</span>{" "}
+            <span className="block whitespace-nowrap">{siteConfig.name}</span>
+            <span className="text-muted-foreground">
+              builds software that
+            </span>{" "}
             <span className="text-brand">explains itself.</span>
           </h1>
 
