@@ -606,6 +606,7 @@ export function DitherCharacter({ className }: { className?: string }) {
     const wrap = wrapRef.current
     const canvas = canvasRef.current
     if (!wrap || !canvas) return
+    const host: HTMLDivElement = wrap
     const reduced = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches
@@ -618,6 +619,28 @@ export function DitherCharacter({ className }: { className?: string }) {
       : (params.has("shade") ? 1 : 0) + (params.has("zoom") ? 2 : 0)
     const shaderMode = view === 1 ? 1 : view === 3 ? 2 : view === 2 ? 3 : 0
     const still = dev && params.has("still")
+    // Asleep between 01:00 and 07:00 in Beirut; ?sleep forces it for a look.
+    const forceSleep = params.has("sleep")
+    const beirut = () => {
+      const parts = new Intl.DateTimeFormat("en-GB", {
+        timeZone: "Asia/Beirut",
+        hour: "2-digit",
+        minute: "2-digit",
+        hourCycle: "h23",
+      }).formatToParts(new Date())
+      const get = (t: string) => parts.find((p) => p.type === t)?.value ?? "00"
+      return {
+        hour: Number(get("hour")),
+        clock: `${get("hour")}:${get("minute")}`,
+      }
+    }
+    const checkSleep = () => {
+      const b = beirut()
+      s.asleep = forceSleep || (b.hour >= 1 && b.hour < 7)
+      wrap.toggleAttribute("data-asleep", s.asleep)
+      const note = wrap.querySelector<HTMLElement>("[data-sleep-clock]")
+      if (note) note.textContent = b.clock
+    }
 
     const gl = canvas.getContext("webgl2", {
       antialias: false,
@@ -686,6 +709,8 @@ export function DitherCharacter({ className }: { className?: string }) {
       blinkAt: -10,
       doubleBlink: false,
       waveAt: -10,
+      asleep: false,
+      wokeUntil: -10,
       glintAt: -10,
       introAt: -1,
       pointer: { x: 0, y: 0, seen: false, lastMove: -10, dirty: false },
@@ -728,6 +753,14 @@ export function DitherCharacter({ className }: { className?: string }) {
         ex = Math.sin(t * 0.31 + 0.6) * 0.7
         ey = 0.2 * Math.sin(t * 0.53)
       }
+      const sleeping = s.asleep && t > s.wokeUntil
+      if (sleeping) {
+        // dozing: head down a little, a slow sway, eyes resting
+        ty = 0.06 * Math.sin(t * 0.21)
+        tp = 0.24
+        ex = 0
+        ey = -0.4
+      }
       s.yaw = damp(s.yaw, ty, 5, dt)
       s.pitch = damp(s.pitch, tp, 5, dt)
       s.roll = damp(s.roll, -ty * 0.12 + 0.03 * Math.sin(t * 0.7), 4, dt)
@@ -744,13 +777,18 @@ export function DitherCharacter({ className }: { className?: string }) {
       let blink = bt < 0.16 ? Math.sin((bt / 0.16) * Math.PI) : 0
       if (s.doubleBlink && bt > 0.24 && bt < 0.4)
         blink = Math.sin(((bt - 0.24) / 0.16) * Math.PI)
-      s.blink = blink
+      s.blink = sleeping ? damp(s.blink, 1, 3, dt) : blink
 
       const waving = t - s.waveAt < WAVE
-      s.brow = damp(s.brow, waving || s.excited ? 1 : s.hover ? 0.5 : 0, 10, dt)
+      s.brow = damp(
+        s.brow,
+        sleeping ? 0 : waving || s.excited ? 1 : s.hover ? 0.5 : 0,
+        10,
+        dt
+      )
       s.smile = damp(
         s.smile,
-        waving || s.excited ? 1 : s.hover ? 0.6 : 0.25,
+        sleeping ? 0.15 : waving || s.excited ? 1 : s.hover ? 0.6 : 0.25,
         8,
         dt
       )
@@ -837,6 +875,7 @@ export function DitherCharacter({ className }: { className?: string }) {
       hitUnderPointer = v
       if (v && !s.hover) s.glintAt = now
       s.hover = v
+      host.toggleAttribute("data-hover", v)
       document.documentElement.style.cursor = v && !s.excited ? "pointer" : ""
     }
 
@@ -928,6 +967,12 @@ export function DitherCharacter({ className }: { className?: string }) {
       onMove(e)
       render(true)
       // one wave at a time
+      if (hitUnderPointer && s.asleep && now > s.wokeUntil) {
+        // awake for a few seconds: hide the sleep note until he dozes off
+        s.wokeUntil = now + 6
+        host.removeAttribute("data-asleep")
+        window.setTimeout(checkSleep, 6000)
+      }
       if (hitUnderPointer && now - s.waveAt > WAVE) s.waveAt = now
     }
     function onOver(e: PointerEvent) {
@@ -1014,8 +1059,11 @@ export function DitherCharacter({ className }: { className?: string }) {
       })
     }
     init()
+    checkSleep()
+    const sleepTimer = window.setInterval(checkSleep, 30_000)
 
     return () => {
+      window.clearInterval(sleepTimer)
       disposed = true
       stop()
       ro.disconnect()
@@ -1041,8 +1089,12 @@ export function DitherCharacter({ className }: { className?: string }) {
     <div
       ref={wrapRef}
       aria-hidden="true"
-      className={cn("pointer-events-none relative", className)}
+      className={cn("group pointer-events-none relative", className)}
     >
+      {/* shown on hover between 01:00 and 07:00 Beirut time */}
+      <p className="absolute top-[8%] left-1/2 z-10 -translate-x-1/2 bg-background/85 px-2 py-1 font-mono text-xs whitespace-nowrap text-muted-foreground opacity-0 transition-opacity duration-300 group-data-[asleep]:group-data-[hover]:opacity-100">
+        <span data-sleep-clock /> in beirut. asleep till morning; click to wake.
+      </p>
       {fallback ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
