@@ -4,7 +4,7 @@ import { siteConfig, socialLinks } from "@/lib/site"
 const email = socialLinks.find((l) => l.key === "email")!
 
 /** The last sheet before the colophon: one address, one booking link. */
-export function ContactSheet({ index = 5 }: { index?: number }) {
+export function ContactSheet({ index = 4 }: { index?: number }) {
   return (
     <Sheet id="contact" index={index} label="contact">
       <div data-reveal className="grid gap-10 lg:grid-cols-12 lg:items-end">

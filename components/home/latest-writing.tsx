@@ -11,7 +11,7 @@ export async function LatestWriting() {
   return (
     <Sheet
       id="writing"
-      index={4}
+      index={3}
       label="writing"
       title="Written down so I only learn it once."
       lede="Practical write-ups on authentication, rendering and architecture, published on DEV."

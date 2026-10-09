@@ -1,9 +1,4 @@
-import {
-  about,
-  contributions,
-  credentials,
-  education,
-} from "@/lib/content/profile"
+import { about, credentials, education } from "@/lib/content/profile"
 import { groups, projects } from "@/lib/content/projects"
 import { getArticles } from "@/lib/data/devto"
 import { siteConfig, socialLinks } from "@/lib/site"
@@ -30,14 +25,12 @@ ${about.paragraphs.join("\n\n")}
 - Languages and platforms: TypeScript (Node.js, NestJS, React, Next.js, React Native, Electron), Swift (SwiftUI, macOS), Go, Python
 - Education: ${education.map((e) => `${e.degree} in ${e.field}, ${e.school} (${e.start} to ${e.end})`).join("; ")}
 - Credentials: ${credentials.map((c) => `${c.name} (${c.issuer}, ${c.date})${c.note ? `, ${c.note}` : ""}`).join("; ")}
-- Open source: ${contributions.map((c) => `${c.prs.length} merged into ${c.project} (${c.repo})`).join("; ")}
 
 ## Pages
 
-- [Home](${url("/")}): overview, selected work, stack, open source, writing
+- [Home](${url("/")}): overview, selected work, stack, writing
 - [Work](${url("/work")}): all projects with case studies
 - [About](${url("/about")}): background, education, credentials, principles
-- [Open source](${url("/open-source")}): merged pull requests and GitHub activity
 - [Writing](${url("/writing")}): articles, originally published on DEV
 - [Uses](${url("/uses")}): current focus and setup
 - [Contact](${url("/contact")}): email and booking

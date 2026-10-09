@@ -6,11 +6,10 @@ Personal portfolio site, built with Next.js, React, TypeScript, and Tailwind CSS
 
 This project powers [khaledsaeed.tech](https://khaledsaeed.tech). The whole site is designed as a 1-bit print run: every section is a "sheet" with a spec label and crop marks, pages print in and dissolve through a 4x4 Bayer dither, and each project is printed on colored card stock with its own dithered 3D object.
 
-- `/` hero with the live dithered self-portrait, selected work, stack datasheet, open source, writing, contact
+- `/` hero with the live dithered self-portrait, selected work, stack datasheet, writing, contact
 - `/work` and `/work/[slug]` a case study per project
 - `/about` background, education, credentials, principles
 - `/writing` and `/writing/[slug]` articles pulled from DEV (canonical links point back to DEV)
-- `/open-source` merged upstream pull requests and a dithered contribution calendar
 - `/uses` current focus and setup
 - `/contact`
 - `/llms.txt`, `/writing/rss.xml`, `/sitemap.xml` for answer engines, readers and crawlers
@@ -46,10 +45,10 @@ Open `http://localhost:3000` in your browser.
 Everything on the site is single-sourced in `lib/content`:
 
 - `projects.ts` projects and case study copy
-- `profile.ts` bio, education, credentials, stack, principles, open source contributions
+- `profile.ts` bio, education, credentials, stack, principles
 - `uses.ts` the now note and setup
 
-Live data is fetched at build time and revalidated daily: articles from the DEV API (`lib/data/devto.ts`) and stars, followers and the contribution calendar from GitHub (`lib/data/github.ts`). Set `GITHUB_TOKEN` for a higher GitHub rate limit; without it everything falls back to sensible numbers.
+Live data is fetched at build time and revalidated daily: articles from the DEV API (`lib/data/devto.ts`) and project star counts from GitHub (`lib/data/github.ts`). Set `GITHUB_TOKEN` for a higher GitHub rate limit; without it star counts are simply omitted.
 
 ## The dither system
 
