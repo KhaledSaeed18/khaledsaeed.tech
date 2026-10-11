@@ -6,12 +6,15 @@ import {
   issuerName,
 } from "@/lib/content/certifications"
 import { education } from "@/lib/content/education"
+import { experience, spanOf } from "@/lib/content/experience"
 import { about, principles, stack } from "@/lib/content/profile"
 import { featuredProjects, kindPhrase } from "@/lib/content/projects"
 import { formatMonth } from "@/lib/format"
 import { siteConfig, socialLinks } from "@/lib/site"
 
 const edition = (process.env.BUILD_COMMIT ?? "").slice(0, 7)
+/** Case studies that fit on the sheet beside the experience block. */
+const RESUME_PROJECTS = 4
 const link = (key: string) => socialLinks.find((l) => l.key === key)!
 
 /** A heading on the printed sheet: mono label over a dotted rule. */
@@ -85,9 +88,40 @@ export function PrintResume() {
             </section>
 
             <section className="mt-[6mm]">
+              <Head>experience</Head>
+              <ol className="space-y-[3mm]">
+                {experience.map((c) => {
+                  const { start, end } = spanOf(c)
+                  return (
+                    <li key={c.slug} className="break-inside-avoid">
+                      <p className="flex items-baseline justify-between gap-[3mm]">
+                        <span className="font-heading text-[10.5pt] font-medium">
+                          {c.roles.map((r) => r.title).join(", then ")}
+                          <span className="ml-[2mm] font-mono text-[7pt] font-normal text-[#6b635c]">
+                            {c.name}, {c.location.toLowerCase()}
+                          </span>
+                        </span>
+                        <span className="shrink-0 font-mono text-[7pt] text-[#6b635c]">
+                          {formatMonth(start)} to{" "}
+                          {end ? formatMonth(end) : "present"}
+                        </span>
+                      </p>
+                      <p className="mt-[0.6mm] text-[8.5pt] leading-[1.45] text-[#3d3732]">
+                        {c.note}
+                      </p>
+                      <p className="mt-[0.4mm] font-mono text-[7pt] text-[#6b635c]">
+                        {c.stack.slice(0, 6).join(" / ")}
+                      </p>
+                    </li>
+                  )
+                })}
+              </ol>
+            </section>
+
+            <section className="mt-[6mm]">
               <Head>selected work</Head>
               <ol className="space-y-[3.2mm]">
-                {featuredProjects.map((p) => (
+                {featuredProjects.slice(0, RESUME_PROJECTS).map((p) => (
                   <li key={p.slug} className="break-inside-avoid">
                     <p className="font-heading text-[10.5pt] font-medium">
                       {p.name}
