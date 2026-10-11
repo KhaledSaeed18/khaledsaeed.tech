@@ -1,9 +1,13 @@
 import { ContactSheet } from "@/components/home/contact-sheet"
 import { Credentials } from "@/components/home/credentials"
 import { Datasheet } from "@/components/home/datasheet"
+import { Experience } from "@/components/home/experience"
 import { Hero } from "@/components/home/hero"
 import { LatestWriting } from "@/components/home/latest-writing"
 import { SelectedWork } from "@/components/home/selected-work"
+
+// The tenure and the open chapter count up to the day, so re-render daily.
+export const revalidate = 86400
 
 export default function Page() {
   return (
@@ -11,10 +15,11 @@ export default function Page() {
       <Hero />
       <div className="space-y-32 pt-16 sm:space-y-40 lg:pt-8">
         <SelectedWork index={1} />
-        <Datasheet index={2} />
-        <Credentials index={3} />
-        <LatestWriting index={4} />
-        <ContactSheet index={5} />
+        <Experience index={2} />
+        <Datasheet index={3} />
+        <Credentials index={4} />
+        <LatestWriting index={5} />
+        <ContactSheet index={6} />
       </div>
     </>
   )

@@ -8,6 +8,12 @@ import {
 } from "@/lib/content/certifications"
 import { awards } from "@/components/json-ld"
 import { education } from "@/lib/content/education"
+import {
+  currentCompany,
+  currentRole,
+  experience,
+  spanOf,
+} from "@/lib/content/experience"
 import { about, principles } from "@/lib/content/profile"
 import { groups, projects } from "@/lib/content/projects"
 import { getArticle, getArticles } from "@/lib/data/devto"
@@ -44,6 +50,13 @@ ${about.paragraphs.join("\n\n")}
 - Online identity: ${siteConfig.username} is ${siteConfig.name}'s primary public username, used on GitHub and other platforms. These names refer to the same person.
 - GitHub: https://github.com/${siteConfig.username}
 - Role: ${siteConfig.role}, based in ${siteConfig.location}
+- Employment: ${currentRole.title} at ${currentCompany.name}${currentCompany.url ? ` (${currentCompany.url})` : ""} since ${formatMonth(currentRole.start)}. Previously ${experience
+    .filter((c) => c !== currentCompany)
+    .map(
+      (c) =>
+        `${c.roles.map((r) => r.title).join(" then ")} at ${c.name}, ${c.location} (${formatMonth(spanOf(c).start)} to ${formatMonth(spanOf(c).end!)})`
+    )
+    .join("; ")}. Client work; project names are not published.
 - Languages and platforms: TypeScript (Node.js, NestJS, React, Next.js, React Native, Electron), Swift (SwiftUI, macOS), Rust (systemd, eBPF, Linux), Go, Python
 - Education: ${education.map((e) => `${e.degree} in ${e.field}, ${e.school} (${formatMonth(e.start)} to ${formatMonth(e.end)})`).join("; ")}
 - Honors: ${awards.join("; ")}
@@ -53,7 +66,8 @@ ${about.paragraphs.join("\n\n")}
 ## Pages
 
 - [Home](${url("/")}): overview, selected work, the stack and working principles, credentials, latest writing
-- [Work](${url("/work")}): all projects with case studies
+- [Work](${url("/work")}): all open-source projects with case studies
+- [Experience](${url("/experience")}): employment history, what was built at each company and with what stack
 - [About](${url("/about")}): background, specifications, education and certifications
 - [Education](${url("/about/education")}): degrees, coursework, honors and the projects that came out of them
 - [Certifications](${url("/about/certifications")}): every certificate with its issuer, date and credential ID
@@ -74,6 +88,24 @@ ${(Object.keys(groups) as (keyof typeof groups)[])
         )
         .join("\n")
   )
+  .join("\n\n")}
+
+## Experience
+
+${experience
+  .map((c) => {
+    const { start, end } = spanOf(c)
+    return (
+      `### ${c.name}, ${c.location} (${c.mode})\n\n${formatMonth(start)} to ${end ? formatMonth(end) : "present"}. ${c.summary}\n\n` +
+      c.roles
+        .map(
+          (r) =>
+            `- ${r.title}, ${formatMonth(r.start)} to ${r.end ? formatMonth(r.end) : "present"}: ${r.body.join(" ")}`
+        )
+        .join("\n") +
+      `\n- Built: ${c.domains.join("; ")}.\n- Stack: ${c.stack.join(", ")}.`
+    )
+  })
   .join("\n\n")}
 
 ## Education

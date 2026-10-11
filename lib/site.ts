@@ -37,6 +37,9 @@ export const siteConfig = {
     "Go",
     "Node.js",
     "React",
+    "Next.js",
+    "React Native",
+    "Electron",
     "NestJS",
     "PostgreSQL",
     "REST APIs",
@@ -63,6 +66,7 @@ export const siteIdentity = `${siteConfig.name} (${siteConfig.username})`
 /** Primary navigation. Order is the print order of the sheets. */
 export const nav = [
   { href: "/work", label: "work" },
+  { href: "/experience", label: "experience" },
   { href: "/about", label: "about" },
   { href: "/writing", label: "writing" },
   { href: "/contact", label: "contact" },
