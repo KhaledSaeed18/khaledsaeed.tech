@@ -19,11 +19,25 @@ export default function WorkPage() {
       <PageIntro
         crumbs={[{ href: "/", label: "home" }, { label: "work" }]}
         title="Work"
-        lede={`Everything here is open source, published as ${siteConfig.username}. Each job opens a short case study: the problem, how it works, and what I would point a reviewer at.`}
+        lede={
+          <>
+            Everything here is open source, published as{" "}
+            <a
+              href={`https://github.com/${siteConfig.username}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hit-area text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-brand"
+            >
+              {siteConfig.username}
+            </a>
+            . Each job opens a short case study: the problem, how it works, and
+            what I would point a reviewer at.
+          </>
+        }
         meta={`${catalog.length} projects`}
       />
 
-      <div className="frame mt-20">
+      <div className="frame mt-12">
         <WorkLedger
           projects={catalog}
           groups={groupOrder.map((key) => ({ key, ...groups[key] }))}
