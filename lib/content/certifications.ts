@@ -1,4 +1,5 @@
 import { driveFile, type Attachment } from "@/lib/content/attachments"
+import type { Stock } from "@/lib/content/projects"
 
 /**
  * Certifications, single-sourced for /about, /about/certifications, the
@@ -25,6 +26,8 @@ export const categories: Record<
     /** For tight spots, like the tally on /about. */
     short: string
     blurb: string
+    /** Card stock its certificates are printed on in the home page deck. */
+    stock: Stock
   }
 > = {
   ai: {
@@ -32,39 +35,46 @@ export const categories: Record<
     short: "ai and ml",
     blurb:
       "How models learn, and how to put them to work inside real products.",
+    stock: "terracotta",
   },
   backend: {
     title: "Backend and data",
     short: "backend",
     blurb: "Servers, APIs and the databases underneath them.",
+    stock: "teal",
   },
   frontend: {
     title: "Frontend and design",
     short: "frontend",
     blurb: "React, the web platform, and the interface on top of it.",
+    stock: "bone",
   },
   languages: {
     title: "Languages",
     short: "languages",
     blurb: "JavaScript, TypeScript, Python and Go, learned properly.",
+    stock: "stone",
   },
   fundamentals: {
     title: "Computer science",
     short: "computer science",
     blurb:
       "Data structures, algorithms, memory and the paradigms underneath every language.",
+    stock: "teal",
   },
   devops: {
     title: "DevOps and tooling",
     short: "devops",
     blurb:
       "Linux, version control, containers and the pipeline that ships it all.",
+    stock: "stone",
   },
   projects: {
     title: "Projects",
     short: "projects",
     blurb:
       "Programs built end to end, from an empty directory to a working tool.",
+    stock: "terracotta",
   },
 }
 

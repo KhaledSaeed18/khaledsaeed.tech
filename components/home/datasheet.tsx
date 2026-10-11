@@ -8,11 +8,11 @@ import { principles, stack } from "@/lib/content/profile"
  * A component datasheet for a person: the operating principles as the
  * features list, and the stack drawn as the part's pin configuration.
  */
-export function Datasheet() {
+export function Datasheet({ index }: { index: number }) {
   return (
     <Sheet
       id="stack"
-      index={2}
+      index={index}
       label="datasheet"
       title="The stack, pin by pin."
       lede="TypeScript end to end, Swift when it belongs on the Mac, and whatever the problem actually needs underneath."

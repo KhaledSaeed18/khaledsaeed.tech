@@ -176,6 +176,35 @@
   }
 }
 
+/*
+ * Certificate deck on the home page: the top card is thrown off the pile and
+ * fades as it goes. Content motion, like the objects turning. It starts where
+ * a drag let go (--dx, --dy, --r) and leaves in the drag's direction (--dir).
+ */
+@keyframes deck-throw {
+  from {
+    transform: translate(var(--dx, 0px), var(--dy, 0px)) rotate(var(--r, 0deg));
+    opacity: 1;
+  }
+  to {
+    transform: translate(
+        calc(var(--dir, 1) * 115%),
+        calc(var(--dy, 0px) + 2rem)
+      )
+      rotate(calc(var(--dir, 1) * 14deg));
+    opacity: 0;
+  }
+}
+.deck-throw {
+  animation: deck-throw 520ms cubic-bezier(0.4, 0, 0.6, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .deck-throw {
+    animation: none;
+    opacity: 0;
+  }
+}
+
 /* Footer wordmark: printed in a light dither, turning terracotta on hover. */
 .wordmark svg {
   color: var(--foreground);

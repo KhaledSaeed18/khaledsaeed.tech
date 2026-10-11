@@ -12,7 +12,7 @@ import { formatDate } from "@/lib/format"
  * lead story with a dithered drop cap, and the next ones as a column of
  * briefs behind a dotted column rule.
  */
-export async function LatestWriting() {
+export async function LatestWriting({ index }: { index: number }) {
   const all = await getArticles()
   if (!all.length) return null
   const [lead, ...rest] = all.slice(0, 4)
@@ -21,7 +21,7 @@ export async function LatestWriting() {
   return (
     <Sheet
       id="writing"
-      index={3}
+      index={index}
       label="writing"
       title="Written down so I only learn it once."
       lede="Practical write-ups on authentication, rendering and architecture, published on DEV."
