@@ -1,3 +1,5 @@
+import { driveFile, type Attachment } from "@/lib/content/attachments"
+
 /**
  * Degrees, single-sourced for /about, /about/education, the printed résumé,
  * JSON-LD and llms.txt. Newest first. Dates are ISO ("2025-09", or a bare
@@ -6,9 +8,11 @@
 
 export type Honor = {
   title: string
-  /** ISO date. */
+  /** ISO date, as precise as the record: "2025-05-30" or "2024-05". */
   date: string
   body: string
+  /** The certificate itself, and any supporting papers. */
+  documents?: Attachment[]
 }
 
 export type Education = {
@@ -123,6 +127,27 @@ export const education: Education[] = [
         title: "3rd place, 6th Bekaa Engineering Day",
         date: "2025-05-30",
         body: "Computer and Communication Engineering category at LIU, judged by the evaluation committee among computer, mechanical and electrical engineering graduates. Awarded for Yalla Learn, a collaborative platform with AI and productivity tools for students.",
+        documents: [
+          {
+            label: "award certificate",
+            href: driveFile("1C5CIn-SIn9T1MfvInB5lHumegQtO3oTp"),
+          },
+          {
+            label: "participation certificate",
+            href: driveFile("1E3CY75NqCUjwRC9CeU6nxj5HTm3nEHP0"),
+          },
+        ],
+      },
+      {
+        title: "Dean's Honor List, Spring 2023-2024",
+        date: "2024-05",
+        body: "Named to the Dean's Honor List by the Lebanese International University for academic performance in the spring semester of the 2023-2024 year.",
+        documents: [
+          {
+            label: "certificate",
+            href: driveFile("1866zC1ydlAR0BDGtDPvxXNnhjv3K5mRq"),
+          },
+        ],
       },
     ],
   },

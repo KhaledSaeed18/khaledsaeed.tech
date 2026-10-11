@@ -15,7 +15,7 @@ import { SheetLink } from "@/components/print/sheet-link"
 import { ProjectRows } from "@/components/work/project-rows"
 import { education, type Education } from "@/lib/content/education"
 import { projectsBySlug } from "@/lib/content/projects"
-import { formatDate, formatMonth } from "@/lib/format"
+import { formatIso, formatMonth } from "@/lib/format"
 import { pageMeta } from "@/lib/metadata"
 import { siteIdentity } from "@/lib/site"
 
@@ -167,16 +167,16 @@ function Degree({ degree: e, index }: { degree: Education; index: number }) {
           <h3 className="font-mono text-xs font-normal text-muted-foreground">
             honors
           </h3>
-          <ul className="mt-4 grid gap-4">
+          <ul className="mt-4 grid gap-4 md:grid-cols-2">
             {e.honors.map((h) => (
               <li
                 key={h.title}
-                className="relative border border-border p-6 sm:p-8"
+                className="relative flex flex-col border border-border p-6 sm:p-8 md:[&:last-child:nth-child(odd)]:col-span-2"
               >
                 <CropMarks />
                 <p className="font-mono text-xs text-brand">
                   <time dateTime={h.date}>
-                    {formatDate(h.date).toLowerCase()}
+                    {formatIso(h.date).toLowerCase()}
                   </time>
                 </p>
                 <p className="mt-3 font-heading text-2xl font-medium tracking-tight text-balance">
@@ -185,6 +185,25 @@ function Degree({ degree: e, index }: { degree: Education; index: number }) {
                 <p className="mt-2 max-w-3xl leading-relaxed text-muted-foreground">
                   {h.body}
                 </p>
+                {h.documents && h.documents.length > 0 && (
+                  <p className="mt-auto flex flex-wrap gap-2 pt-6">
+                    {h.documents.map((d) => (
+                      <a
+                        key={d.href}
+                        href={d.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center border border-border bg-secondary px-3 py-2 font-mono text-xs text-muted-foreground transition-colors hover:border-brand/40 hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+                      >
+                        {d.label}
+                        <span className="sr-only">
+                          {" "}
+                          for {h.title}, opens in a new tab
+                        </span>
+                      </a>
+                    ))}
+                  </p>
+                )}
               </li>
             ))}
           </ul>
