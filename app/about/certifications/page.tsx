@@ -9,6 +9,7 @@ import {
   abs,
   BreadcrumbJsonLd,
   certificationLd,
+  holderLd,
   JsonLd,
   personRef,
 } from "@/components/json-ld"
@@ -17,6 +18,7 @@ import { SheetLink } from "@/components/print/sheet-link"
 import {
   categories,
   categoryOrder,
+  certificationHref,
   certifications,
   issuerName,
 } from "@/lib/content/certifications"
@@ -99,19 +101,27 @@ export default function CertificationsPage() {
       <JsonLd
         data={{
           "@context": "https://schema.org",
-          "@type": "CollectionPage",
-          url: abs("/about/certifications"),
-          name: "Certifications",
-          about: personRef,
-          mainEntity: {
-            "@type": "ItemList",
-            numberOfItems: certifications.length,
-            itemListElement: certifications.map((c, i) => ({
-              "@type": "ListItem",
-              position: i + 1,
-              item: certificationLd(c),
-            })),
-          },
+          "@graph": [
+            {
+              "@type": "CollectionPage",
+              "@id": abs("/about/certifications"),
+              url: abs("/about/certifications"),
+              name: "Certifications",
+              description: metadata.description,
+              isPartOf: { "@id": abs("/#website") },
+              about: personRef,
+              mainEntity: {
+                "@type": "ItemList",
+                numberOfItems: certifications.length,
+                itemListElement: certifications.map((c, i) => ({
+                  "@type": "ListItem",
+                  position: i + 1,
+                  item: certificationLd(c),
+                })),
+              },
+            },
+            holderLd(certifications.map((c) => abs(certificationHref(c)))),
+          ],
         }}
       />
       <BreadcrumbJsonLd

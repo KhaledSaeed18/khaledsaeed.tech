@@ -1,4 +1,5 @@
-import { schools } from "@/lib/content/education"
+import { abs, awards } from "@/components/json-ld"
+import { education, schools } from "@/lib/content/education"
 import { sameAs, siteConfig } from "@/lib/site"
 
 /**
@@ -25,6 +26,11 @@ export function PersonJsonLd() {
         alumniOf: schools.map((school) => ({
           "@type": "CollegeOrUniversity",
           ...school,
+        })),
+        award: awards,
+        // degrees are defined in full on /about/education; certificates on /about/certifications
+        hasCredential: education.map((e) => ({
+          "@id": abs(`/about/education#${e.slug}`),
         })),
         sameAs,
         address: {

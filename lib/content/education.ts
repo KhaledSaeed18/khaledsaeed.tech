@@ -153,6 +153,9 @@ export const education: Education[] = [
   },
 ]
 
+/** Every honor, from the latest degree back. */
+export const honors = education.flatMap((e) => e.honors ?? [])
+
 /** The degree in progress, if any, else the latest. */
 export const currentEducation = education.find((e) => e.current) ?? education[0]
 

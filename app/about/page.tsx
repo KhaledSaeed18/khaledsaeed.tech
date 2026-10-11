@@ -4,6 +4,7 @@ import type * as React from "react"
 
 import {
   abs,
+  awards,
   BreadcrumbJsonLd,
   certificationLd,
   degreeLd,
@@ -169,6 +170,7 @@ export default async function AboutPage() {
               "@type": "CollegeOrUniversity",
               ...school,
             })),
+            award: awards,
             hasCredential: [
               ...education.map(degreeLd),
               ...certifications.map(certificationLd),

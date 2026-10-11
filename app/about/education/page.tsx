@@ -3,8 +3,10 @@ import type { Metadata } from "next"
 import { ContactSheet } from "@/components/home/contact-sheet"
 import {
   abs,
+  awards,
   BreadcrumbJsonLd,
   degreeLd,
+  holderLd,
   JsonLd,
   personRef,
 } from "@/components/json-ld"
@@ -14,7 +16,7 @@ import { PageIntro } from "@/components/print/page-intro"
 import { CropMarks, Sheet } from "@/components/print/sheet"
 import { SheetLink } from "@/components/print/sheet-link"
 import { ProjectRows } from "@/components/work/project-rows"
-import { education, type Education } from "@/lib/content/education"
+import { education, schools, type Education } from "@/lib/content/education"
 import { projectsBySlug } from "@/lib/content/projects"
 import { formatIso, formatMonth } from "@/lib/format"
 import { pageMeta } from "@/lib/metadata"
@@ -22,7 +24,7 @@ import { siteIdentity } from "@/lib/site"
 
 export const metadata: Metadata = pageMeta({
   title: "Education",
-  description: `Education of ${siteIdentity}: an M.S. in Computer Engineering in progress and a B.S. in Computer Engineering from the Lebanese International University.`,
+  description: `${siteIdentity} is studying an M.S. in Computer Engineering at the Lebanese International University, after a B.S. there with honors.`,
   path: "/about/education",
 })
 
@@ -71,19 +73,36 @@ export default function EducationPage() {
       <JsonLd
         data={{
           "@context": "https://schema.org",
-          "@type": "CollectionPage",
-          url: abs("/about/education"),
-          name: "Education",
-          about: personRef,
-          mainEntity: {
-            "@type": "ItemList",
-            numberOfItems: education.length,
-            itemListElement: education.map((e, i) => ({
-              "@type": "ListItem",
-              position: i + 1,
-              item: degreeLd(e),
-            })),
-          },
+          "@graph": [
+            {
+              "@type": "CollectionPage",
+              "@id": abs("/about/education"),
+              url: abs("/about/education"),
+              name: "Education",
+              description: metadata.description,
+              isPartOf: { "@id": abs("/#website") },
+              about: personRef,
+              mainEntity: {
+                "@type": "ItemList",
+                numberOfItems: education.length,
+                itemListElement: education.map((e, i) => ({
+                  "@type": "ListItem",
+                  position: i + 1,
+                  item: degreeLd(e),
+                })),
+              },
+            },
+            {
+              ...holderLd(
+                education.map((e) => abs(`/about/education#${e.slug}`))
+              ),
+              alumniOf: schools.map((school) => ({
+                "@type": "CollegeOrUniversity",
+                ...school,
+              })),
+              award: awards,
+            },
+          ],
         }}
       />
       <BreadcrumbJsonLd

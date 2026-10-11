@@ -20,7 +20,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const pages: MetadataRoute.Sitemap = [
     {
       url: siteConfig.url,
-      lastModified: latestUpdate(featuredProjects, siteConfig.profileUpdatedAt),
+      // the home page carries featured work and the credentials section
+      lastModified: [
+        latestUpdate(featuredProjects, siteConfig.profileUpdatedAt),
+        educationUpdatedAt,
+        certificationsUpdatedAt,
+      ]
+        .filter(Boolean)
+        .sort()
+        .at(-1),
       changeFrequency: "weekly",
       priority: 1,
     },

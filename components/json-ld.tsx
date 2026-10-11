@@ -3,7 +3,8 @@ import {
   issuers,
   type Certification,
 } from "@/lib/content/certifications"
-import type { Education } from "@/lib/content/education"
+import { honors, type Education } from "@/lib/content/education"
+import { formatIso } from "@/lib/format"
 import { siteConfig } from "@/lib/site"
 
 /** Structured data for search and answer engines. Content is ours, never user input. */
@@ -51,6 +52,10 @@ export function degreeLd(e: Education) {
     name: `${e.degree} in ${e.field}`,
     credentialCategory: "degree",
     educationalLevel: e.level,
+    description: e.summary,
+    keywords: e.skills.join(", "),
+    // awarded on completion; a degree in progress has no date yet
+    ...(e.current ? {} : { dateCreated: e.end }),
     url: abs(`/about/education#${e.slug}`),
     recognizedBy: {
       "@type": "CollegeOrUniversity",
@@ -72,7 +77,34 @@ export function certificationLd(c: Certification) {
     keywords: c.skills.join(", "),
     url: abs(certificationHref(c)),
     ...(c.credentialId ? { identifier: c.credentialId } : {}),
+    ...(c.note ? { description: c.note } : {}),
     ...(c.url ? { sameAs: c.url } : {}),
+    ...(c.documents?.length
+      ? {
+          subjectOf: c.documents.map((d) => ({
+            "@type": "DigitalDocument",
+            name: /certificate/i.test(c.name)
+              ? c.name
+              : `${c.name} certificate`,
+            url: d.href,
+          })),
+        }
+      : {}),
     recognizedBy: { "@type": "Organization", ...issuer },
+  }
+}
+
+/** Honors as schema.org `award` text: "Dean's Honor List, Spring 2023-2024 (May 2024)". */
+export const awards = honors.map((h) => `${h.title} (${formatIso(h.date)})`)
+
+/**
+ * The person, pointing at credentials by id. Pages that define credentials
+ * add this beside them, so each one is tied to its holder.
+ */
+export function holderLd(credentialIds: string[]) {
+  return {
+    "@type": "Person",
+    ...personRef,
+    hasCredential: credentialIds.map((id) => ({ "@id": id })),
   }
 }
