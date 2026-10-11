@@ -2,7 +2,7 @@ import type * as React from "react"
 
 import {
   careerStart,
-  chapters,
+  chaptersOfRun,
   formatTenure,
   inkOf,
   monthOf,
@@ -22,6 +22,7 @@ const tone = (level: number) =>
 export function RunStrip() {
   const first = monthOf(careerStart)
   const months = monthsOfRun()
+  const chapters = chaptersOfRun()
 
   return (
     <div>

@@ -5,7 +5,7 @@ import { Sheet } from "@/components/print/sheet"
 import { SheetLink } from "@/components/print/sheet-link"
 import {
   careerStart,
-  chapters,
+  chaptersOfRun,
   formatTenure,
   inkOf,
   monthsBetween,
@@ -25,6 +25,7 @@ const monthName = new Intl.DateTimeFormat("en", {
  */
 export function Experience({ index }: { index: number }) {
   const months = monthsOfRun()
+  const chapters = chaptersOfRun()
   const total = monthsBetween(careerStart)
   const roles = new Set(chapters.map((c) => c.role.title)).size
   const cells: TapeCell[] = months.map(({ year, month, chapter }, i) => {

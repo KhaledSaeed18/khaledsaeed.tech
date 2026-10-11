@@ -206,14 +206,16 @@ export type Chapter = {
 export const monthOf = (iso: string) =>
   Number(iso.slice(0, 4)) * 12 + Number(iso.slice(5, 7)) - 1
 
-/** This month, in the same count. Read at build time, when the page is published. */
+/**
+ * This month, in the same count. Read when a page renders, so a page that
+ * revalidates daily keeps the open chapter and the tenure current.
+ */
 export const thisMonth = () =>
   new Date().getUTCFullYear() * 12 + new Date().getUTCMonth()
 
-/** Every chapter, oldest first, with its month range. */
-export const chapters: Chapter[] = [...experience]
-  .reverse()
-  .flatMap((company) =>
+/** Every chapter, oldest first, with its month range. The open one runs to this month. */
+export const chaptersOfRun = (): Chapter[] =>
+  [...experience].reverse().flatMap((company) =>
     company.roles.map((role) => ({
       company,
       role,
@@ -222,11 +224,15 @@ export const chapters: Chapter[] = [...experience]
     }))
   )
 
+/** How many chapters there are, across every company. */
+export const chapterCount = experience.reduce((n, c) => n + c.roles.length, 0)
+
 /** Dither level for a chapter: older ones print lighter, the current one in solid ink. */
-export const inkOf = (i: number) => [5, 10, 16].at(i - chapters.length) ?? 16
+export const inkOf = (i: number) => [5, 10, 16].at(i - chapterCount) ?? 16
 
 /** One record per month of the run, oldest first, with the chapter it belongs to (-1 for none). */
 export function monthsOfRun() {
+  const chapters = chaptersOfRun()
   const first = monthOf(careerStart)
   const last = thisMonth()
   return Array.from({ length: last - first + 1 }, (_, i) => {

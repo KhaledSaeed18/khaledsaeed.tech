@@ -6,6 +6,9 @@ import { Hero } from "@/components/home/hero"
 import { LatestWriting } from "@/components/home/latest-writing"
 import { SelectedWork } from "@/components/home/selected-work"
 
+// The tenure and the open chapter count up to the day, so re-render daily.
+export const revalidate = 86400
+
 export default function Page() {
   return (
     <>

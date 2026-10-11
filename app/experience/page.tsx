@@ -30,6 +30,9 @@ import { formatIso, formatMonth } from "@/lib/format"
 import { pageMeta } from "@/lib/metadata"
 import { siteConfig, siteIdentity } from "@/lib/site"
 
+// The tenure and the open chapter count up to the day, so re-render daily.
+export const revalidate = 86400
+
 export const metadata: Metadata = pageMeta({
   title: "Experience",
   description: `${siteIdentity} is a software engineer at JSS Technology, after an internship and a full-stack developer role at 3E Tech in Beirut. Client systems across web, mobile, desktop and the cloud since ${formatMonth(careerStart)}.`,
