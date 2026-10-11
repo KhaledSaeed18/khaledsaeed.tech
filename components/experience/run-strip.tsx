@@ -2,38 +2,17 @@ import type * as React from "react"
 
 import {
   careerStart,
-  experience,
+  chapters,
   formatTenure,
+  inkOf,
+  monthOf,
   monthsBetween,
-  type Company,
-  type Role,
+  monthsOfRun,
 } from "@/lib/content/experience"
 import { formatMonth } from "@/lib/format"
 
 const tone = (level: number) =>
   ({ "--tone": `var(--dither-${level})` }) as React.CSSProperties
-
-/** "2024-09-01" -> months since year 0. */
-const monthOf = (iso: string) =>
-  Number(iso.slice(0, 4)) * 12 + Number(iso.slice(5, 7)) - 1
-
-// the strip is drawn at build time, which is when the page is published
-const thisMonth = new Date().getUTCFullYear() * 12 + new Date().getUTCMonth()
-
-type Chapter = { company: Company; role: Role; from: number; to: number }
-
-/** Every chapter, oldest first, with its month range. */
-const chapters: Chapter[] = [...experience].reverse().flatMap((company) =>
-  company.roles.map((role) => ({
-    company,
-    role,
-    from: monthOf(role.start),
-    to: role.end ? monthOf(role.end) : thisMonth,
-  }))
-)
-
-// older chapters print lighter; the current one in solid ink
-const inkOf = (i: number) => [5, 10, 16].at(i - chapters.length) ?? 16
 
 /**
  * The run so far: one cell per month since the first day of work, inked by
@@ -42,13 +21,7 @@ const inkOf = (i: number) => [5, 10, 16].at(i - chapters.length) ?? 16
  */
 export function RunStrip() {
   const first = monthOf(careerStart)
-  const months = Array.from(
-    { length: thisMonth - first + 1 },
-    (_, i) => first + i
-  )
-  const chapterAt = (m: number) =>
-    // a month shared by two chapters belongs to the later one
-    chapters.findLastIndex((c) => c.from <= m && m <= c.to)
+  const months = monthsOfRun()
 
   return (
     <div>
@@ -57,24 +30,23 @@ export function RunStrip() {
           className="grid gap-0.5"
           style={{ gridTemplateColumns: `repeat(${months.length}, 1fr)` }}
         >
-          {months.map((m) => {
-            const i = chapterAt(m)
-            return i === -1 ? (
+          {months.map(({ m, chapter }) =>
+            chapter === -1 ? (
               <span key={m} className="h-10 border border-border" />
             ) : (
               <span
                 key={m}
                 className="dither-tone h-10 text-foreground"
-                style={tone(inkOf(i))}
+                style={tone(inkOf(chapter))}
               />
             )
-          })}
+          )}
         </div>
         <div
           className="mt-2 grid gap-0.5 font-mono text-xs text-muted-foreground tabular-nums"
           style={{ gridTemplateColumns: `repeat(${months.length}, 1fr)` }}
         >
-          {months.map((m) => (
+          {months.map(({ m }) => (
             <span key={m} className="relative h-4 whitespace-nowrap">
               {m % 12 === 0 || m === first ? (
                 <span className="absolute left-0">

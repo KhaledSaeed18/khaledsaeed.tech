@@ -192,3 +192,51 @@ export const employers = experience.map((c) => ({
   name: c.name,
   ...(c.url ? { url: c.url } : {}),
 }))
+
+/** A role with its month range, for the strips that draw the run. */
+export type Chapter = {
+  company: Company
+  role: Role
+  /** Months since year 0, inclusive. */
+  from: number
+  to: number
+}
+
+/** "2024-09-01" -> months since year 0. */
+export const monthOf = (iso: string) =>
+  Number(iso.slice(0, 4)) * 12 + Number(iso.slice(5, 7)) - 1
+
+/** This month, in the same count. Read at build time, when the page is published. */
+export const thisMonth = () =>
+  new Date().getUTCFullYear() * 12 + new Date().getUTCMonth()
+
+/** Every chapter, oldest first, with its month range. */
+export const chapters: Chapter[] = [...experience]
+  .reverse()
+  .flatMap((company) =>
+    company.roles.map((role) => ({
+      company,
+      role,
+      from: monthOf(role.start),
+      to: role.end ? monthOf(role.end) : thisMonth(),
+    }))
+  )
+
+/** Dither level for a chapter: older ones print lighter, the current one in solid ink. */
+export const inkOf = (i: number) => [5, 10, 16].at(i - chapters.length) ?? 16
+
+/** One record per month of the run, oldest first, with the chapter it belongs to (-1 for none). */
+export function monthsOfRun() {
+  const first = monthOf(careerStart)
+  const last = thisMonth()
+  return Array.from({ length: last - first + 1 }, (_, i) => {
+    const m = first + i
+    return {
+      m,
+      year: Math.floor(m / 12),
+      month: m % 12,
+      // a month shared by two chapters belongs to the later one
+      chapter: chapters.findLastIndex((c) => c.from <= m && m <= c.to),
+    }
+  })
+}
