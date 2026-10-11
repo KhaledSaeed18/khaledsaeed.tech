@@ -62,6 +62,16 @@ export const nav = [
   { href: "/contact", label: "contact" },
 ] as const
 
+/** Pages that live under a primary page, listed beneath it in the footer. */
+export const subPages: Partial<
+  Record<(typeof nav)[number]["href"], { href: string; label: string }[]>
+> = {
+  "/about": [
+    { href: "/about/education", label: "education" },
+    { href: "/about/certifications", label: "certifications" },
+  ],
+}
+
 export const socialLinks: SocialLink[] = [
   {
     key: "github",

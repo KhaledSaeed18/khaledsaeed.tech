@@ -1,6 +1,6 @@
 import { catalog } from "@/lib/content/projects"
 import { getArticles } from "@/lib/data/devto"
-import { nav } from "@/lib/site"
+import { nav, subPages } from "@/lib/site"
 
 export type SiteRoute = { href: string; label: string; kind: string }
 
@@ -17,8 +17,13 @@ export async function siteRoutes(): Promise<SiteRoute[]> {
       label: n.label[0].toUpperCase() + n.label.slice(1),
       kind: "page",
     })),
-    { href: "/about/education", label: "Education", kind: "page" },
-    { href: "/about/certifications", label: "Certifications", kind: "page" },
+    ...nav.flatMap((n) =>
+      (subPages[n.href] ?? []).map((s) => ({
+        href: s.href,
+        label: s.label[0].toUpperCase() + s.label.slice(1),
+        kind: "page",
+      }))
+    ),
     ...catalog.map((p) => ({
       href: `/work/${p.slug}`,
       label: p.name,
