@@ -4,6 +4,8 @@ import Link from "next/link"
 import * as React from "react"
 
 import { Drawers } from "@/components/print/drawers"
+import { OutLink } from "@/components/print/out-link"
+import type { Attachment } from "@/lib/content/attachments"
 import type { CertificationCategory } from "@/lib/content/certifications"
 import { formatMonth, yearOf } from "@/lib/format"
 import { cn } from "@/lib/utils"
@@ -20,6 +22,7 @@ export type LedgerEntry = {
   skills: string[]
   credentialId?: string
   url?: string
+  documents: Attachment[]
   note?: string
   distinction?: string
   work: { href: string; name: string }[]
@@ -52,7 +55,6 @@ export function CertificationLedger({
   const open = categories.find((c) => c.key === drawer)
   const years = [...new Set(rows.map((e) => yearOf(e.issued)))]
   const issuers = new Set(rows.map((e) => e.issuer)).size
-  const verifiable = rows.filter((e) => e.url).length
   const titleOf = (key: CertificationCategory) =>
     categories.find((c) => c.key === key)?.title.toLowerCase()
 
@@ -74,7 +76,7 @@ export function CertificationLedger({
       <p className="mt-5 min-h-[1.5em] text-muted-foreground">
         {open
           ? open.blurb
-          : "Every certificate, newest first, with its credential ID and a link to verify it wherever the issuer offers one."}
+          : "Every certificate, newest first, with its credential ID and a link to the credential itself."}
       </p>
 
       {/* folio line */}
@@ -86,7 +88,6 @@ export function CertificationLedger({
           {issuers} {issuers === 1 ? "issuer" : "issuers"}
         </span>
         <span>since {formatMonth(rows.at(-1)!.issued).toLowerCase()}</span>
-        <span className="hidden sm:inline">{verifiable} verifiable online</span>
       </div>
 
       <div key={drawer}>
@@ -170,7 +171,7 @@ export function CertificationLedger({
                         )}
                       </div>
 
-                      {(e.credentialId || e.url) && (
+                      {(e.credentialId || e.url || e.documents.length > 0) && (
                         <div className="flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-xs text-muted-foreground sm:flex-col sm:items-end sm:justify-start">
                           {e.credentialId && (
                             <span title={e.credentialId}>
@@ -184,19 +185,26 @@ export function CertificationLedger({
                               <span className="sr-only">{e.credentialId}</span>
                             </span>
                           )}
-                          {e.url && (
-                            <a
-                              href={e.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center border border-border bg-secondary px-3 py-2 transition-colors hover:border-brand/40 hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
-                            >
-                              verify
-                              <span className="sr-only">
-                                {" "}
-                                {e.name} on the issuer&apos;s site
-                              </span>
-                            </a>
+                          {(e.url || e.documents.length > 0) && (
+                            <span className="flex flex-wrap gap-2 sm:justify-end">
+                              {e.url && (
+                                <OutLink
+                                  href={e.url}
+                                  context={`${e.name} on the issuer's site`}
+                                >
+                                  credential
+                                </OutLink>
+                              )}
+                              {e.documents.map((d) => (
+                                <OutLink
+                                  key={d.href}
+                                  href={d.href}
+                                  context={`${d.label} for ${e.name}`}
+                                >
+                                  {d.label}
+                                </OutLink>
+                              ))}
+                            </span>
                           )}
                         </div>
                       )}

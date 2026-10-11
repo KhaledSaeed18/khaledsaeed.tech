@@ -1,3 +1,5 @@
+import { driveFile, type Attachment } from "@/lib/content/attachments"
+
 /**
  * Certifications, single-sourced for /about, /about/certifications, the
  * printed résumé, JSON-LD and llms.txt. Copy follows the brand rules:
@@ -115,6 +117,8 @@ export type Certification = {
   credentialId?: string
   /** Where the issuer verifies it. */
   url?: string
+  /** Copies of the certificate itself, for those the issuer does not host. */
+  documents?: Attachment[]
   /** What it covered, when the name does not say. */
   note?: string
   /** A result worth calling out: a rank, a prize. */
@@ -200,6 +204,12 @@ const entries: Certification[] = [
     distinction: "Ranked 1st in the cohort and awarded a prize.",
     projects: ["team-flow"],
     featured: true,
+    documents: [
+      {
+        label: "credential",
+        href: driveFile("12a9RMwNc3k9CTTiHDmsNcL9EYJ5VNTfC"),
+      },
+    ],
   },
   {
     slug: "claude-101",
@@ -222,6 +232,12 @@ const entries: Certification[] = [
     credentialId:
       "38cc6a1301c5fd3de7e398df5924d597e3ba25892df2cc4f4c08878501743e35",
     featured: true,
+    documents: [
+      {
+        label: "credential",
+        href: driveFile("1ezyyMX6_8137FjfTlJjFqawhytxgZ2Ba"),
+      },
+    ],
   },
   {
     slug: "python-object-oriented-programming",
@@ -232,6 +248,12 @@ const entries: Certification[] = [
     skills: ["Python", "Object-Oriented Programming"],
     credentialId:
       "aa8786a4d5b6c0245fd34bc72f8a5b85ba83ec0ac8d8c6f14c01cba0d92c7fa3",
+    documents: [
+      {
+        label: "credential",
+        href: driveFile("1WdlM-cp0H0Fl6Fi_IL5Ctb4oZpA8x9Bs"),
+      },
+    ],
   },
   {
     slug: "python-essential-training",
@@ -242,6 +264,12 @@ const entries: Certification[] = [
     skills: ["Python", "Software Development"],
     credentialId:
       "4e4307cb070a8f7ae7572c45b7c66a0be28963923965d1dc1d45c56061df3b2c",
+    documents: [
+      {
+        label: "credential",
+        href: driveFile("1eipVrraQZgoH6eZMdYaPdvJcdJDJkhw9"),
+      },
+    ],
   },
   {
     slug: "learning-docker",
@@ -253,6 +281,12 @@ const entries: Certification[] = [
     credentialId:
       "1d0b92802e3ffc8aa7d678783ed5bee713d488b6e1574e1c34bca57091610290",
     featured: true,
+    documents: [
+      {
+        label: "credential",
+        href: driveFile("1ipG9UmHBeCH_dCDFf7QuhT938UwFxNJZ"),
+      },
+    ],
   },
   {
     slug: "learn-nextjs",
@@ -282,6 +316,7 @@ const entries: Certification[] = [
     category: "ai",
     skills: ["Generative AI"],
     credentialId: "16388527",
+    url: "https://www.skills.google/public_profiles/35e06288-3eaa-4eb6-9af0-837bca1b0e46/badges/16388527",
   },
   {
     slug: "become-a-full-stack-web-developer",
@@ -292,6 +327,12 @@ const entries: Certification[] = [
     skills: ["Full-Stack Development", "Front-End Development"],
     credentialId:
       "e1d4d6632e99c10d813abae6c9748f1fcc558440198d5ca985cfd4a87a23c3c1",
+    documents: [
+      {
+        label: "credential",
+        href: driveFile("1qc0oNOh2jJXFQc8Voqh-ir_uSkWKIZcI"),
+      },
+    ],
   },
   {
     slug: "devops-foundations",
@@ -302,6 +343,17 @@ const entries: Certification[] = [
     skills: ["DevOps", "CI/CD"],
     credentialId:
       "3b20d2ddad8c64335bebb8f39ef021d23e2e30b9d37f88140ee5364cbb820b77",
+    note: "Issued as two certificates, one recognized by CompTIA and one by the Project Management Institute (PMI).",
+    documents: [
+      {
+        label: "comptia credential",
+        href: driveFile("1ZmI7wXaaEHctD80RRyXAcD1qpAlI1QTp"),
+      },
+      {
+        label: "pmi credential",
+        href: driveFile("1DLX_Iv4jzWBWxA6_iXzh06nHZNAZlOTq"),
+      },
+    ],
   },
   {
     slug: "sql-essential-training",
@@ -312,6 +364,12 @@ const entries: Certification[] = [
     skills: ["SQL", "SQLite"],
     credentialId:
       "43301eebbcd0fb87b8cd1844dbdd535b45f1b6fd7c623d16d0a0ee5c8660f895",
+    documents: [
+      {
+        label: "credential",
+        href: driveFile("1SYz-QwdNZRC2b4F6D9_PpfgajMR6A0mw"),
+      },
+    ],
   },
   {
     slug: "javascript-foundations",
@@ -322,6 +380,12 @@ const entries: Certification[] = [
     skills: ["JavaScript", "Web Development"],
     credentialId:
       "7fbbd4d70a62b5cddf62060d0ea58c040728bfcbd69f5be65a62c49334d7f4c4",
+    documents: [
+      {
+        label: "credential",
+        href: driveFile("1eQJ3_UE2uY5XzlNqAGqlUSF9SHbcYWvG"),
+      },
+    ],
   },
   {
     slug: "principles-of-ux-ui-design",

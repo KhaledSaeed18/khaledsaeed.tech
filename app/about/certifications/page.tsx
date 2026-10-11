@@ -41,6 +41,7 @@ const entries: LedgerEntry[] = certifications.map((c, i) => ({
   skills: c.skills,
   credentialId: c.credentialId,
   url: c.url,
+  documents: c.documents ?? [],
   note: c.note,
   distinction: c.distinction,
   work: projectsBySlug(c.projects ?? []).map((p) => ({

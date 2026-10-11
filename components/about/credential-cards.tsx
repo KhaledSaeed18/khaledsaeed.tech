@@ -129,7 +129,6 @@ function EducationCard() {
 }
 
 function CertificationsCard() {
-  const verifiable = certifications.filter((c) => c.url).length
   const issuers = new Set(certifications.map((c) => c.issuer)).size
   const oldest = certifications.at(-1)!
   const counts = categoryOrder.map(
@@ -164,11 +163,7 @@ function CertificationsCard() {
                 style={{ gridTemplateColumns: `repeat(${columns}, 1fr)` }}
               >
                 {inCategory.map((c) => (
-                  <span
-                    key={c.slug}
-                    className="dither-tone h-3.5"
-                    style={tone(c.url ? 16 : 6)}
-                  />
+                  <span key={c.slug} className="h-3.5 bg-current" />
                 ))}
               </span>
               <span className="text-right tabular-nums">
@@ -178,24 +173,6 @@ function CertificationsCard() {
           )
         })}
       </ul>
-      <p className="mt-6 flex flex-wrap gap-x-5 gap-y-1.5 font-mono text-xs opacity-80">
-        <span className="inline-flex items-center gap-2">
-          <span
-            aria-hidden="true"
-            className="dither-tone size-2.5"
-            style={tone(16)}
-          />
-          {verifiable} verifiable online
-        </span>
-        <span className="inline-flex items-center gap-2">
-          <span
-            aria-hidden="true"
-            className="dither-tone size-2.5"
-            style={tone(6)}
-          />
-          {certifications.length - verifiable} by credential id
-        </span>
-      </p>
     </StockCard>
   )
 }

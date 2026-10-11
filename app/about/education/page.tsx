@@ -8,6 +8,7 @@ import {
   JsonLd,
   personRef,
 } from "@/components/json-ld"
+import { OutLink } from "@/components/print/out-link"
 import { FactStrip, type Fact } from "@/components/print/fact-strip"
 import { PageIntro } from "@/components/print/page-intro"
 import { CropMarks, Sheet } from "@/components/print/sheet"
@@ -188,19 +189,13 @@ function Degree({ degree: e, index }: { degree: Education; index: number }) {
                 {h.documents && h.documents.length > 0 && (
                   <p className="mt-auto flex flex-wrap gap-2 pt-6">
                     {h.documents.map((d) => (
-                      <a
+                      <OutLink
                         key={d.href}
                         href={d.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center border border-border bg-secondary px-3 py-2 font-mono text-xs text-muted-foreground transition-colors hover:border-brand/40 hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+                        context={`${d.label} for ${h.title}`}
                       >
                         {d.label}
-                        <span className="sr-only">
-                          {" "}
-                          for {h.title}, opens in a new tab
-                        </span>
-                      </a>
+                      </OutLink>
                     ))}
                   </p>
                 )}
