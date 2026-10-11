@@ -44,11 +44,14 @@ const tone = (level: number) =>
 export function RunTape({ cells }: { cells: TapeCell[] }) {
   const n = cells.length
   const last = n - 1
-  const [pos, setPos] = React.useState(0)
+  // the month under the head; the tape's exact position lives in posRef and
+  // is written straight to the strip, so a frame of feed does not re-render
+  const [at, setAt] = React.useState(0)
   const [held, setHeld] = React.useState(false)
   const [onScreen, setOnScreen] = React.useState(false)
   const [reduced, setReduced] = React.useState(false)
   const rootRef = React.useRef<HTMLDivElement>(null)
+  const stripRef = React.useRef<HTMLDivElement>(null)
   const posRef = React.useRef(0)
   const dir = React.useRef<1 | -1>(1)
   const drag = React.useRef<{ x: number; pos: number } | null>(null)
@@ -56,7 +59,9 @@ export function RunTape({ cells }: { cells: TapeCell[] }) {
   const go = (p: number) => {
     const next = Math.min(last, Math.max(0, p))
     posRef.current = next
-    setPos(next)
+    if (stripRef.current)
+      stripRef.current.style.transform = `translateX(${-next * CELL}px)`
+    setAt(Math.round(next))
   }
 
   React.useEffect(() => {
@@ -107,7 +112,6 @@ export function RunTape({ cells }: { cells: TapeCell[] }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [running, last])
 
-  const at = Math.round(pos)
   const cell = cells[at]
 
   const onKey = (e: React.KeyboardEvent) => {
@@ -177,12 +181,12 @@ export function RunTape({ cells }: { cells: TapeCell[] }) {
         className="tape relative mt-4 cursor-grab touch-pan-y overflow-hidden py-3 select-none focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none active:cursor-grabbing"
       >
         <div
+          ref={stripRef}
           aria-hidden="true"
-          className="relative flex"
+          className="relative flex will-change-transform"
           style={{
             width: (n + 2 * LEAD) * CELL,
             marginLeft: `calc(50% - ${CELL * (LEAD + 0.5)}px)`,
-            transform: `translateX(${-pos * CELL}px)`,
           }}
         >
           <Leader />
