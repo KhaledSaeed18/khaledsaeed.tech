@@ -50,7 +50,7 @@ export default function ExperiencePage() {
       <PageIntro
         crumbs={[{ href: "/", label: "home" }, { label: "experience" }]}
         title="Experience"
-        lede={`${total} of client work without a gap, in two companies. An internship at a Beirut software startup that turned into a full-stack developer role, then a software engineer at a studio that builds across web, mobile, desktop and AI. The projects belong to the clients, so they are described here by what they do, not by name.`}
+        lede={`${total} of client work without a gap, in two companies. An internship at a Beirut software startup that turned into a full-stack developer role, then a software engineer at a company that builds across web, mobile, desktop and AI. The projects belong to the clients, so they are described here by what they do, not by name.`}
         meta={
           <span className="hidden sm:inline">
             since {formatMonth(careerStart).toLowerCase()}
@@ -84,8 +84,8 @@ export default function ExperiencePage() {
         <section aria-labelledby="open-work" className="frame">
           <SpecLabel index={experience.length + 1}>and the open work</SpecLabel>
           <Rule className="mt-3" />
-          <div className="mt-10 grid gap-10 lg:grid-cols-12">
-            <div className="lg:col-span-7">
+          <div className="mt-10">
+            <div>
               <h2
                 id="open-work"
                 className="font-heading text-3xl font-medium tracking-tight text-balance sm:text-4xl"
@@ -340,7 +340,7 @@ function Employer({ company: c, index }: { company: Company; index: number }) {
         <figcaption className="font-mono text-xs text-muted-foreground">
           what it taught me
         </figcaption>
-        <blockquote className="mt-3 max-w-3xl font-heading text-xl leading-snug font-medium tracking-tight text-balance sm:text-2xl">
+        <blockquote className="mt-3 font-heading text-xl leading-snug font-medium tracking-tight text-balance sm:text-2xl">
           {c.learned}
         </blockquote>
       </figure>

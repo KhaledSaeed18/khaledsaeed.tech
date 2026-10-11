@@ -47,17 +47,17 @@ export const experience: Company[] = [
     slug: "jss-technology",
     name: "JSS Technology",
     url: "https://www.jss.technology",
-    kind: "Software studio",
+    kind: "Software company",
     location: "Lebanon",
     mode: "remote",
     summary:
-      "A small software studio in Lebanon that builds web, mobile, desktop and AI products for clients worldwide, from requirements to delivery. I joined straight from 3E Tech and work across the whole run of a project: scoping and technical decisions, the services and the clients on top of them, and the servers underneath.",
+      "A software company in Lebanon that builds web, mobile, desktop and AI products for clients worldwide, from requirements to delivery. I joined straight from 3E Tech and work across the whole run of a project: scoping and technical decisions, the services and the clients on top of them, and the servers underneath.",
     note: "Web, mobile, desktop and AI products for clients, from requirements to delivery.",
     roles: [
       {
         title: "Software Engineer",
         start: "2025-05",
-        lede: "Joined the studio's engineering team as it took on larger, multi-platform builds.",
+        lede: "Joined the engineering team as the company took on larger, multi-platform builds.",
         body: [
           "Build client products across the stack: Next.js and React on the web, React Native and Flutter on mobile, Electron on the desktop, with NestJS and Node.js services behind them.",
           "Take part in the decisions around the code: scoping with clients, picking the stack for each project, and weighing timelines against what can be built well.",
