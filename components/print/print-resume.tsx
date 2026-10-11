@@ -2,13 +2,13 @@ import "./print-resume.css"
 
 import { PrintSlug } from "@/components/print/print-slug"
 import {
-  about,
-  credentials,
-  education,
-  principles,
-  stack,
-} from "@/lib/content/profile"
+  featuredCertifications,
+  issuerName,
+} from "@/lib/content/certifications"
+import { education } from "@/lib/content/education"
+import { about, principles, stack } from "@/lib/content/profile"
 import { featuredProjects, kindPhrase } from "@/lib/content/projects"
+import { formatMonth } from "@/lib/format"
 import { siteConfig, socialLinks } from "@/lib/site"
 
 const edition = (process.env.BUILD_COMMIT ?? "").slice(0, 7)
@@ -126,7 +126,7 @@ export function PrintResume() {
               <Head>education</Head>
               <ol className="space-y-[2.6mm]">
                 {education.map((e) => (
-                  <li key={e.degree}>
+                  <li key={e.slug}>
                     <p className="text-[8.5pt] leading-snug font-medium">
                       {e.degree}, {e.field}
                     </p>
@@ -134,7 +134,7 @@ export function PrintResume() {
                       {e.school}
                     </p>
                     <p className="font-mono text-[7pt] text-[#6b635c]">
-                      {e.start} to {e.end}
+                      {formatMonth(e.start)} to {formatMonth(e.end)}
                     </p>
                   </li>
                 ))}
@@ -144,17 +144,17 @@ export function PrintResume() {
             <section className="mt-[5.5mm]">
               <Head>certifications</Head>
               <ol className="space-y-[1.8mm]">
-                {credentials.map((c) => (
-                  <li key={c.name} className="text-[8pt] leading-snug">
+                {featuredCertifications.map((c) => (
+                  <li key={c.slug} className="text-[8pt] leading-snug">
                     <span className="font-medium">{c.name}</span>
-                    <span className="text-[#3d3732]">, {c.issuer}</span>
+                    <span className="text-[#3d3732]">, {issuerName(c)}</span>
                     <span className="font-mono text-[7pt] text-[#6b635c]">
                       {" "}
-                      {c.date}
+                      {formatMonth(c.issued)}
                     </span>
-                    {c.highlight && c.note && (
+                    {c.distinction && (
                       <span className="block font-mono text-[7pt] text-[#c4553c]">
-                        {c.note}
+                        {c.distinction}
                       </span>
                     )}
                   </li>

@@ -17,6 +17,8 @@ export async function siteRoutes(): Promise<SiteRoute[]> {
       label: n.label[0].toUpperCase() + n.label.slice(1),
       kind: "page",
     })),
+    { href: "/about/education", label: "Education", kind: "page" },
+    { href: "/about/certifications", label: "Certifications", kind: "page" },
     ...catalog.map((p) => ({
       href: `/work/${p.slug}`,
       label: p.name,

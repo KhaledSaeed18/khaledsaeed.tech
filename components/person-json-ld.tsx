@@ -1,3 +1,4 @@
+import { schools } from "@/lib/content/education"
 import { sameAs, siteConfig } from "@/lib/site"
 
 /**
@@ -21,11 +22,10 @@ export function PersonJsonLd() {
         knowsAbout: [...siteConfig.knowsAbout],
         image: `${siteConfig.url}/character.png`,
         email: "mailto:contact@khaledsaeed.tech",
-        alumniOf: {
+        alumniOf: schools.map((school) => ({
           "@type": "CollegeOrUniversity",
-          name: "Lebanese International University",
-          url: "https://www.liu.edu.lb",
-        },
+          ...school,
+        })),
         sameAs,
         address: {
           "@type": "PostalAddress",

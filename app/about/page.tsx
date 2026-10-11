@@ -2,14 +2,30 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import type * as React from "react"
 
-import { abs, BreadcrumbJsonLd, JsonLd, personRef } from "@/components/json-ld"
+import {
+  abs,
+  BreadcrumbJsonLd,
+  certificationLd,
+  degreeLd,
+  JsonLd,
+  personRef,
+} from "@/components/json-ld"
 import { DropCap } from "@/components/print/drop-cap"
 import { PageIntro } from "@/components/print/page-intro"
 import { Rule, SpecLabel } from "@/components/print/sheet"
+import { SheetLink } from "@/components/print/sheet-link"
 import { ContactSheet } from "@/components/home/contact-sheet"
-import { about, credentials, education } from "@/lib/content/profile"
+import {
+  certificationHref,
+  certifications,
+  featuredCertifications,
+  issuerName,
+} from "@/lib/content/certifications"
+import { currentEducation, education, schools } from "@/lib/content/education"
+import { about } from "@/lib/content/profile"
 import { projects } from "@/lib/content/projects"
 import { getArticles } from "@/lib/data/devto"
+import { formatMonth, yearOf } from "@/lib/format"
 import { sameAs, siteConfig, siteIdentity } from "@/lib/site"
 import { pageMeta } from "@/lib/metadata"
 
@@ -20,40 +36,35 @@ export const metadata: Metadata = pageMeta({
   type: "profile",
 })
 
-/** "Sep 2025" -> sortable month index */
-const month = (s: string) => {
-  const d = new Date(`1 ${s}`)
-  return Number.isNaN(d.getTime())
-    ? Number(s) * 12
-    : d.getFullYear() * 12 + d.getMonth()
-}
-
-/** Education and certifications as one press log, newest first. */
+/**
+ * Degrees and the featured certifications as one press log, newest first.
+ * The full record lives on /about/education and /about/certifications.
+ */
 const log = [
   ...education.map((e) => ({
     kind: "degree" as const,
+    href: `/about/education#${e.slug}`,
     title: `${e.degree}, ${e.field}`,
     issuer: e.school,
-    when: `${e.start} to ${e.end}`,
-    at: month(e.start),
-    current: e.current,
+    when: `${formatMonth(e.start)} to ${formatMonth(e.end)}`,
+    at: e.start,
+    current: !!e.current,
     note: e.note,
-    highlight: false,
+    distinction: undefined,
   })),
-  ...credentials.map((c) => ({
+  ...featuredCertifications.map((c) => ({
     kind: "certificate" as const,
+    href: certificationHref(c),
     title: c.name,
-    issuer: c.issuer,
-    when: c.date,
-    at: month(c.date),
+    issuer: issuerName(c),
+    when: formatMonth(c.issued),
+    at: c.issued,
     current: false,
-    note: c.note,
-    highlight: !!c.highlight,
+    note: undefined,
+    distinction: c.distinction,
   })),
-]
-  .sort((a, b) => b.at - a.at)
-  .map((e) => ({ ...e, year: Math.floor(e.at / 12) }))
-const years = [...new Set(log.map((e) => e.year))]
+].sort((a, b) => b.at.localeCompare(a.at))
+const years = [...new Set(log.map((e) => yearOf(e.at)))]
 
 export default async function AboutPage() {
   const articles = await getArticles()
@@ -71,7 +82,8 @@ export default async function AboutPage() {
     },
     {
       term: "studying",
-      value: `${education[0].degree} in ${education[0].field}, until ${education[0].end}`,
+      value: `${currentEducation.degree} in ${currentEducation.field}, until ${formatMonth(currentEducation.end)}`,
+      href: "/about/education",
     },
     { term: "learning", value: "AI and machine learning inside real products" },
     {
@@ -155,9 +167,12 @@ export default async function AboutPage() {
         <section aria-labelledby="run-log">
           <div className="flex items-end justify-between gap-6">
             <SpecLabel index={2}>run log</SpecLabel>
-            <span className="font-mono text-xs text-muted-foreground">
-              {log.length} entries
-            </span>
+            <Link
+              href="/about/certifications"
+              className="hit-area font-mono text-xs text-muted-foreground transition-colors hover:text-foreground"
+            >
+              all {certifications.length} certifications
+            </Link>
           </div>
           <Rule className="mt-3" />
           <h2 id="run-log" className="sr-only">
@@ -174,61 +189,83 @@ export default async function AboutPage() {
                 </p>
                 <ol className="md:col-span-10">
                   {log
-                    .filter((e) => e.year === year)
+                    .filter((e) => yearOf(e.at) === year)
                     .map((e, i) => (
                       <li
-                        key={e.title}
+                        key={e.href}
                         data-reveal
                         style={{ "--reveal-delay": i } as React.CSSProperties}
-                        className="border-b border-dashed border-border py-6 last:border-b-0"
+                        className="border-b border-dashed border-border last:border-b-0"
                       >
-                        <p className="font-mono text-xs text-muted-foreground">
-                          <span
-                            className={
-                              e.kind === "degree"
-                                ? "text-brand"
-                                : "text-muted-foreground"
-                            }
-                          >
-                            {e.kind}
-                          </span>
-                          <span className="mx-2 opacity-50">/</span>
-                          {e.when}
-                          {e.current && (
-                            <span className="ml-2 inline-flex items-center gap-1.5 text-brand">
-                              <span
-                                aria-hidden="true"
-                                className="size-1.5 bg-brand"
-                              />
-                              now
+                        <Link href={e.href} className="group block py-6">
+                          <p className="font-mono text-xs text-muted-foreground">
+                            <span
+                              className={
+                                e.kind === "degree"
+                                  ? "text-brand"
+                                  : "text-muted-foreground"
+                              }
+                            >
+                              {e.kind}
                             </span>
-                          )}
-                        </p>
-                        <p
-                          className={`mt-2 ${
-                            e.highlight || e.kind === "degree"
-                              ? "font-heading text-2xl font-medium tracking-tight"
-                              : "text-lg font-medium"
-                          }`}
-                        >
-                          {e.title}
-                        </p>
-                        <p className="mt-1 text-sm text-muted-foreground">
-                          {e.issuer}
-                        </p>
-                        {e.note && (
-                          <p
-                            className={`mt-2 max-w-2xl text-sm leading-relaxed ${e.highlight ? "font-mono text-xs text-brand" : "text-muted-foreground"}`}
-                          >
-                            {e.note}
+                            <span className="mx-2 opacity-50">/</span>
+                            {e.when}
+                            {e.current && (
+                              <span className="ml-2 inline-flex items-center gap-1.5 text-brand">
+                                <span
+                                  aria-hidden="true"
+                                  className="size-1.5 bg-brand"
+                                />
+                                now
+                              </span>
+                            )}
                           </p>
-                        )}
+                          <p
+                            className={`mt-2 transition-colors group-hover:text-brand ${
+                              e.distinction || e.kind === "degree"
+                                ? "font-heading text-2xl font-medium tracking-tight"
+                                : "text-lg font-medium"
+                            }`}
+                          >
+                            {e.title}
+                          </p>
+                          <p className="mt-1 text-sm text-muted-foreground">
+                            {e.issuer}
+                          </p>
+                          {e.note && (
+                            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+                              {e.note}
+                            </p>
+                          )}
+                          {e.distinction && (
+                            <p className="mt-2 max-w-2xl font-mono text-xs text-brand">
+                              {e.distinction}
+                            </p>
+                          )}
+                        </Link>
                       </li>
                     ))}
                 </ol>
               </div>
             ))}
           </div>
+
+          <nav
+            aria-label="Education and certifications"
+            className="mt-12 grid gap-4 sm:grid-cols-2"
+          >
+            <SheetLink
+              href="/about/education"
+              eyebrow={`${education.length} degrees`}
+              title="Education"
+            />
+            <SheetLink
+              href="/about/certifications"
+              eyebrow={`${certifications.length} certificates`}
+              title="Certifications"
+              alignEnd
+            />
+          </nav>
         </section>
       </div>
 
@@ -249,27 +286,13 @@ export default async function AboutPage() {
             sameAs,
             description: about.short,
             image: abs("/character.png"),
-            alumniOf: {
+            alumniOf: schools.map((school) => ({
               "@type": "CollegeOrUniversity",
-              name: "Lebanese International University",
-              url: "https://www.liu.edu.lb",
-            },
+              ...school,
+            })),
             hasCredential: [
-              ...education.map((e) => ({
-                "@type": "EducationalOccupationalCredential",
-                credentialCategory: "degree",
-                name: `${e.degree} in ${e.field}`,
-                recognizedBy: {
-                  "@type": "CollegeOrUniversity",
-                  name: e.school,
-                },
-              })),
-              ...credentials.map((c) => ({
-                "@type": "EducationalOccupationalCredential",
-                credentialCategory: "certificate",
-                name: c.name,
-                recognizedBy: { "@type": "Organization", name: c.issuer },
-              })),
+              ...education.map(degreeLd),
+              ...certifications.map(certificationLd),
             ],
           },
         }}

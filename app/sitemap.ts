@@ -1,5 +1,7 @@
 import type { MetadataRoute } from "next"
 
+import { certificationsUpdatedAt } from "@/lib/content/certifications"
+import { educationUpdatedAt } from "@/lib/content/education"
 import { featuredProjects, projects } from "@/lib/content/projects"
 import { siteConfig } from "@/lib/site"
 
@@ -29,10 +31,29 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
+      // the run log on /about draws from both records
       url: url("/about"),
-      lastModified: siteConfig.profileUpdatedAt,
+      lastModified: [
+        siteConfig.profileUpdatedAt,
+        educationUpdatedAt,
+        certificationsUpdatedAt,
+      ]
+        .sort()
+        .at(-1),
       changeFrequency: "monthly",
       priority: 0.8,
+    },
+    {
+      url: url("/about/education"),
+      lastModified: educationUpdatedAt,
+      changeFrequency: "monthly",
+      priority: 0.6,
+    },
+    {
+      url: url("/about/certifications"),
+      lastModified: certificationsUpdatedAt,
+      changeFrequency: "monthly",
+      priority: 0.6,
     },
     {
       url: url("/writing"),
