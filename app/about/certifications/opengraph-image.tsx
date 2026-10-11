@@ -9,7 +9,7 @@ export default function Image() {
   return ogCard({
     eyebrow: "khaledsaeed.tech / about / certifications",
     title: "Certifications",
-    subtitle: `${certifications.length} certificates in AI, backend, frontend, languages and DevOps.`,
+    subtitle: `${certifications.length} certificates in AI, backend, frontend, computer science and DevOps.`,
     art: { src: "character.png", width: 374, height: 423 },
   })
 }

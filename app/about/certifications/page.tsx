@@ -26,7 +26,7 @@ import { siteIdentity } from "@/lib/site"
 
 export const metadata: Metadata = pageMeta({
   title: "Certifications",
-  description: `Certifications earned by ${siteIdentity} in AI, backend, frontend, languages and DevOps, from Meta, IBM, MongoDB, Vercel, Anthropic and more.`,
+  description: `Certifications earned by ${siteIdentity} in AI, backend, frontend, computer science and DevOps, from Boot.dev, Meta, IBM, MongoDB and more.`,
   path: "/about/certifications",
 })
 
@@ -59,7 +59,7 @@ export default function CertificationsPage() {
           { label: "certifications" },
         ]}
         title="Certifications"
-        lede="Courses I finished and the credentials that came with them. Most were self-directed, alongside the degree and the projects: AI and machine learning lately, the web stack before that."
+        lede="Courses I finished and the credentials that came with them. Most were self-directed, alongside the degree and the projects: the web stack first, then computer science fundamentals, Go and machine learning."
         meta={
           // the drawers carry the count on phones, where the crumbs need the room
           <span className="hidden sm:inline">
