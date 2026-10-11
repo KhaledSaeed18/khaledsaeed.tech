@@ -20,6 +20,7 @@ type Item = {
 const GOTO: Record<string, string> = {
   h: "/",
   w: "/work",
+  e: "/experience",
   a: "/about",
   r: "/writing",
   c: "/contact",
@@ -29,6 +30,7 @@ const LEGEND: [string[], string][] = [
   [["⌘", "K"], "open the job ticket (also /)"],
   [["g", "h"], "home"],
   [["g", "w"], "work"],
+  [["g", "e"], "experience"],
   [["g", "a"], "about"],
   [["g", "r"], "writing"],
   [["g", "c"], "contact"],
