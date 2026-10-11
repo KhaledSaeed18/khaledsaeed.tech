@@ -33,6 +33,8 @@ export const metadata: Metadata = pageMeta({
 
 export default async function AboutPage() {
   const articles = await getArticles()
+  // the list fills two columns row by row, so neighbours are paired:
+  // identity, place and contact, craft, study, then published work
   const specs: { term: string; value: string; href?: string }[] = [
     {
       term: "online as",
@@ -41,16 +43,22 @@ export default async function AboutPage() {
     },
     { term: "role", value: siteConfig.role },
     { term: "based in", value: siteConfig.location },
+    { term: "reach", value: "contact@khaledsaeed.tech", href: "/contact" },
     {
       term: "languages",
       value: "TypeScript end to end, Swift on the Mac, Rust on Linux",
     },
+    { term: "learning", value: "AI and machine learning inside real products" },
     {
       term: "studying",
       value: `${currentEducation.degree} in ${currentEducation.field}, until ${formatMonth(currentEducation.end)}`,
       href: "/about/education",
     },
-    { term: "learning", value: "AI and machine learning inside real products" },
+    {
+      term: "certified",
+      value: `${certifications.length} certificates`,
+      href: "/about/certifications",
+    },
     {
       term: "public work",
       value: `${projects.length} projects`,
@@ -65,7 +73,6 @@ export default async function AboutPage() {
           },
         ]
       : []),
-    { term: "reach", value: "contact@khaledsaeed.tech", href: "/contact" },
   ]
   return (
     <>
