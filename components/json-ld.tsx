@@ -4,6 +4,7 @@ import {
   type Certification,
 } from "@/lib/content/certifications"
 import { honors, type Education } from "@/lib/content/education"
+import { spanOf, type Company } from "@/lib/content/experience"
 import { formatIso } from "@/lib/format"
 import { siteConfig } from "@/lib/site"
 
@@ -91,6 +92,27 @@ export function certificationLd(c: Certification) {
         }
       : {}),
     recognizedBy: { "@type": "Organization", ...issuer },
+  }
+}
+
+/** A job as a schema.org role at an organization, anchored to its sheet. */
+export function employmentLd(c: Company) {
+  const { start, end } = spanOf(c)
+  return {
+    "@type": "OrganizationRole",
+    "@id": abs(`/experience#${c.slug}`),
+    roleName: c.roles.map((r) => r.title).join(", then "),
+    startDate: start,
+    ...(end ? { endDate: end } : {}),
+    description: c.summary,
+    url: abs(`/experience#${c.slug}`),
+    skills: c.stack.join(", "),
+    memberOf: {
+      "@type": "Organization",
+      name: c.name,
+      ...(c.url ? { url: c.url } : {}),
+      address: { "@type": "PostalAddress", addressLocality: c.location },
+    },
   }
 }
 

@@ -18,6 +18,12 @@ import { CredentialCards } from "@/components/about/credential-cards"
 import { ContactSheet } from "@/components/home/contact-sheet"
 import { certifications } from "@/lib/content/certifications"
 import { currentEducation, education, schools } from "@/lib/content/education"
+import {
+  careerStart,
+  currentCompany,
+  currentRole,
+  employers,
+} from "@/lib/content/experience"
 import { about } from "@/lib/content/profile"
 import { projects } from "@/lib/content/projects"
 import { getArticles } from "@/lib/data/devto"
@@ -42,7 +48,11 @@ export default async function AboutPage() {
       value: siteConfig.username,
       href: `https://github.com/${siteConfig.username}`,
     },
-    { term: "role", value: siteConfig.role },
+    {
+      term: "working as",
+      value: `${currentRole.title} at ${currentCompany.name}, since ${formatMonth(careerStart)} in the field`,
+      href: "/experience",
+    },
     { term: "based in", value: siteConfig.location },
     { term: "reach", value: "contact@khaledsaeed.tech", href: "/contact" },
     {
@@ -166,10 +176,21 @@ export default async function AboutPage() {
             sameAs,
             description: about.short,
             image: abs("/character.png"),
-            alumniOf: schools.map((school) => ({
-              "@type": "CollegeOrUniversity",
-              ...school,
-            })),
+            alumniOf: [
+              ...schools.map((school) => ({
+                "@type": "CollegeOrUniversity",
+                ...school,
+              })),
+              ...employers
+                .filter((e) => e.name !== currentCompany.name)
+                .map((e) => ({ "@type": "Organization", ...e })),
+            ],
+            jobTitle: currentRole.title,
+            worksFor: {
+              "@type": "Organization",
+              name: currentCompany.name,
+              ...(currentCompany.url ? { url: currentCompany.url } : {}),
+            },
             award: awards,
             hasCredential: [
               ...education.map(degreeLd),

@@ -1,5 +1,10 @@
 import { abs, awards } from "@/components/json-ld"
 import { education, schools } from "@/lib/content/education"
+import {
+  currentCompany,
+  currentRole,
+  employers,
+} from "@/lib/content/experience"
 import { sameAs, siteConfig } from "@/lib/site"
 
 /**
@@ -18,15 +23,26 @@ export function PersonJsonLd() {
         name: siteConfig.name,
         alternateName: siteConfig.username,
         url: siteConfig.url,
-        jobTitle: siteConfig.role,
+        jobTitle: currentRole.title,
+        worksFor: {
+          "@type": "Organization",
+          name: currentCompany.name,
+          ...(currentCompany.url ? { url: currentCompany.url } : {}),
+        },
         description: siteConfig.description,
         knowsAbout: [...siteConfig.knowsAbout],
         image: `${siteConfig.url}/character.png`,
         email: "mailto:contact@khaledsaeed.tech",
-        alumniOf: schools.map((school) => ({
-          "@type": "CollegeOrUniversity",
-          ...school,
-        })),
+        alumniOf: [
+          ...schools.map((school) => ({
+            "@type": "CollegeOrUniversity",
+            ...school,
+          })),
+          // past employers; the current one is worksFor
+          ...employers
+            .filter((e) => e.name !== currentCompany.name)
+            .map((e) => ({ "@type": "Organization", ...e })),
+        ],
         award: awards,
         // degrees are defined in full on /about/education; certificates on /about/certifications
         hasCredential: education.map((e) => ({
