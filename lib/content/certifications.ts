@@ -453,6 +453,7 @@ const entries: Certification[] = [
     credentialId: "beefa9c2-b78e-438c-9f7a-06a5c3f65164",
     url: "https://www.boot.dev/certificates/beefa9c2-b78e-438c-9f7a-06a5c3f65164",
     note: "Boot.dev's solo build: pick an idea, scope it down, build it without a guide and put it up for community review.",
+    projects: ["jwt-toolkit"],
   },
   {
     slug: "learn-memory-management-in-c",
