@@ -20,8 +20,11 @@ const monthOf = (iso: string) =>
     ? Number(iso) * 12 + 11
     : yearOf(iso) * 12 + Number(iso.slice(5, 7)) - 1
 
-// the strip is drawn at build time, which is when the page is published
-const thisMonth = new Date().getUTCFullYear() * 12 + new Date().getUTCMonth()
+/** This month, in the same count. Read when the page renders, so the daily revalidate inks the months as they pass. */
+const thisMonth = () => {
+  const now = new Date()
+  return now.getUTCFullYear() * 12 + now.getUTCMonth()
+}
 
 /**
  * The pointers from /about to the full records, printed as two cards on
@@ -44,12 +47,13 @@ function EducationCard() {
   const years = Array.from({ length: last - first + 1 }, (_, i) => first + i)
   // older degrees print as a half tone, the latest in solid ink
   const inkOf = (i: number) => (i === oldestFirst.length - 1 ? 16 : 7)
+  const now = thisMonth()
   const cell = (from: number) => {
     const i = oldestFirst.findIndex(
       (e) => monthOf(e.start) <= from + 5 && monthOf(e.end) >= from
     )
     if (i === -1) return null
-    return from > thisMonth ? 3 : inkOf(i)
+    return from > now ? 3 : inkOf(i)
   }
   const honors = education.flatMap((e) => e.honors ?? [])
 
