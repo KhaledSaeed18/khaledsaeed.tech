@@ -164,17 +164,23 @@ export const spanOf = (c: Company) => ({
   end: c.roles.at(-1)!.end,
 })
 
-/** "2024-09-01" -> months since year 0, at the month's start. */
-const monthIndex = (iso: string) =>
+/** "2024-09-01" -> months since year 0. */
+export const monthOf = (iso: string) =>
   Number(iso.slice(0, 4)) * 12 + Number(iso.slice(5, 7)) - 1
 
-/** Whole months from `start` to `end` (today when open), counting both ends. */
-export function monthsBetween(start: string, end?: string) {
+/**
+ * This month, in the same count. Read when a page renders, so a page that
+ * revalidates daily keeps the open chapter and the tenure current.
+ */
+export const thisMonth = () => {
   const now = new Date()
-  const to = end
-    ? monthIndex(end)
-    : now.getUTCFullYear() * 12 + now.getUTCMonth()
-  return Math.max(1, to - monthIndex(start) + 1)
+  return now.getUTCFullYear() * 12 + now.getUTCMonth()
+}
+
+/** Whole months from `start` to `end` (this month when open), counting both ends. */
+export function monthsBetween(start: string, end?: string) {
+  const to = end ? monthOf(end) : thisMonth()
+  return Math.max(1, to - monthOf(start) + 1)
 }
 
 /** "3 months", "1 year 2 months", "2 years". */
@@ -201,17 +207,6 @@ export type Chapter = {
   from: number
   to: number
 }
-
-/** "2024-09-01" -> months since year 0. */
-export const monthOf = (iso: string) =>
-  Number(iso.slice(0, 4)) * 12 + Number(iso.slice(5, 7)) - 1
-
-/**
- * This month, in the same count. Read when a page renders, so a page that
- * revalidates daily keeps the open chapter and the tenure current.
- */
-export const thisMonth = () =>
-  new Date().getUTCFullYear() * 12 + new Date().getUTCMonth()
 
 /** Every chapter, oldest first, with its month range. The open one runs to this month. */
 export const chaptersOfRun = (): Chapter[] =>

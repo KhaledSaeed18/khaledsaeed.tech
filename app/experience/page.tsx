@@ -26,7 +26,7 @@ import {
   spanOf,
   type Company,
 } from "@/lib/content/experience"
-import { formatIso, formatMonth } from "@/lib/format"
+import { formatMonth } from "@/lib/format"
 import { pageMeta } from "@/lib/metadata"
 import { siteConfig, siteIdentity } from "@/lib/site"
 
@@ -35,16 +35,9 @@ export const revalidate = 86400
 
 export const metadata: Metadata = pageMeta({
   title: "Experience",
-  description: `${siteIdentity} is a software engineer at JSS Technology, after an internship and a full-stack developer role at 3E Tech in Beirut. Client systems across web, mobile, desktop and the cloud since ${formatMonth(careerStart)}.`,
+  description: `${siteIdentity} is a software engineer at JSS Technology, after an internship and a full-stack role at 3E Tech in Beirut. Client work since ${formatMonth(careerStart)}.`,
   path: "/experience",
 })
-
-const span = (c: Company) => {
-  const { start, end } = spanOf(c)
-  return `${formatMonth(start)} to ${end ? formatMonth(end) : "now"}`.toLowerCase()
-}
-
-const open = (c: Company) => !spanOf(c).end
 
 export default function ExperiencePage() {
   const total = formatTenure(monthsBetween(careerStart))
@@ -181,22 +174,28 @@ export default function ExperiencePage() {
 /** One company as a sheet: facts, the chapters there, what was built and with what. */
 function Employer({ company: c, index }: { company: Company; index: number }) {
   const { start, end } = spanOf(c)
-  const current = open(c)
+  const current = !end
   return (
     <Sheet
       id={c.slug}
       index={index}
       label={c.name.toLowerCase()}
       title={
-        c.roles.length > 1
-          ? `${c.roles[0].title}, then ${c.roles.at(-1)!.title}`
-          : c.roles[0].title
+        <>
+          {c.roles.length > 1
+            ? `${c.roles[0].title}, then ${c.roles.at(-1)!.title}`
+            : c.roles[0].title}
+          {/* the label above names the company on screen; the heading names it for outlines */}
+          <span className="sr-only"> at {c.name}</span>
+        </>
       }
       lede={c.summary}
       meta={
         <span className="inline-flex items-center gap-2 whitespace-nowrap">
-          {span(c)}
-          {current && (
+          {formatMonth(start).toLowerCase()} to{" "}
+          {end ? (
+            formatMonth(end).toLowerCase()
+          ) : (
             <span className="inline-flex items-center gap-1.5 text-brand">
               <span aria-hidden="true" className="size-1.5 bg-brand" />
               now
@@ -247,12 +246,12 @@ function Employer({ company: c, index }: { company: Company; index: number }) {
                 </span>
                 <span className="ml-3 text-muted-foreground">
                   <time dateTime={r.start}>
-                    {formatIso(r.start).toLowerCase()}
+                    {formatMonth(r.start).toLowerCase()}
                   </time>{" "}
                   to{" "}
                   {r.end ? (
                     <time dateTime={r.end}>
-                      {formatIso(r.end).toLowerCase()}
+                      {formatMonth(r.end).toLowerCase()}
                     </time>
                   ) : (
                     "now"

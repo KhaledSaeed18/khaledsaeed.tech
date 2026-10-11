@@ -95,23 +95,32 @@ export function certificationLd(c: Certification) {
   }
 }
 
-/** A job as a schema.org role at an organization, anchored to its sheet. */
+/**
+ * A job as a schema.org role, anchored to its sheet. The role wraps the
+ * relation it qualifies: `worksFor` while it runs, `alumniOf` once it ends.
+ */
 export function employmentLd(c: Company) {
   const { start, end } = spanOf(c)
+  // "Beirut, Lebanon" -> locality and country; "Lebanon" -> country only
+  const place = c.location.split(", ")
   return {
-    "@type": "OrganizationRole",
+    "@type": "EmployeeRole",
     "@id": abs(`/experience#${c.slug}`),
     roleName: c.roles.map((r) => r.title).join(", then "),
     startDate: start,
     ...(end ? { endDate: end } : {}),
     description: c.summary,
     url: abs(`/experience#${c.slug}`),
-    skills: c.stack.join(", "),
-    memberOf: {
+    [end ? "alumniOf" : "worksFor"]: {
       "@type": "Organization",
       name: c.name,
+      description: c.kind,
       ...(c.url ? { url: c.url } : {}),
-      address: { "@type": "PostalAddress", addressLocality: c.location },
+      address: {
+        "@type": "PostalAddress",
+        ...(place.length > 1 ? { addressLocality: place[0] } : {}),
+        addressCountry: place.at(-1),
+      },
     },
   }
 }
