@@ -5,7 +5,9 @@ import type * as React from "react"
 
 import { abs, BreadcrumbJsonLd, JsonLd, personRef } from "@/components/json-ld"
 import { DitherObject } from "@/components/print/dither-object"
-import { CropMarks, Rule, SpecLabel } from "@/components/print/sheet"
+import { FactStrip, type Fact } from "@/components/print/fact-strip"
+import { Rule, SpecLabel } from "@/components/print/sheet"
+import { SheetLink } from "@/components/print/sheet-link"
 import { ContactSheet } from "@/components/home/contact-sheet"
 import {
   catalog,
@@ -64,16 +66,12 @@ export default async function ProjectPage({
   const next = catalog[(i + 1) % catalog.length]
   const prev = catalog[(i - 1 + catalog.length) % catalog.length]
 
-  const facts: [string, React.ReactNode][] = [
+  const facts: Fact[] = [
     ["year", p.year],
     ["type", p.kind.toLowerCase()],
     ["group", groups[p.group].title.toLowerCase()],
-    ...(p.status
-      ? ([["status", p.status.toLowerCase()]] as [string, React.ReactNode][])
-      : []),
-    ...(stars
-      ? ([["stars", formatNumber(stars)]] as [string, React.ReactNode][])
-      : []),
+    ...(p.status ? ([["status", p.status.toLowerCase()]] as Fact[]) : []),
+    ...(stars ? ([["stars", formatNumber(stars)]] as Fact[]) : []),
   ]
 
   return (
@@ -162,17 +160,7 @@ export default async function ProjectPage({
           </div>
         </div>
 
-        <dl className="relative mt-14 flex flex-wrap gap-px overflow-hidden border border-border bg-border">
-          {facts.map(([k, v]) => (
-            <div
-              key={k}
-              className="min-w-[9rem] flex-1 bg-background px-4 py-3.5"
-            >
-              <dt className="font-mono text-xs text-muted-foreground">{k}</dt>
-              <dd className="mt-1 text-sm">{v}</dd>
-            </div>
-          ))}
-        </dl>
+        <FactStrip facts={facts} className="mt-14" />
       </header>
 
       <div className="frame mt-24 space-y-24">
@@ -235,15 +223,15 @@ export default async function ProjectPage({
         </Block>
 
         <nav aria-label="More projects" className="grid gap-4 sm:grid-cols-2">
-          <PagerLink
+          <SheetLink
             href={`/work/${prev.slug}`}
-            dir="previous"
-            name={prev.name}
+            eyebrow="previous sheet"
+            title={prev.name}
           />
-          <PagerLink
+          <SheetLink
             href={`/work/${next.slug}`}
-            dir="next"
-            name={next.name}
+            eyebrow="next sheet"
+            title={next.name}
             alignEnd
           />
         </nav>
@@ -303,32 +291,5 @@ function Block({
         {children}
       </div>
     </section>
-  )
-}
-
-function PagerLink({
-  href,
-  dir,
-  name,
-  alignEnd,
-}: {
-  href: string
-  dir: string
-  name: string
-  alignEnd?: boolean
-}) {
-  return (
-    <Link
-      href={href}
-      className={`group relative border border-border p-6 transition-colors hover:border-brand/40 ${alignEnd ? "sm:text-right" : ""}`}
-    >
-      <CropMarks />
-      <span className="font-mono text-xs text-muted-foreground">
-        {dir} sheet
-      </span>
-      <span className="mt-2 block font-heading text-2xl font-medium tracking-tight transition-colors group-hover:text-brand">
-        {name}
-      </span>
-    </Link>
   )
 }
