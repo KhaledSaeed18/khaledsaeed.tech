@@ -38,7 +38,7 @@ Motion is a plain fade or a fade with a short rise, nothing more. Use the shared
 
 - `fade-in` for one-off swaps (a preview changing project), `rise-in` with a `--i` index for lists that appear (menu links, filtered rows), and `data-reveal` for content entering on scroll.
 - Page changes crossfade (`ViewTransition default="page"`).
-- No dithered reveals, wipes or stepped animations. The dither is a texture, not a transition. The exceptions are the portrait, the logo flip and the project objects turning, which are content.
+- No dithered reveals, wipes or stepped animations. The dither is a texture, not a transition. The exceptions are the portrait, the logo flip, the project objects turning and the certificate deck on the home page (cards thrown off the pile, tilt, drag), which are content.
 - Every animation needs a `prefers-reduced-motion` fallback with no motion.
 
 ## Dev server gotcha

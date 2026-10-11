@@ -964,6 +964,19 @@ export function getProject(slug: string) {
   return projects.find((p) => p.slug === slug)
 }
 
+/**
+ * Projects referenced from other content (a degree, a certification). An
+ * unknown slug is a content bug, so it fails the build instead of rendering
+ * a gap.
+ */
+export function projectsBySlug(slugs: readonly string[]) {
+  return slugs.map((slug) => {
+    const p = getProject(slug)
+    if (!p) throw new Error(`Unknown project slug: ${slug}`)
+    return p
+  })
+}
+
 /** A project's kind mid-sentence: "Open source template" becomes "open source template", acronyms stay. */
 export function kindPhrase(kind: string) {
   // only a plain capitalised first word: "SaaS", "AI", "macOS" stay as they are

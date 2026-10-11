@@ -31,12 +31,17 @@ export const siteConfig = {
     "Frontend Engineering",
     "Backend Architecture",
     "System Design",
+    "Computer Engineering",
     "TypeScript",
+    "Python",
+    "Go",
     "Node.js",
     "React",
     "NestJS",
     "PostgreSQL",
     "REST APIs",
+    "Data Structures and Algorithms",
+    "Docker",
     "Multi-Tenant Architecture",
     "PostgreSQL Row Level Security",
     "Swift",
@@ -46,6 +51,7 @@ export const siteConfig = {
     "eBPF",
     "macOS Development",
     "Developer Tools",
+    "Machine Learning",
     "JSON Web Tokens",
     "Open Source",
   ],
@@ -61,6 +67,16 @@ export const nav = [
   { href: "/writing", label: "writing" },
   { href: "/contact", label: "contact" },
 ] as const
+
+/** Pages that live under a primary page, listed beneath it in the footer. */
+export const subPages: Partial<
+  Record<(typeof nav)[number]["href"], { href: string; label: string }[]>
+> = {
+  "/about": [
+    { href: "/about/education", label: "education" },
+    { href: "/about/certifications", label: "certifications" },
+  ],
+}
 
 export const socialLinks: SocialLink[] = [
   {

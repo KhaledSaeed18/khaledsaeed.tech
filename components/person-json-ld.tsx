@@ -1,3 +1,5 @@
+import { abs, awards } from "@/components/json-ld"
+import { education, schools } from "@/lib/content/education"
 import { sameAs, siteConfig } from "@/lib/site"
 
 /**
@@ -21,11 +23,15 @@ export function PersonJsonLd() {
         knowsAbout: [...siteConfig.knowsAbout],
         image: `${siteConfig.url}/character.png`,
         email: "mailto:contact@khaledsaeed.tech",
-        alumniOf: {
+        alumniOf: schools.map((school) => ({
           "@type": "CollegeOrUniversity",
-          name: "Lebanese International University",
-          url: "https://www.liu.edu.lb",
-        },
+          ...school,
+        })),
+        award: awards,
+        // degrees are defined in full on /about/education; certificates on /about/certifications
+        hasCredential: education.map((e) => ({
+          "@id": abs(`/about/education#${e.slug}`),
+        })),
         sameAs,
         address: {
           "@type": "PostalAddress",

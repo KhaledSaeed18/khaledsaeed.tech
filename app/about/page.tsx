@@ -2,14 +2,26 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import type * as React from "react"
 
-import { abs, BreadcrumbJsonLd, JsonLd, personRef } from "@/components/json-ld"
+import {
+  abs,
+  awards,
+  BreadcrumbJsonLd,
+  certificationLd,
+  degreeLd,
+  JsonLd,
+  personRef,
+} from "@/components/json-ld"
 import { DropCap } from "@/components/print/drop-cap"
 import { PageIntro } from "@/components/print/page-intro"
 import { Rule, SpecLabel } from "@/components/print/sheet"
+import { CredentialCards } from "@/components/about/credential-cards"
 import { ContactSheet } from "@/components/home/contact-sheet"
-import { about, credentials, education } from "@/lib/content/profile"
+import { certifications } from "@/lib/content/certifications"
+import { currentEducation, education, schools } from "@/lib/content/education"
+import { about } from "@/lib/content/profile"
 import { projects } from "@/lib/content/projects"
 import { getArticles } from "@/lib/data/devto"
+import { formatMonth } from "@/lib/format"
 import { sameAs, siteConfig, siteIdentity } from "@/lib/site"
 import { pageMeta } from "@/lib/metadata"
 
@@ -20,43 +32,10 @@ export const metadata: Metadata = pageMeta({
   type: "profile",
 })
 
-/** "Sep 2025" -> sortable month index */
-const month = (s: string) => {
-  const d = new Date(`1 ${s}`)
-  return Number.isNaN(d.getTime())
-    ? Number(s) * 12
-    : d.getFullYear() * 12 + d.getMonth()
-}
-
-/** Education and certifications as one press log, newest first. */
-const log = [
-  ...education.map((e) => ({
-    kind: "degree" as const,
-    title: `${e.degree}, ${e.field}`,
-    issuer: e.school,
-    when: `${e.start} to ${e.end}`,
-    at: month(e.start),
-    current: e.current,
-    note: e.note,
-    highlight: false,
-  })),
-  ...credentials.map((c) => ({
-    kind: "certificate" as const,
-    title: c.name,
-    issuer: c.issuer,
-    when: c.date,
-    at: month(c.date),
-    current: false,
-    note: c.note,
-    highlight: !!c.highlight,
-  })),
-]
-  .sort((a, b) => b.at - a.at)
-  .map((e) => ({ ...e, year: Math.floor(e.at / 12) }))
-const years = [...new Set(log.map((e) => e.year))]
-
 export default async function AboutPage() {
   const articles = await getArticles()
+  // the list fills two columns row by row, so neighbours are paired:
+  // identity, place and contact, craft, study, then published work
   const specs: { term: string; value: string; href?: string }[] = [
     {
       term: "online as",
@@ -65,15 +44,22 @@ export default async function AboutPage() {
     },
     { term: "role", value: siteConfig.role },
     { term: "based in", value: siteConfig.location },
+    { term: "reach", value: "contact@khaledsaeed.tech", href: "/contact" },
     {
       term: "languages",
       value: "TypeScript end to end, Swift on the Mac, Rust on Linux",
     },
+    { term: "learning", value: "AI and machine learning inside real products" },
     {
       term: "studying",
-      value: `${education[0].degree} in ${education[0].field}, until ${education[0].end}`,
+      value: `${currentEducation.degree} in ${currentEducation.field}, until ${formatMonth(currentEducation.end)}`,
+      href: "/about/education",
     },
-    { term: "learning", value: "AI and machine learning inside real products" },
+    {
+      term: "certified",
+      value: `${certifications.length} certificates`,
+      href: "/about/certifications",
+    },
     {
       term: "public work",
       value: `${projects.length} projects`,
@@ -88,7 +74,6 @@ export default async function AboutPage() {
           },
         ]
       : []),
-    { term: "reach", value: "contact@khaledsaeed.tech", href: "/contact" },
   ]
   return (
     <>
@@ -152,82 +137,14 @@ export default async function AboutPage() {
           </dl>
         </section>
 
-        <section aria-labelledby="run-log">
-          <div className="flex items-end justify-between gap-6">
-            <SpecLabel index={2}>run log</SpecLabel>
-            <span className="font-mono text-xs text-muted-foreground">
-              {log.length} entries
-            </span>
-          </div>
+        <section aria-labelledby="credentials">
+          <SpecLabel index={2}>credentials</SpecLabel>
           <Rule className="mt-3" />
-          <h2 id="run-log" className="sr-only">
+          <h2 id="credentials" className="sr-only">
             Education and certifications
           </h2>
-          <div className="mt-4">
-            {years.map((year) => (
-              <div
-                key={year}
-                className="grid gap-x-10 border-b border-dashed border-border md:grid-cols-12"
-              >
-                <p className="pt-6 font-heading text-3xl font-medium tracking-tight text-muted-foreground/60 tabular-nums md:col-span-2 md:pt-7">
-                  {year}
-                </p>
-                <ol className="md:col-span-10">
-                  {log
-                    .filter((e) => e.year === year)
-                    .map((e, i) => (
-                      <li
-                        key={e.title}
-                        data-reveal
-                        style={{ "--reveal-delay": i } as React.CSSProperties}
-                        className="border-b border-dashed border-border py-6 last:border-b-0"
-                      >
-                        <p className="font-mono text-xs text-muted-foreground">
-                          <span
-                            className={
-                              e.kind === "degree"
-                                ? "text-brand"
-                                : "text-muted-foreground"
-                            }
-                          >
-                            {e.kind}
-                          </span>
-                          <span className="mx-2 opacity-50">/</span>
-                          {e.when}
-                          {e.current && (
-                            <span className="ml-2 inline-flex items-center gap-1.5 text-brand">
-                              <span
-                                aria-hidden="true"
-                                className="size-1.5 bg-brand"
-                              />
-                              now
-                            </span>
-                          )}
-                        </p>
-                        <p
-                          className={`mt-2 ${
-                            e.highlight || e.kind === "degree"
-                              ? "font-heading text-2xl font-medium tracking-tight"
-                              : "text-lg font-medium"
-                          }`}
-                        >
-                          {e.title}
-                        </p>
-                        <p className="mt-1 text-sm text-muted-foreground">
-                          {e.issuer}
-                        </p>
-                        {e.note && (
-                          <p
-                            className={`mt-2 max-w-2xl text-sm leading-relaxed ${e.highlight ? "font-mono text-xs text-brand" : "text-muted-foreground"}`}
-                          >
-                            {e.note}
-                          </p>
-                        )}
-                      </li>
-                    ))}
-                </ol>
-              </div>
-            ))}
+          <div data-reveal className="mt-10">
+            <CredentialCards />
           </div>
         </section>
       </div>
@@ -249,27 +166,14 @@ export default async function AboutPage() {
             sameAs,
             description: about.short,
             image: abs("/character.png"),
-            alumniOf: {
+            alumniOf: schools.map((school) => ({
               "@type": "CollegeOrUniversity",
-              name: "Lebanese International University",
-              url: "https://www.liu.edu.lb",
-            },
+              ...school,
+            })),
+            award: awards,
             hasCredential: [
-              ...education.map((e) => ({
-                "@type": "EducationalOccupationalCredential",
-                credentialCategory: "degree",
-                name: `${e.degree} in ${e.field}`,
-                recognizedBy: {
-                  "@type": "CollegeOrUniversity",
-                  name: e.school,
-                },
-              })),
-              ...credentials.map((c) => ({
-                "@type": "EducationalOccupationalCredential",
-                credentialCategory: "certificate",
-                name: c.name,
-                recognizedBy: { "@type": "Organization", name: c.issuer },
-              })),
+              ...education.map(degreeLd),
+              ...certifications.map(certificationLd),
             ],
           },
         }}

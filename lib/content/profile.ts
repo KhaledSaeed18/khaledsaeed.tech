@@ -1,8 +1,9 @@
 import { siteConfig } from "@/lib/site"
 
 /**
- * About, education, credentials and stack. Single source for the
- * about page, the home sections, JSON-LD and llms.txt.
+ * About, stack and principles. Single source for the about page, the home
+ * sections, JSON-LD and llms.txt. Degrees live in ./education and
+ * certifications in ./certifications.
  */
 
 export const about = {
@@ -14,79 +15,6 @@ export const about = {
     "I care about clean architecture, data that stays where it belongs, and interfaces that feel precise. Lately I am going deeper into AI and machine learning, and into how intelligent systems fit inside real products.",
   ],
 }
-
-export type Education = {
-  school: string
-  degree: string
-  field: string
-  start: string
-  end: string
-  /** ISO dates for structured data. */
-  startISO: string
-  endISO: string
-  current?: boolean
-  note?: string
-}
-
-export const education: Education[] = [
-  {
-    school: "Lebanese International University",
-    degree: "Master of Science",
-    field: "Computer Engineering",
-    start: "Sep 2025",
-    end: "2027",
-    startISO: "2025-09",
-    endISO: "2027",
-    current: true,
-    note: "MCCE program. I also built and maintain the program's independent study hub.",
-  },
-  {
-    school: "Lebanese International University",
-    degree: "Bachelor of Science",
-    field: "Computer Engineering",
-    start: "Oct 2021",
-    end: "Jun 2025",
-    startISO: "2021-10",
-    endISO: "2025-06",
-    note: "Senior project: Yalla Learn, an AI learning platform on web, mobile and desktop.",
-  },
-]
-
-export type Credential = {
-  name: string
-  issuer: string
-  date: string
-  note?: string
-  highlight?: boolean
-}
-
-export const credentials: Credential[] = [
-  {
-    name: "Web Development, Back End",
-    issuer: "Multi-Aid Programs (MAPS)",
-    date: "Mar 2026",
-    note: "96 hours of backend training. Ranked 1st in the cohort and awarded a prize.",
-    highlight: true,
-  },
-  {
-    name: "Understanding Machine Learning",
-    issuer: "DataCamp",
-    date: "Sep 2026",
-  },
-  { name: "v0 Foundations", issuer: "Vercel", date: "May 2026" },
-  {
-    name: "MongoDB Node.js Developer Path",
-    issuer: "MongoDB",
-    date: "Apr 2026",
-  },
-  { name: "Claude 101", issuer: "Anthropic", date: "Mar 2026" },
-  {
-    name: "Programming with Python Professional Certificate",
-    issuer: "OpenEDG Python Institute",
-    date: "Feb 2026",
-  },
-  { name: "Learning Docker", issuer: "LinkedIn Learning", date: "Dec 2025" },
-]
 
 /**
  * The datasheet on the home page: what sits at each layer of what I ship, in

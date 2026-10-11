@@ -3,7 +3,7 @@ import type * as React from "react"
 
 import { Rule, SpecLabel } from "@/components/print/sheet"
 import { formatDate } from "@/lib/format"
-import { nav, siteConfig, socialLinks } from "@/lib/site"
+import { nav, siteConfig, socialLinks, subPages } from "@/lib/site"
 
 /** When and from which commit this build was made (set in next.config.ts). */
 const printed = new Date(process.env.BUILD_DATE as string)
@@ -47,16 +47,33 @@ export function SiteFooter() {
                     home
                   </Link>
                 </li>
-                {nav.map((n) => (
-                  <li key={n.href}>
-                    <Link
-                      href={n.href}
-                      className="hit-area inline-block min-w-6 text-muted-foreground transition-colors hover:text-foreground"
-                    >
-                      {n.label}
-                    </Link>
-                  </li>
-                ))}
+                {nav.map((n) => {
+                  const subs = subPages[n.href]
+                  return (
+                    <li key={n.href}>
+                      <Link
+                        href={n.href}
+                        className="hit-area inline-block min-w-6 text-muted-foreground transition-colors hover:text-foreground"
+                      >
+                        {n.label}
+                      </Link>
+                      {subs && (
+                        <ul className="mt-2 space-y-2 border-l border-dashed border-border pl-3">
+                          {subs.map((s) => (
+                            <li key={s.href}>
+                              <Link
+                                href={s.href}
+                                className="hit-area inline-block min-w-6 text-muted-foreground transition-colors hover:text-foreground"
+                              >
+                                {s.label}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </li>
+                  )
+                })}
               </ul>
             </div>
             <div>
