@@ -51,6 +51,8 @@ export type Project = {
   approach: { title: string; body: string }[]
   highlights: string[]
   status?: string
+  /** A headline number for the case study fact strip, shown instead of GitHub stars. */
+  stat?: { label: string; value: string }
   featured?: boolean
 }
 
@@ -315,50 +317,75 @@ export const projects: Project[] = [
   {
     slug: "sleep-track",
     name: "SleepTrack",
+    updatedAt: "2026-10-12",
     tagline:
-      "Sleep logging with weekly analytics: a FastAPI service and a retro-styled Next.js client.",
+      "A sleep journal with an analytics engine: an async FastAPI service and a Next.js and daisyUI app.",
     summary:
-      "A FastAPI and PostgreSQL API that logs sleep sessions with quality ratings and computes statistics, a timeline and weekly summaries with a consistency score, paired with a retro-styled Next.js client that charts them.",
+      "SleepTrack turns logged nights into a nightly score, trends, a chronotype estimate, the habits that help or hurt your sleep and a weekly report. Version 2 is a ground-up rewrite: an async FastAPI service on PostgreSQL and Redis with a background worker, and a Next.js 16 app typed from the API's OpenAPI schema.",
     year: 2025,
     group: "platforms",
     kind: "Full-stack app",
     object: "moon",
     stock: "stone",
     stack: [
+      "Python",
       "FastAPI",
+      "SQLAlchemy",
       "PostgreSQL",
-      "Tortoise ORM",
-      "JWT",
+      "Redis",
+      "ARQ",
+      "TypeScript",
       "Next.js",
-      "Zustand",
-      "Chart.js",
+      "daisyUI",
+      "TanStack Query",
+      "Playwright",
+      "Docker",
     ],
     repo: "sleep-track-backend",
+    stat: { label: "tests", value: "1,032 at 98% coverage" },
     links: [
       { label: "API source", href: gh("sleep-track-backend") },
       { label: "Client source", href: gh("sleep-track-frontend") },
+      {
+        label: "Architecture",
+        href: `${gh("sleep-track-backend")}/blob/main/docs/architecture.md`,
+      },
     ],
     problem:
-      "Logging sleep is easy. Turning the log into something you can act on, like how consistent your week was, takes analysis on the server and an account system that holds up.",
+      "Logging sleep is the easy part. Making the log useful means knowing which night a session belongs to, which habits change your sleep and how steady your schedule really is, all in your own time zone and behind an account system you can trust with health data.",
     approach: [
       {
-        title: "A typed, documented API",
-        body: "FastAPI with Tortoise ORM on PostgreSQL, schema migrations with Aerich, and interactive OpenAPI documentation at /docs and /redoc out of the box.",
+        title: "Analytics that respect the clock",
+        body: "Bedtimes are averaged as angles, so 23:30 and 00:30 average to midnight instead of noon, and every night belongs to the date it began in the user's time zone. The API computes a weighted score from duration, quality, latency, awakenings and bedtime, plus consistency, sleep debt, streaks, chronotype and social jet lag, cached per user in Redis.",
       },
       {
-        title: "Analytics on the server",
-        body: "Statistics, a timeline and a weekly summary with average hours, quality and a consistency score are computed by the API, so the client only has to draw them.",
+        title: "Insights in plain language",
+        body: "A rule engine behind a pluggable provider compares nights with and without each tag and ranks findings such as caffeine lowering your sleep quality. An ARQ worker emails weekly reports in each user's time zone, sends optional bedtime reminders and clears out demo accounts.",
       },
       {
-        title: "A client with character",
-        body: "A Next.js client in a retro DaisyUI theme, with Zustand for state and Chart.js for the weekly charts, behind JWT authentication with bcrypt password hashing.",
+        title: "Sessions built to be trusted",
+        body: "Argon2id passwords, 15-minute access tokens and hashed refresh tokens that rotate on every use: reuse revokes the device, with a short grace window for two tabs refreshing at once. CSRF protection, Redis rate limits, device management, an audit log, email verification and optional Google sign-in with PKCE sit around it.",
+      },
+      {
+        title: "Rules the database enforces",
+        body: "PostgreSQL rejects overlapping nights with an exclusion constraint, allows one running timer per user through a partial unique index and searches notes with a trigram index. Every error leaves the API as an RFC 9457 problem document with a stable code.",
+      },
+      {
+        title: "A client typed from the schema",
+        body: "The Next.js app generates its types from the OpenAPI schema, keeps the access token in memory and refreshes it single-flight. A same-origin route handler streams /api to the service and forwards the client address, so rate limits see real users. It has two themes, a command menu, a mobile dock and charts with table views.",
+      },
+      {
+        title: "Tested against the real thing",
+        body: "Over a thousand backend tests run on real PostgreSQL and Redis, and Playwright drives sign-up with email confirmation, the journal, the timer and settings against the live API in CI. Both repos ship Docker images, a Compose stack and GitHub Actions, and a one-click demo seeds 90 nights.",
       },
     ],
     highlights: [
-      "Interactive OpenAPI docs generated from the code",
-      "Schema migrations with Aerich",
-      "JWT authentication with bcrypt hashing",
-      "Weekly consistency score computed server-side",
+      "Weighted sleep score with circular bedtime statistics, chronotype and tag impact",
+      "Rotating refresh tokens with reuse detection and CSRF protection",
+      "Overlapping nights rejected by a Postgres exclusion constraint",
+      "Weekly email reports and bedtime reminders from a background worker",
+      "Client types generated from the API's OpenAPI schema",
+      "1,032 backend tests at 98% coverage plus Playwright end-to-end tests in CI",
     ],
   },
   {

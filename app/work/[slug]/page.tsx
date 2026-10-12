@@ -71,7 +71,11 @@ export default async function ProjectPage({
     ["type", p.kind.toLowerCase()],
     ["group", groups[p.group].title.toLowerCase()],
     ...(p.status ? ([["status", p.status.toLowerCase()]] as Fact[]) : []),
-    ...(stars ? ([["stars", formatNumber(stars)]] as Fact[]) : []),
+    ...(p.stat
+      ? ([[p.stat.label, p.stat.value]] as Fact[])
+      : stars
+        ? ([["stars", formatNumber(stars)]] as Fact[])
+        : []),
   ]
 
   return (
