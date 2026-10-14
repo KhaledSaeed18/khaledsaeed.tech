@@ -1,7 +1,8 @@
 /*
  * Print: ⌘P on any page prints the one-page résumé (print-resume.tsx)
- * instead of the screen layout. Lives beside the component, so the print
- * styles always travel and reload with it.
+ * instead of the screen layout. On a case study, the project's own sheet
+ * (print-project.tsx, class print-sheet) prints instead. Lives beside the
+ * component, so the print styles always travel and reload with it.
  */
 @media print {
   @page {
@@ -12,10 +13,14 @@
   body {
     background: #fff !important;
   }
-  body > *:not(.print-resume) {
+  body > *:not(.print-resume):not(.print-sheet) {
     display: none !important;
   }
-  .print-resume {
+  body:has(.print-sheet) > .print-resume {
+    display: none !important;
+  }
+  .print-resume,
+  .print-sheet {
     display: block !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;

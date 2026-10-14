@@ -53,7 +53,22 @@ export type Project = {
   status?: string
   /** A headline number for the case study fact strip, shown instead of GitHub stars. */
   stat?: { label: string; value: string }
+  /**
+   * Measured numbers for the proof strip on the case study and the printed
+   * sheet. Only figures that were actually measured or counted; never
+   * estimates. `note` says where the number comes from.
+   */
+  proof?: Proof[]
   featured?: boolean
+}
+
+export type Proof = {
+  /** The number, as printed: "1,032", "98%", "0.28%". */
+  value: string
+  /** What it counts, lowercase: "backend tests". */
+  label: string
+  /** How or where it was measured, lowercase. */
+  note?: string
 }
 
 export const groups: Record<ProjectGroup, { title: string; blurb: string }> = {
@@ -111,6 +126,23 @@ export const projects: Project[] = [
     links: [{ label: "Source", href: gh("patchgrid") }],
     status: "In active development",
     featured: true,
+    proof: [
+      {
+        value: "5",
+        label: "isolation layers",
+        note: "keys, credential, repository, prisma, postgres rls",
+      },
+      {
+        value: "4",
+        label: "itil record types",
+        note: "incident, request, problem, change",
+      },
+      {
+        value: "1",
+        label: "subdomain per tenant",
+        note: "marketing, workspace and api in one monorepo",
+      },
+    ],
     problem:
       "Multi-tenant apps usually trust every query to filter by tenant. One forgotten filter leaks another customer's tickets. I wanted a platform where a cross-tenant read is not a bug you can write.",
     approach: [
@@ -158,6 +190,23 @@ export const projects: Project[] = [
     repo: "node-express-boilerplate",
     links: [{ label: "Source", href: gh("node-express-boilerplate") }],
     featured: true,
+    proof: [
+      {
+        value: "30+",
+        label: "github stars",
+        note: "counted on the repository",
+      },
+      {
+        value: "8",
+        label: "forks",
+        note: "developers starting new services from it",
+      },
+      {
+        value: "5",
+        label: "checks on every change",
+        note: "pre-commit, conventional commits, codeql, trufflehog, dependency review",
+      },
+    ],
     problem:
       "Most Express starters stop at hello world. Teams then spend weeks wiring auth, errors, logging and pipelines, and every project does it slightly differently.",
     approach: [
@@ -349,6 +398,28 @@ export const projects: Project[] = [
       {
         label: "Architecture",
         href: `${gh("sleep-track-backend")}/blob/main/docs/architecture.md`,
+      },
+    ],
+    proof: [
+      {
+        value: "1,032",
+        label: "backend tests",
+        note: "run against real postgresql and redis in ci",
+      },
+      {
+        value: "98%",
+        label: "test coverage",
+        note: "measured on the api service",
+      },
+      {
+        value: "15 min",
+        label: "access token lifetime",
+        note: "with rotating, hashed refresh tokens",
+      },
+      {
+        value: "90",
+        label: "nights seeded by the demo",
+        note: "one click, no sign-up",
       },
     ],
     problem:
@@ -583,6 +654,20 @@ export const projects: Project[] = [
       { label: "Source", href: gh("repo-scout") },
       { label: "UI showcase", href: `${gh("repo-scout")}#see-it-in-action` },
     ],
+    proof: [
+      {
+        value: "3,602",
+        label: "files scanned",
+        note: "tanstack query repository, the showcase scan",
+      },
+      { value: "5,517", label: "commits indexed", note: "same scan" },
+      { value: "1,141", label: "contributors mapped", note: "same scan" },
+      {
+        value: "0",
+        label: "bytes sent off the machine",
+        note: "loopback only, no telemetry",
+      },
+    ],
     problem:
       "Understanding an unfamiliar codebase means juggling five tools with five output formats, and some of them want your source uploaded.",
     approach: [
@@ -632,6 +717,14 @@ export const projects: Project[] = [
     links: [
       { label: "npm", href: "https://www.npmjs.com/package/dir-analysis-tool" },
       { label: "Source", href: gh("dir-analysis-tool") },
+    ],
+    proof: [
+      { value: "1,100+", label: "npm downloads", note: "in the last year" },
+      {
+        value: "1",
+        label: "filesystem pass",
+        note: "streaming md5, constant memory on multi-gigabyte trees",
+      },
     ],
     problem:
       "Disk audits either load everything into memory or give you a wall of output you cannot act on or pipe anywhere.",
@@ -792,6 +885,28 @@ export const projects: Project[] = [
     ],
     status: "v0.1.3, packaged for Fedora",
     featured: true,
+    proof: [
+      {
+        value: "0.28%",
+        label: "of one cpu while idle",
+        note: "measured on the development laptop after adaptive sampling",
+      },
+      {
+        value: "0",
+        label: "components running as root",
+        note: "one capability on the sampler, none elsewhere",
+      },
+      {
+        value: "15 s / 5 s",
+        label: "sampling interval",
+        note: "unwatched / while a view is open",
+      },
+      {
+        value: "3",
+        label: "fedora releases packaged",
+        note: "44, 45 and rawhide, signed rpms on copr",
+      },
+    ],
     problem:
       "Windows, macOS and Android have told you which app drained the battery for years. Linux hasn't. The counters exist, but they are root-only, they measure the whole machine, and nothing attributes them to the apps that spent the energy.",
     approach: [
@@ -852,6 +967,23 @@ export const projects: Project[] = [
     ],
     repo: "CENG507-Project",
     links: [{ label: "Source", href: gh("CENG507-Project") }],
+    proof: [
+      {
+        value: "1 kHz",
+        label: "scheduler tick",
+        note: "machine-mode timer via mtime and mtimecmp",
+      },
+      {
+        value: "64 KB",
+        label: "stack laid out by the linker script",
+        note: "ram from 0x80000000 on qemu virt",
+      },
+      {
+        value: "0",
+        label: "lines of bios",
+        note: "assembly startup jumps straight to c",
+      },
+    ],
     problem:
       "A real-time OS hides the hardware from applications, but first someone has to tame the hardware: start the core with no firmware, lay out memory, take the timer interrupt and save every register on a context switch. The goal was to do that by hand on an open instruction set.",
     approach: [
@@ -902,6 +1034,23 @@ export const projects: Project[] = [
         href: "https://huggingface.co/spaces/KhaledSaeed18/multilingual-translation",
       },
       { label: "Source", href: gh("multilingual-translation-Transformers.js") },
+    ],
+    proof: [
+      {
+        value: "200",
+        label: "languages",
+        note: "nllb-200, including low-resource ones",
+      },
+      {
+        value: "600M",
+        label: "parameters in the browser",
+        note: "distilled model over transformers.js and webassembly",
+      },
+      {
+        value: "0",
+        label: "servers and api keys",
+        note: "model cached after the first visit, runs offline",
+      },
     ],
     problem:
       "Translation usually means sending your text to someone else's server. For quick, private use, the model itself can come to the user instead.",

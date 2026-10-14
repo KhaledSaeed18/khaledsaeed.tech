@@ -6,6 +6,11 @@ import type * as React from "react"
 import { abs, BreadcrumbJsonLd, JsonLd, personRef } from "@/components/json-ld"
 import { DitherObject } from "@/components/print/dither-object"
 import { FactStrip, type Fact } from "@/components/print/fact-strip"
+import {
+  PrintProject,
+  PrintSheetButton,
+} from "@/components/print/print-project"
+import { ProofStrip } from "@/components/print/proof-strip"
 import { Rule, SpecLabel } from "@/components/print/sheet"
 import { SheetLink } from "@/components/print/sheet-link"
 import { ContactSheet } from "@/components/home/contact-sheet"
@@ -130,6 +135,7 @@ export default async function ProjectPage({
                   {l.label.toLowerCase()}
                 </a>
               ))}
+              <PrintSheetButton className="inline-flex items-center border border-dashed border-border px-4 py-2.5 font-mono text-xs text-muted-foreground transition-colors hover:border-brand/40 hover:text-foreground" />
             </div>
           </div>
 
@@ -195,7 +201,13 @@ export default async function ProjectPage({
           </ol>
         </Block>
 
-        <Block index={3} label="highlights">
+        {p.proof && (
+          <Block index={3} label="measured">
+            <ProofStrip proof={p.proof} />
+          </Block>
+        )}
+
+        <Block index={p.proof ? 4 : 3} label="highlights">
           <div className="grid gap-12 lg:grid-cols-12">
             <ul className="space-y-4 lg:col-span-7">
               {p.highlights.map((h) => (
@@ -242,8 +254,10 @@ export default async function ProjectPage({
       </div>
 
       <div className="mt-32">
-        <ContactSheet index={4} />
+        <ContactSheet index={p.proof ? 5 : 4} />
       </div>
+
+      <PrintProject project={p} />
 
       <JsonLd
         data={{

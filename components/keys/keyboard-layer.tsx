@@ -36,7 +36,7 @@ const LEGEND: [string[], string][] = [
   [["g", "c"], "contact"],
   [["j", "k"], "next and previous item in a list"],
   [["p"], "proof mode: grid, frame and type"],
-  [["⌘", "P"], "print the one-page résumé"],
+  [["⌘", "P"], "print this sheet: the résumé, or a case study on its page"],
   [["?"], "this legend"],
   [["esc"], "close"],
 ]
@@ -106,7 +106,9 @@ export function KeyboardLayer({
       },
       {
         id: "print",
-        label: "Print the one-page résumé",
+        label: pathname.startsWith("/work/")
+          ? "Print this case study as a one-page sheet"
+          : "Print the one-page résumé",
         kind: "action",
         hint: "⌘P",
         run: () => window.setTimeout(() => window.print(), 50),
@@ -151,7 +153,7 @@ export function KeyboardLayer({
           ),
       },
     ],
-    [email, bookingUrl]
+    [email, bookingUrl, pathname]
   )
 
   const items: Item[] = React.useMemo(() => {
