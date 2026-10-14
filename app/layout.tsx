@@ -11,6 +11,7 @@ import { PersonJsonLd } from "@/components/person-json-ld"
 import { RevealObserver } from "@/components/print/reveal-observer"
 import { SiteFooter } from "@/components/site-footer"
 import { SiteHeader } from "@/components/site-header"
+import { TabHold } from "@/components/tab-hold"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { siteRoutes } from "@/lib/routes"
 import { siteConfig, siteIdentity, socialLinks } from "@/lib/site"
@@ -137,6 +138,7 @@ export default async function RootLayout({
         {/* the frame rails, top to bottom */}
         <div aria-hidden="true" className="rails" />
         <ConsoleProof />
+        <TabHold />
         <KeyboardLayer
           routes={await siteRoutes()}
           email={socialLinks.find((l) => l.key === "email")!.handle}
