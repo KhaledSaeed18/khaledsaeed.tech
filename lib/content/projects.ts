@@ -23,6 +23,7 @@ export type ObjectKind =
   | "globe"
   | "moon"
   | "padlock"
+  | "presentation"
 
 /** Card stock a project is printed on. Ink is always a near-black of the same hue. */
 export type Stock = "terracotta" | "teal" | "bone" | "stone"
@@ -80,7 +81,7 @@ export const groups: Record<ProjectGroup, { title: string; blurb: string }> = {
   tools: {
     title: "Developer tools",
     blurb:
-      "CLIs, registries and analyzers I built because I wanted them on my own machine first.",
+      "CLIs, registries, analyzers and presentation tools I built for my own work first.",
   },
   macos: {
     title: "macOS apps",
@@ -457,6 +458,83 @@ export const projects: Project[] = [
       "Weekly email reports and bedtime reminders from a background worker",
       "Client types generated from the API's OpenAPI schema",
       "1,032 backend tests at 98% coverage plus Playwright end-to-end tests in CI",
+    ],
+  },
+  {
+    slug: "deck-kit",
+    name: "deck-kit",
+    tagline:
+      "HTML slides, a synced presenter view and one file that runs with Wi-Fi off.",
+    summary:
+      "A reusable presentation kit built with plain HTML, CSS and TypeScript. Write slides as small HTML files, present with step-aware notes and a pace timer, then ship a self-contained deck or PDF. Four portable agent skills guide research, writing, verification and design, with a review stop after each phase.",
+    year: 2026,
+    group: "tools",
+    kind: "Presentation toolkit",
+    object: "presentation",
+    stock: "bone",
+    stack: [
+      "TypeScript",
+      "Vite",
+      "HTML",
+      "CSS",
+      "Vitest",
+      "Playwright",
+      "Biome",
+    ],
+    repo: "deck-kit",
+    links: [
+      { label: "Source and template", href: gh("deck-kit") },
+      {
+        label: "Authoring guide",
+        href: `${gh("deck-kit")}/blob/main/docs/authoring.md`,
+      },
+      { label: "Example decks", href: `${gh("deck-kit")}/tree/main/examples` },
+    ],
+    status: "Open source, MIT licensed",
+    proof: [
+      {
+        value: "1",
+        label: "file to present offline",
+        note: "deck.html includes the slides, assets and presenter view",
+      },
+      {
+        value: "4",
+        label: "portable agent skills",
+        note: "new-deck, add-slide, retheme and ship-deck",
+      },
+      {
+        value: "2",
+        label: "complete example talks",
+        note: "wireless networks and introductory cryptography",
+      },
+    ],
+    problem:
+      "A talk needs more than slides: a script, a shorter cut, reliable presenter controls and a fallback when the network fails. I wanted to keep all of that in a repository, reuse the engine for the next talk and change the design without rewriting the content.",
+    approach: [
+      {
+        title: "Content, theme and engine stay separate",
+        body: "Each slide is an HTML partial with semantic markup, build steps and speaker notes. A deck manifest sets the order, timing and alternate profiles. CSS tokens and layouts own the design; the vanilla TypeScript engine handles navigation on a fixed 1920 by 1080 canvas, scaled to fit the screen.",
+      },
+      {
+        title: "A presenter view that keeps up",
+        body: "The presenter sees the current step, next slide, highlighted script and pace against target timings. Either window can advance the talk. BroadcastChannel sync has an opener fallback for local files; keyboard, clicker and touch controls share the same navigation, with overview and blackout a key away.",
+      },
+      {
+        title: "A workflow with review built in",
+        body: "Four skills create a talk, add slides, retheme it or prepare delivery. The new-deck workflow moves through brief, research, content, verification and design, pausing for review at each phase. Shared instructions work with Codex, Claude Code and other compatible agents; slides can also be written by hand.",
+      },
+      {
+        title: "Ready for the room, with a fallback",
+        body: "Vite builds a static site or one deck.html that opens from a USB stick, including the presenter view. Export slides to PDF and notes to a printable script. Separate engine and deck browser suites check navigation, sync, slide fit, accessibility, print and offline behavior, with external requests blocked.",
+      },
+    ],
+    highlights: [
+      "Single-file offline delivery, static hosting and PDF export",
+      "Two-way presenter sync with step-aware notes and a persistent timer",
+      "Alternate talk profiles with their own slide order and target timings",
+      "Keyboard and clicker controls, overview, blackout and touch navigation",
+      "Portable agent skills with explicit review stages",
+      "Two complete talks with distinct themes on the same framework-free engine",
     ],
   },
   {

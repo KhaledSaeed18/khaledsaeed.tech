@@ -321,6 +321,26 @@ float oPadlock(vec3 p) {
   return min(body, min(shackle, legs));
 }
 
+float oPresentation(vec3 p) {
+  // A projection screen on a stand, with an inset slide and three chart bars.
+  // All geometry has straight-cut edges, matching the printed site.
+  vec3 q = p - vec3(0.0, 0.22, 0.0);
+  float screen = sdBox(q, vec3(0.88, 0.5, 0.07));
+  float inset = sdBox(q - vec3(0.0, 0.0, 0.065), vec3(0.77, 0.39, 0.035));
+  screen = max(screen, -inset);
+  float title = sdBox(q - vec3(-0.21, 0.24, 0.055), vec3(0.4, 0.035, 0.025));
+  float bars = 1e5;
+  for (int i = 0; i < 3; i++) {
+    float h = 0.09 + float(i) * 0.065;
+    vec3 c = vec3(-0.45 + float(i) * 0.42, -0.28 + h, 0.055);
+    bars = min(bars, sdBox(q - c, vec3(0.1, h, 0.025)));
+  }
+  float rail = sdBox(p - vec3(0.0, 0.77, 0.0), vec3(0.94, 0.045, 0.1));
+  float stand = sdBox(p - vec3(0.0, -0.54, -0.015), vec3(0.045, 0.3, 0.045));
+  float foot = sdBox(p - vec3(0.0, -0.84, 0.0), vec3(0.48, 0.045, 0.24));
+  return min(min(screen, min(title, bars)), min(rail, min(stand, foot)));
+}
+
 float map(vec3 p) {
   if (u_obj == 0) return oGrid(p);
   if (u_obj == 1) return oLayers(p);
@@ -339,7 +359,8 @@ float map(vec3 p) {
   if (u_obj == 14) return oChip(p);
   if (u_obj == 15) return oGlobe(p);
   if (u_obj == 16) return oMoon(p);
-  return oPadlock(p);
+  if (u_obj == 17) return oPadlock(p);
+  return oPresentation(p);
 }
 
 float mapT(vec3 p, float ang) {
@@ -380,7 +401,7 @@ void main() {
   float f = floor(frag.x / u_cells);
   vec2 local = vec2(mod(frag.x, u_cells), frag.y) / u_cells - 0.5;
   // a gentle swing rather than a full spin, so flat objects never go edge-on
-  bool planar = u_obj == 2 || u_obj == 5 || u_obj == 7 || u_obj == 8 || u_obj == 9 || u_obj == 10 || u_obj == 11 || u_obj == 16 || u_obj == 17;
+  bool planar = u_obj == 2 || u_obj == 5 || u_obj == 7 || u_obj == 8 || u_obj == 9 || u_obj == 10 || u_obj == 11 || u_obj == 16 || u_obj == 17 || u_obj == 18;
   float ang = planar ? 0.3 + 0.36 * sin(f / u_frames * 2.0 * PI) : 0.55 + 0.55 * sin(f / u_frames * 2.0 * PI);
 
   // three-quarter view from slightly above
