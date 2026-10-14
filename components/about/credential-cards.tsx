@@ -33,7 +33,8 @@ const thisMonth = () => {
  */
 export function CredentialCards() {
   return (
-    <div className="grid gap-4 lg:grid-cols-2">
+    // minmax(0, 1fr) columns, or a card's widest line sets the column width
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
       <EducationCard />
       <CertificationsCard />
     </div>
@@ -210,7 +211,7 @@ function StockCard({
   return (
     <Link
       href={href}
-      className="group flex flex-col p-6 transition-transform duration-300 ease-out hover:-translate-y-1.5 focus-visible:-translate-y-1.5 focus-visible:ring-3 focus-visible:ring-ring/60 focus-visible:outline-none motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:focus-visible:translate-y-0 sm:p-8"
+      className="group flex min-w-0 flex-col p-6 transition-transform duration-300 ease-out hover:-translate-y-1.5 focus-visible:-translate-y-1.5 focus-visible:ring-3 focus-visible:ring-ring/60 focus-visible:outline-none motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:focus-visible:translate-y-0 sm:p-8"
       style={{
         backgroundColor: `var(--stock-${stock})`,
         color: `var(--ink-${stock})`,
