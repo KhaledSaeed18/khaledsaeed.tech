@@ -24,6 +24,8 @@ export type ObjectKind =
   | "moon"
   | "padlock"
   | "presentation"
+  | "cage"
+  | "bisect"
 
 /** Card stock a project is printed on. Ink is always a near-black of the same hue. */
 export type Stock = "terracotta" | "teal" | "bone" | "stone"
@@ -91,7 +93,7 @@ export const groups: Record<ProjectGroup, { title: string; blurb: string }> = {
   systems: {
     title: "Systems",
     blurb:
-      "Close to the hardware: a least-privilege energy monitor for the Linux desktop, and a real-time OS brought up on RISC-V.",
+      "Close to the kernel: a microVM sandbox for links you don't trust, a change history with bisect for the whole system, a least-privilege energy monitor for the Linux desktop, and a real-time OS brought up on RISC-V.",
   },
   web: {
     title: "Web",
@@ -643,7 +645,6 @@ export const projects: Project[] = [
       { label: "PyPI", href: "https://pypi.org/project/jwt-toolkit/" },
       { label: "Source", href: gh("jwt-toolkit") },
     ],
-    featured: true,
     problem:
       "JWT bugs hide in the details: alg=none, algorithm confusion, weak HMAC secrets, keys smuggled in the header. Most libraries hide those details on purpose.",
     approach: [
@@ -681,7 +682,6 @@ export const projects: Project[] = [
     stack: ["Swift", "SwiftUI", "IOKit"],
     repo: "wakehold",
     links: [{ label: "Source", href: gh("wakehold") }],
-    featured: true,
     problem:
       "Keep-awake tools are a switch you flip on and forget to flip off. They model a timer, not the thing you actually care about.",
     approach: [
@@ -923,6 +923,224 @@ export const projects: Project[] = [
       "Free and open source, unlike every comparable app",
       "Native Swift, menu bar only",
       "Custom reminders",
+    ],
+  },
+  {
+    slug: "urljail",
+    name: "urljail",
+    updatedAt: "2026-10-15",
+    tagline:
+      "Opens a link you don't trust inside a throwaway microVM and reports what the page actually does.",
+    summary:
+      "urljail restores a Firecracker microVM from a snapshot, opens the URL in sandboxed Chrome and records the visit from two sides: the browser through the DevTools Protocol, and the host through eBPF, its own DNS resolver and the firewall. The report covers redirects, DNS, TLS SNI, forms, screenshots and phishing indicators, then the VM is destroyed. It is in active development on my Linux machine.",
+    year: 2026,
+    group: "systems",
+    kind: "Phishing URL sandbox",
+    object: "cage",
+    stock: "bone",
+    stack: [
+      "Go",
+      "Firecracker",
+      "KVM",
+      "eBPF",
+      "C",
+      "nftables",
+      "WireGuard",
+      "Chrome DevTools Protocol",
+      "gRPC",
+      "SELinux",
+      "NestJS",
+      "Next.js",
+      "PostgreSQL",
+    ],
+    repo: "urljail",
+    links: [
+      { label: "Source", href: gh("urljail") },
+      { label: "Roadmap", href: `${gh("urljail")}/blob/main/docs/roadmap.md` },
+      {
+        label: "Architecture",
+        href: `${gh("urljail")}/blob/main/docs/architecture.md`,
+      },
+      {
+        label: "Cloaking study",
+        href: `${gh("urljail")}/blob/main/docs/research/r1-results.md`,
+      },
+    ],
+    status: "In active development",
+    featured: true,
+    proof: [
+      {
+        value: "242 ms",
+        label: "snapshot restore to navigation",
+        note: "p50 under the jailer, p95 306 ms, on the development laptop",
+      },
+      {
+        value: "123 MiB",
+        label: "memory per running microvm",
+        note: "three clones running chrome at once, host memory measured",
+      },
+      {
+        value: "172",
+        label: "fresh urls under every profile",
+        note: "certificate transparency candidates, the cloaking study",
+      },
+      {
+        value: "5,385",
+        label: "stored runs replayed per rule",
+        note: "every new indicator is checked against them for false alarms",
+      },
+    ],
+    problem:
+      "You get a link you don't trust. Static checks look at the URL string, the domain's age or a blocklist, which is exactly what attackers optimize against, and they say nothing about what the page does. Hosted scanners answer part of it but are black boxes: you can't see how the browser was set up, how traffic was captured, or how often the page lied to the scanner. Opening it on your own machine is the one thing you must not do.",
+    approach: [
+      {
+        title: "A fresh microVM for every link",
+        body: "Each URL gets a Firecracker microVM restored from a snapshot with Chrome already running, about a quarter of a second before navigation starts. A guest agent drives Chrome over a DevTools Protocol pipe and streams the evidence back over vsock. When the visit ends, the VM is destroyed and nothing survives except the evidence.",
+      },
+      {
+        title: "Two witnesses",
+        body: "The browser reports requests, redirects, forms and the DOM from inside. The host watches from outside: an eBPF program on the VM's TAP device records flows and the TLS ClientHello SNI, a resolver logs DNS, the firewall logs blocked attempts and a pcap is written. The report reconciles both views, and a disagreement between them is itself a finding.",
+      },
+      {
+        title: "Fails closed",
+        body: "Each VM sits in its own network namespace with no route to the host, the LAN or cloud metadata addresses. Live traffic leaves only through a WireGuard tunnel in a separate namespace, so if the tunnel drops there is no route at all. The daemon refuses to serve until its own isolation self-test passes.",
+      },
+      {
+        title: "Jailed and confined",
+        body: "Every Firecracker process runs under the jailer as its own unprivileged user, in a chroot with seccomp, cgroup limits on memory, tasks and CPU, rate-limited network and disk, and an SELinux policy module. The guest is treated as hostile, so reports are built by an unprivileged helper and everything the guest says is evidence, not truth.",
+      },
+      {
+        title: "No proxy in the middle",
+        body: "There is no man-in-the-middle proxy, so servers see a real Chrome TLS fingerprint. Chrome's key log ships back with the capture so traffic can be decrypted offline, and every report comes with a HAR export.",
+      },
+      {
+        title: "Cloaking measured, not assumed",
+        body: "Browser countermeasures are switchable snapshot profiles, so the same URL opens under six of them at once. On 172 fresh candidates from Certificate Transparency logs, only the HeadlessChrome User-Agent ever changed what a site showed, and every case was infrastructure such as Cloudflare's bot challenge, not a phishing kit.",
+      },
+      {
+        title: "Indicators scored against labels",
+        body: "Report indicators flag details forms on free hosting, brand lures, fake human checks and phishing kits recognised by page structure. Each rule is scored against labelled runs and held-out sets from live feeds, then replayed across every stored run to count false alarms before it stays.",
+      },
+      {
+        title: "A dashboard on top",
+        body: "A NestJS service with Postgres and a BullMQ queue talks gRPC to the daemon, and a Next.js dashboard submits URLs, lists runs and renders the redirect chain, network graph and screenshot. Hostile data is shown as text and never linked, and the daemon stays the only privileged component.",
+      },
+    ],
+    highlights: [
+      "A Firecracker microVM per URL, restored from a snapshot in about 0.24 s",
+      "Host-side eBPF capture of flows and TLS SNI, reconciled with the browser's view",
+      "WireGuard-only egress that fails closed, gated by an isolation self-test",
+      "Every VMM jailed as its own user, with seccomp, cgroups and SELinux",
+      "A cloaking study across six browser profiles on fresh phishing candidates",
+      "In active development; the live gate and the control plane are done",
+    ],
+  },
+  {
+    slug: "osreflog",
+    name: "osreflog",
+    updatedAt: "2026-10-15",
+    tagline:
+      "A reflog for a Linux system: what changed, who changed it, and which change broke it.",
+    summary:
+      "osreflog records every change to a Fedora system together with its cause: the package transaction, service, command or app that made it. It rebuilds the system as it was at any point, bisects a regression down to a single cause by testing each step in a throwaway container or VM, and undoes that cause file by file. It is in active development on my Linux machine.",
+    year: 2026,
+    group: "systems",
+    kind: "Change history for Linux",
+    object: "bisect",
+    stock: "stone",
+    stack: [
+      "Rust",
+      "btrfs",
+      "fanotify",
+      "eBPF",
+      "systemd",
+      "D-Bus",
+      "polkit",
+      "SQLite",
+      "QEMU",
+      "KVM",
+      "dnf5",
+    ],
+    repo: "osreflog",
+    links: [
+      { label: "Source", href: gh("osreflog") },
+      { label: "Roadmap", href: `${gh("osreflog")}/blob/main/docs/roadmap.md` },
+      {
+        label: "Architecture",
+        href: `${gh("osreflog")}/blob/main/docs/architecture.md`,
+      },
+      {
+        label: "Bisect design",
+        href: `${gh("osreflog")}/blob/main/docs/bisect.md`,
+      },
+    ],
+    status: "In active development",
+    featured: true,
+    proof: [
+      {
+        value: "5 of 5",
+        label: "seeded regressions bisected",
+        note: "each found within log2(n) + 1 probes",
+      },
+      {
+        value: "0.9 s",
+        label: "slowest container probe",
+        note: "nspawn; vm probes boot the snapshot's kernel in 14 s or less",
+      },
+      {
+        value: "87 of 87",
+        label: "config changes attributed",
+        note: "a scripted workload of about 22 real admin tools",
+      },
+      {
+        value: "0",
+        label: "parser crashes under fuzzing",
+        note: "8 targets, an hour each, about 3.05 billion inputs",
+      },
+    ],
+    problem:
+      "When a Linux desktop breaks, you know one thing: it worked last week. Package history covers packages only, the journal shows events but not state, and snapshot tools show the whole system at a moment but not what changed between two snapshots, who changed it, or which change broke things. There is no git bisect for an operating system.",
+    approach: [
+      {
+        title: "Two witnesses",
+        body: "A live witness records who changes each file as it happens, with a filesystem-wide fanotify mark and eBPF tracing every write back to its process and package transaction. A state witness proves what changed between read-only btrfs snapshots from the send stream. When they disagree, for example a change made while the daemon was stopped, the gap is reported instead of smoothed over.",
+      },
+      {
+        title: "Causes, not files",
+        body: "Changes are grouped into causes: a dnf transaction, a systemd service, a terminal command, an app writing a setting. Writes a daemon makes on someone's behalf over D-Bus, from tools like timedatectl or nmcli, are credited to the caller. osreflog why shows who changed a file and a readable diff of what it means.",
+      },
+      {
+        title: "Git's vocabulary on purpose",
+        body: "log, show, diff, blame, bisect and undo work on causes, and references read like git's reflog: c42, @{1}, @{boot-1}, @{yesterday}. Diffs are computed after each checkpoint and cached, so the diff after a real dnf transaction comes back in 6 ms.",
+      },
+      {
+        title: "Bisect down to one cause",
+        body: "Snapshots are coarse, so osreflog rebuilds the states between them by replaying causes into a writable clone. Each step is tested in a throwaway systemd-nspawn container in under a second, or in a QEMU VM that boots the clone's own kernel over virtiofs in about 14 seconds. Every replay says whether it was exact or approximate.",
+      },
+      {
+        title: "Undo without rolling back",
+        body: "osreflog undo reverts one cause path by path as a 3-way merge, leaving alone anything that changed since and refusing on conflict. Package causes are handed to dnf. Dry run is the default, a checkpoint is taken before every apply, and an undo can itself be undone. GNOME settings get the same treatment through dconf.",
+      },
+      {
+        title: "Observe before touching",
+        body: "Nothing wrote to the live root until a write gate passed: the full undo matrix in a contained scratch root, with symlink-swap races and magic links refused by openat2 resolution. Config parsers run in a sandboxed worker and were each fuzzed for an hour. Secrets are never stored and command lines are redacted.",
+      },
+      {
+        title: "Cheap enough to leave on",
+        body: "The idle daemon used 0.0% CPU and 26 MB of memory on the development laptop, and a checkpoint adds under a second to a dnf transaction. The ledger is local, root-only SQLite with a hash chain, so tampering is evident.",
+      },
+      {
+        title: "Metal bisect next",
+        body: "Some regressions only show on real hardware. The next phase reboots once into a disposable clone, with the default boot entry checked untouched after every probe, and it stays behind a boot gate tested in a nested VM first. A GTK and libadwaita app and COPR packaging, like drainscope's, come last.",
+      },
+    ],
+    highlights: [
+      "Every change to /etc and system state recorded with its cause",
+      "A live fanotify and eBPF witness reconciled with btrfs send-stream diffs",
+      "Cause-level bisect in nspawn containers or VMs that boot the snapshot's kernel",
+      "3-way undo that refuses on conflict, dry run by default",
+      "5 of 5 seeded regressions found within the probe bound",
+      "In active development on Fedora 44; metal bisect is next",
     ],
   },
   {

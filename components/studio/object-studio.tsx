@@ -341,6 +341,47 @@ float oPresentation(vec3 p) {
   return min(min(screen, min(title, bars)), min(rail, min(stand, foot)));
 }
 
+float oCage(vec3 p) {
+  // a jail cell: square plates top and bottom, a ring of bars and a band
+  // around the middle, with a globe (the page) held inside
+  vec3 q = p - vec3(0.0, -0.04, 0.0);
+  float plates = min(sdBox(q - vec3(0.0, -0.7, 0.0), vec3(0.62, 0.07, 0.62)),
+                     sdBox(q - vec3(0.0, 0.7, 0.0), vec3(0.62, 0.07, 0.62)));
+  vec2 a = abs(q.xz);
+  float bars = min(sdBox(vec3(a.x - 0.54, q.y, a.y - 0.54), vec3(0.055, 0.66, 0.055)),
+               min(sdBox(vec3(a.x - 0.54, q.y, a.y), vec3(0.03, 0.66, 0.03)),
+                   sdBox(vec3(a.x, q.y, a.y - 0.54), vec3(0.03, 0.66, 0.03))));
+  float band = sdBox(q - vec3(0.0, 0.3, 0.0), vec3(0.58, 0.04, 0.58));
+  band = max(band, -sdBox(q - vec3(0.0, 0.3, 0.0), vec3(0.5, 0.1, 0.5)));
+  vec3 g = q - vec3(0.0, -0.22, 0.0);
+  float globe = length(g) - 0.36;
+  // an equator and a meridian cut in, so it reads as a globe through the bars
+  float lines = min(abs(g.y), abs(g.x)) - 0.025;
+  globe = max(globe, -max(lines, -(length(g) - 0.32)));
+  return min(min(plates, bars), min(band, globe));
+}
+
+float oBisect(vec3 p) {
+  // a history as a rail of checkpoints, and the change that broke it lifted
+  // out of its gap in the line, turned on its corner under a marker
+  const float k = 1.1;
+  vec3 q = p / k - vec3(0.0, -0.3, 0.0);
+  // swing either side of face-on, so the rail never recedes into a jumble
+  q.xz = rot(-0.3) * q.xz;
+  float rail = sdBox(q, vec3(1.0, 0.045, 0.045));
+  float nodes = 1e5;
+  for (int i = 0; i < 5; i++) {
+    if (i == 3) continue;
+    nodes = min(nodes, sdBox(q - vec3(-0.8 + float(i) * 0.4, 0.0, 0.0), vec3(0.15)));
+  }
+  vec3 c = q - vec3(0.4, 0.62, 0.0);
+  c.xy = rot(PI * 0.25) * c.xy;
+  float culprit = sdBox(c, vec3(0.19, 0.19, 0.17));
+  vec3 m = q - vec3(0.4, 1.08, 0.0);
+  float marker = extrude(m, sd2Tri(m.xy, vec2(-0.15, 0.09), vec2(0.15, 0.09), vec2(0.0, -0.11)), 0.06);
+  return min(min(rail, nodes), min(culprit, marker)) * k;
+}
+
 float map(vec3 p) {
   if (u_obj == 0) return oGrid(p);
   if (u_obj == 1) return oLayers(p);
@@ -360,7 +401,9 @@ float map(vec3 p) {
   if (u_obj == 15) return oGlobe(p);
   if (u_obj == 16) return oMoon(p);
   if (u_obj == 17) return oPadlock(p);
-  return oPresentation(p);
+  if (u_obj == 18) return oPresentation(p);
+  if (u_obj == 19) return oCage(p);
+  return oBisect(p);
 }
 
 float mapT(vec3 p, float ang) {
@@ -401,7 +444,7 @@ void main() {
   float f = floor(frag.x / u_cells);
   vec2 local = vec2(mod(frag.x, u_cells), frag.y) / u_cells - 0.5;
   // a gentle swing rather than a full spin, so flat objects never go edge-on
-  bool planar = u_obj == 2 || u_obj == 5 || u_obj == 7 || u_obj == 8 || u_obj == 9 || u_obj == 10 || u_obj == 11 || u_obj == 16 || u_obj == 17 || u_obj == 18;
+  bool planar = u_obj == 2 || u_obj == 5 || u_obj == 7 || u_obj == 8 || u_obj == 9 || u_obj == 10 || u_obj == 11 || u_obj == 16 || u_obj == 17 || u_obj == 18 || u_obj == 20;
   float ang = planar ? 0.3 + 0.36 * sin(f / u_frames * 2.0 * PI) : 0.55 + 0.55 * sin(f / u_frames * 2.0 * PI);
 
   // three-quarter view from slightly above

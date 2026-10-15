@@ -85,6 +85,7 @@ ${(Object.keys(groups) as (keyof typeof groups)[])
         .map(
           (p) =>
             `- [${p.name}](${url(`/work/${p.slug}`)}): ${p.tagline} Stack: ${p.stack.join(", ")}.` +
+            (p.status ? ` Status: ${p.status}.` : "") +
             (p.proof
               ? ` Measured: ${p.proof.map((m) => `${m.value} ${m.label}`).join("; ")}.`
               : "")

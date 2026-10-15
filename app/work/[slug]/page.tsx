@@ -270,11 +270,12 @@ export default async function ProjectPage({
           url: abs(`/work/${p.slug}`),
           codeRepository: `https://github.com/KhaledSaeed18/${p.repo}`,
           programmingLanguage: p.stack.filter((s) =>
-            ["TypeScript", "Python", "Swift", "Go"].includes(s)
+            ["TypeScript", "Python", "Swift", "Go", "Rust", "C"].includes(s)
           ),
           keywords: p.stack.join(", "),
           dateCreated: String(p.year),
           dateModified: p.updatedAt,
+          creativeWorkStatus: p.status,
           author: personRef,
           creator: personRef,
           sameAs: p.links.map((l) => l.href),

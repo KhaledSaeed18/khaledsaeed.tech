@@ -24,4 +24,6 @@ export const OBJECTS: ObjectKind[] = [
   "moon",
   "padlock",
   "presentation",
+  "cage",
+  "bisect",
 ]
