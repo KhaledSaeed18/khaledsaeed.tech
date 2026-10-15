@@ -4,7 +4,6 @@ import * as React from "react"
 import { createPortal } from "react-dom"
 
 import { DitherObject } from "@/components/print/dither-object"
-import { PrintSlug } from "@/components/print/print-slug"
 import { kindPhrase, type Project } from "@/lib/content/projects"
 import { siteConfig, socialLinks } from "@/lib/site"
 
@@ -14,7 +13,7 @@ const link = (key: string) => socialLinks.find((l) => l.key === key)!
 /** A heading on the printed sheet: mono label over a dotted rule. */
 function Head({ index, children }: { index: number; children: string }) {
   return (
-    <h2 className="mb-[2.4mm] border-b border-dotted border-[#9a928b] pb-[1mm] font-mono text-[7.5pt] font-normal tracking-wide text-[#6b635c] uppercase">
+    <h2 className="mb-[2.4mm] break-after-avoid border-b border-dotted border-[#9a928b] pb-[1mm] font-mono text-[7.5pt] font-normal tracking-wide text-[#6b635c] uppercase">
       <span className="text-[#c4553c]">{"// "}</span>
       <span className="mr-[2mm] tabular-nums">
         {String(index).padStart(2, "0")}
@@ -24,33 +23,25 @@ function Head({ index, children }: { index: number; children: string }) {
   )
 }
 
-/** Crop marks in the corners of the sheet. */
-function Crops() {
-  const c = "absolute size-[5mm] border-[#1a1715]"
-  return (
-    <div aria-hidden="true">
-      <span
-        className={`${c} top-[6mm] left-[6mm] border-t-[0.25mm] border-l-[0.25mm]`}
-      />
-      <span
-        className={`${c} top-[6mm] right-[6mm] border-t-[0.25mm] border-r-[0.25mm]`}
-      />
-      <span
-        className={`${c} bottom-[6mm] left-[6mm] border-b-[0.25mm] border-l-[0.25mm]`}
-      />
-      <span
-        className={`${c} right-[6mm] bottom-[6mm] border-r-[0.25mm] border-b-[0.25mm]`}
-      />
-    </div>
-  )
-}
+/** Today as the slug line prints it: "15 oct 2026". */
+const today = () =>
+  new Date()
+    .toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    })
+    .toLowerCase()
 
 /** A link printed as its address, since paper cannot be clicked. */
 const bare = (href: string) => href.replace(/^https?:\/\//, "")
 
 /**
- * The sheet ⌘P prints on a case study: the project on one A4 page, typeset
- * like the résumé, so it can be attached to an application on its own.
+ * The sheet ⌘P prints on a case study: the project on A4, typeset like the
+ * résumé, so it can be attached to an application on its own. Most studies
+ * fit one page; a long one flows onto more instead of being cut off. The
+ * crop marks and the slug line are @page margin boxes (print-resume.css),
+ * so every page gets them.
  *
  * Rendered into a portal at the end of body so the print styles can show it
  * alone; hidden on screen and from assistive tech, since it repeats the page.
@@ -58,6 +49,13 @@ const bare = (href: string) => href.replace(/^https?:\/\//, "")
 const noop = () => () => {}
 
 export function PrintProject({ project: p }: { project: Project }) {
+  // the print date, refreshed when printing starts
+  const [date, setDate] = React.useState(today)
+  React.useEffect(() => {
+    const stamp = () => setDate(today())
+    window.addEventListener("beforeprint", stamp)
+    return () => window.removeEventListener("beforeprint", stamp)
+  }, [])
   // a portal needs document.body, which exists only after hydration
   const mounted = React.useSyncExternalStore(
     noop,
@@ -75,11 +73,13 @@ export function PrintProject({ project: p }: { project: Project }) {
   let n = 0
   const next = () => ++n
 
+  // margin boxes only take a string, so the slug line's text is set here
+  const slug = `proof printed from khaledsaeed.tech/work/${p.slug}${edition ? `, edition ${edition}` : ""}, ${date}`
+
   const sheet = (
     <div className="print-sheet hidden" aria-hidden="true">
-      <div className="relative h-[297mm] w-[210mm] overflow-hidden bg-white px-[16mm] pt-[15mm] pb-[13mm] text-[#1a1715]">
-        <Crops />
-
+      <style>{`@page sheet { @bottom-left { content: ${JSON.stringify(slug)}; } }`}</style>
+      <div className="bg-white text-[#1a1715]">
         {/* masthead */}
         <header className="flex items-end justify-between gap-[8mm] border-b-[0.4mm] border-[#1a1715] pb-[4mm]">
           <div className="min-w-0">
@@ -162,7 +162,10 @@ export function PrintProject({ project: p }: { project: Project }) {
                 <Head index={next()}>measured</Head>
                 <dl className="grid grid-cols-2 gap-px border border-[#9a928b] bg-[#9a928b]">
                   {p.proof.map((m) => (
-                    <div key={m.label} className="bg-white px-[2.5mm] py-[2mm]">
+                    <div
+                      key={m.label}
+                      className="break-inside-avoid bg-white px-[2.5mm] py-[2mm]"
+                    >
                       <dd className="font-heading text-[14pt] leading-none font-medium tracking-tight tabular-nums">
                         {m.value}
                       </dd>
@@ -206,16 +209,6 @@ export function PrintProject({ project: p }: { project: Project }) {
             </section>
           </div>
         </div>
-
-        {/* slug line */}
-        <p className="absolute right-[16mm] bottom-[10mm] left-[16mm] flex justify-between gap-[6mm] border-t border-dotted border-[#9a928b] pt-[1.5mm] font-mono text-[6.5pt] text-[#6b635c]">
-          <span>
-            <PrintSlug edition={edition} />
-          </span>
-          <span className="shrink-0">
-            résumé and more work at khaledsaeed.tech
-          </span>
-        </p>
       </div>
     </div>
   )

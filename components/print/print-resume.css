@@ -9,6 +9,63 @@
     size: A4;
     margin: 0;
   }
+  /*
+   * A case study sheet (print-project.tsx) can run to more pages, so its
+   * margins, crop marks and slug line belong to the page and repeat on each.
+   * The slug's left half is set by the component, which knows the date.
+   */
+  @page sheet {
+    margin: 15mm 16mm 18mm;
+    background: #fff;
+
+    @top-left-corner {
+      content: "";
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16mm' height='15mm' viewBox='0 0 16 15'%3E%3Cpath d='M6 11V6H11' fill='none' stroke='%231a1715' stroke-width='0.25'/%3E%3C/svg%3E")
+        no-repeat;
+    }
+    @top-right-corner {
+      content: "";
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16mm' height='15mm' viewBox='0 0 16 15'%3E%3Cpath d='M5 6H10V11' fill='none' stroke='%231a1715' stroke-width='0.25'/%3E%3C/svg%3E")
+        no-repeat;
+    }
+    @bottom-left-corner {
+      content: "";
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16mm' height='18mm' viewBox='0 0 16 18'%3E%3Cpath d='M6 7V12H11' fill='none' stroke='%231a1715' stroke-width='0.25'/%3E%3C/svg%3E")
+        no-repeat;
+    }
+    @bottom-right-corner {
+      content: "";
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16mm' height='18mm' viewBox='0 0 16 18'%3E%3Cpath d='M5 12H10V7' fill='none' stroke='%231a1715' stroke-width='0.25'/%3E%3C/svg%3E")
+        no-repeat;
+    }
+    @bottom-left {
+      vertical-align: top;
+      margin-top: 8mm;
+      padding-top: 1.5mm;
+      border-top: 0.2mm dotted #9a928b;
+      font:
+        6.5pt var(--font-mono),
+        monospace;
+      color: #6b635c;
+      white-space: nowrap;
+    }
+    @bottom-right {
+      content: "résumé and more work at khaledsaeed.tech";
+      vertical-align: top;
+      text-align: right;
+      margin-top: 8mm;
+      padding-top: 1.5mm;
+      border-top: 0.2mm dotted #9a928b;
+      font:
+        6.5pt var(--font-mono),
+        monospace;
+      color: #6b635c;
+      white-space: nowrap;
+    }
+  }
+  .print-sheet {
+    page: sheet;
+  }
   html,
   body {
     background: #fff !important;
