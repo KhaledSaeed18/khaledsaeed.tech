@@ -69,26 +69,46 @@ float extrude(vec3 p, float d2, float h) { vec2 w = vec2(d2, abs(p.z) - h); retu
 // ------------------------------------------------------------------ objects
 // Each fits roughly inside a unit sphere, resting around the origin.
 
-float oGrid(vec3 p) {
-  float d = 1e5;
-  for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++) {
-    vec2 c = vec2(float(i) - 1.0, float(j) - 1.0) * 0.56;
-    float lift = (i == 1 && j == 1) ? 0.26 : 0.0;
-    d = min(d, sdRBox(p - vec3(c.x, lift - 0.1, c.y), vec3(0.24, 0.22, 0.24), 0.06));
+float oTenants(vec3 p) {
+  // three tenants' records on one shared database, each stack walled into
+  // its own compartment: isolation enforced by the database
+  vec3 q = p - vec3(0.0, -0.05, 0.0);
+  // swing either side of face-on, so the walls never hide the stacks
+  q.xz = rot(-0.3) * q.xz;
+  float base = sdBox(q - vec3(0.0, -0.6, 0.0), vec3(1.0, 0.08, 0.3));
+  float walls = sdBox(vec3(abs(q.x) - 0.34, q.y - 0.02, q.z), vec3(0.045, 0.54, 0.3));
+  float recs = 1e5;
+  for (int t = 0; t < 3; t++) {
+    int n = t == 0 ? 2 : (t == 1 ? 3 : 1);
+    for (int r = 0; r < 3; r++) {
+      if (r >= n) break;
+      vec3 c = vec3(-0.68 + float(t) * 0.68, -0.34 + float(r) * 0.36, 0.0);
+      recs = min(recs, sdBox(q - c, vec3(0.17, 0.15, 0.17)));
+    }
   }
-  return d;
+  return min(base, min(walls, recs));
 }
 
-float oLayers(vec3 p) {
-  float d = 1e5;
+float oPipeline(vec3 p) {
+  // a request passing through the layers (routes, controllers, services,
+  // repositories) into the database
+  const float k = 1.04;
+  vec3 q = p / k - vec3(-0.1, -0.08, 0.0);
+  // swing either side of face-on, so the layers read as a sequence
+  q.xz = rot(-0.3) * q.xz;
+  float plates = 1e5;
   for (int i = 0; i < 4; i++) {
-    float fi = float(i);
-    vec3 q = p - vec3(0.0, -0.54 + fi * 0.34, 0.0);
-    q.xz = rot(fi * 0.18 - 0.25) * q.xz;
-    q.xz -= vec2(0.05 * fi - 0.08, 0.0);
-    d = min(d, sdRBox(q, vec3(0.78, 0.1, 0.58), 0.07));
+    plates = min(plates, sdBox(q - vec3(-0.76 + float(i) * 0.28, 0.0, 0.0), vec3(0.06, 0.44, 0.22)));
   }
-  return d;
+  float shaft = sdBox(q - vec3(-0.36, 0.0, 0.0), vec3(0.6, 0.06, 0.06));
+  vec3 h = q - vec3(0.3, 0.0, 0.0);
+  float head = extrude(h, sd2Tri(h.xy, vec2(-0.1, 0.18), vec2(-0.1, -0.18), vec2(0.14, 0.0)), 0.07);
+  vec3 d = q - vec3(0.76, 0.0, 0.0);
+  float db = sdCyl(d, 0.27, 0.44);
+  for (int i = -1; i <= 1; i += 2) {
+    db = max(db, -max(abs(d.y - float(i) * 0.15) - 0.024, -(length(d.xz) - 0.24)));
+  }
+  return min(min(plates, shaft), min(head, db)) * k;
 }
 
 float oCards(vec3 p) {
@@ -383,8 +403,8 @@ float oBisect(vec3 p) {
 }
 
 float map(vec3 p) {
-  if (u_obj == 0) return oGrid(p);
-  if (u_obj == 1) return oLayers(p);
+  if (u_obj == 0) return oTenants(p);
+  if (u_obj == 1) return oPipeline(p);
   if (u_obj == 2) return oCards(p);
   if (u_obj == 3) return oToolbox(p);
   if (u_obj == 4) return oCap(p);
@@ -444,7 +464,7 @@ void main() {
   float f = floor(frag.x / u_cells);
   vec2 local = vec2(mod(frag.x, u_cells), frag.y) / u_cells - 0.5;
   // a gentle swing rather than a full spin, so flat objects never go edge-on
-  bool planar = u_obj == 2 || u_obj == 5 || u_obj == 7 || u_obj == 8 || u_obj == 9 || u_obj == 10 || u_obj == 11 || u_obj == 16 || u_obj == 17 || u_obj == 18 || u_obj == 20;
+  bool planar = u_obj == 0 || u_obj == 1 || u_obj == 2 || u_obj == 5 || u_obj == 7 || u_obj == 8 || u_obj == 9 || u_obj == 10 || u_obj == 11 || u_obj == 16 || u_obj == 17 || u_obj == 18 || u_obj == 20;
   float ang = planar ? 0.3 + 0.36 * sin(f / u_frames * 2.0 * PI) : 0.55 + 0.55 * sin(f / u_frames * 2.0 * PI);
 
   // three-quarter view from slightly above

@@ -46,8 +46,8 @@ function png1bit(w, h, rows, ink = [255, 255, 255]) {
 }
 
 const ALL = [
-  "grid",
-  "layers",
+  "tenants",
+  "pipeline",
   "cards",
   "toolbox",
   "cap",

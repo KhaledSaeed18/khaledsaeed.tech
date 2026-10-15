@@ -5,8 +5,8 @@
  */
 
 export type ObjectKind =
-  | "grid"
-  | "layers"
+  | "tenants"
+  | "pipeline"
   | "cards"
   | "toolbox"
   | "cap"
@@ -114,7 +114,7 @@ export const projects: Project[] = [
     year: 2026,
     group: "platforms",
     kind: "SaaS platform",
-    object: "grid",
+    object: "tenants",
     stock: "teal",
     stack: [
       "NestJS",
@@ -179,7 +179,7 @@ export const projects: Project[] = [
     year: 2025,
     group: "platforms",
     kind: "Open source template",
-    object: "layers",
+    object: "pipeline",
     stock: "terracotta",
     stack: [
       "Express",

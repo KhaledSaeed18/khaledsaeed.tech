@@ -5,8 +5,8 @@ export const OBJECT_CELLS = 112
 export const OBJECT_FRAMES = 16
 
 export const OBJECTS: ObjectKind[] = [
-  "grid",
-  "layers",
+  "tenants",
+  "pipeline",
   "cards",
   "toolbox",
   "cap",
