@@ -6,7 +6,6 @@ import { createPortal } from "react-dom"
 import { formatDate } from "@/lib/format"
 import { diffWords, tokens, type Seg } from "@/lib/revision-diff"
 import type { RevisionData } from "@/lib/revisions"
-import { cn } from "@/lib/utils"
 import { logVisit } from "@/lib/visit"
 
 type State = {
@@ -37,7 +36,8 @@ const typing = (e: KeyboardEvent) => {
  * Revision marks: the case study as a marked-up proof. Words cut since an
  * earlier printing are struck through, words set since are underlined, and
  * the slip at the foot of the page steps back through the printings, each
- * one a commit in the site's history. `v` turns it on and off.
+ * one a commit in the site's history. `v` turns it on and off; there is
+ * deliberately no button, like the loupe and the plates.
  */
 export function Revisions({
   data,
@@ -143,22 +143,6 @@ export function RevCuts({ section }: { section: "approach" | "highlights" }) {
         ))}
       </ul>
     </div>
-  )
-}
-
-/** The button by the case study's links. Only there when there is history. */
-export function RevisionToggle({ className }: { className?: string }) {
-  const s = React.useContext(Ctx)
-  if (!s?.count) return null
-  return (
-    <button
-      type="button"
-      aria-pressed={s.on}
-      onClick={s.toggle}
-      className={cn(className, s.on && "border-brand/40 text-foreground")}
-    >
-      {s.on ? "hide revisions" : `revisions (${s.count + 1})`}
-    </button>
   )
 }
 

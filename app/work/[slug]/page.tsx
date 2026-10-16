@@ -11,12 +11,7 @@ import {
   PrintSheetButton,
 } from "@/components/print/print-project"
 import { ProofStrip } from "@/components/print/proof-strip"
-import {
-  Rev,
-  RevCuts,
-  RevisionToggle,
-  Revisions,
-} from "@/components/print/revisions"
+import { Rev, RevCuts, Revisions } from "@/components/print/revisions"
 import { Rule, SpecLabel } from "@/components/print/sheet"
 import { SheetLink } from "@/components/print/sheet-link"
 import { ContactSheet } from "@/components/home/contact-sheet"
@@ -158,7 +153,6 @@ export default async function ProjectPage({
                   </a>
                 ))}
                 <PrintSheetButton className="inline-flex items-center border border-dashed border-border px-4 py-2.5 font-mono text-xs text-muted-foreground transition-colors hover:border-brand/40 hover:text-foreground" />
-                <RevisionToggle className="inline-flex items-center border border-dashed border-border px-4 py-2.5 font-mono text-xs text-muted-foreground transition-colors hover:border-brand/40 hover:text-foreground" />
               </div>
             </div>
 
