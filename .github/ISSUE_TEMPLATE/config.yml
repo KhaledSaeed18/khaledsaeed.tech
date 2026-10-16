@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Report a security vulnerability privately
+    url: https://github.com/KhaledSaeed18/khaledsaeed.tech/blob/main/SECURITY.md
+    about: Use the private email contact in the security policy.
+  - name: Report a Code of Conduct concern privately
+    url: https://github.com/KhaledSaeed18/khaledsaeed.tech/blob/main/CODE_OF_CONDUCT.md
+    about: Use the private email contact in the Code of Conduct.
+  - name: Work inquiries
+    url: https://khaledsaeed.tech/contact
+    about: Contact Khaled about opportunities or collaboration.

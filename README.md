@@ -98,3 +98,21 @@ Useful dev-only query params on the home page: `?shade` (no dither), `?zoom` (he
 
 - Security headers are set for every route in `next.config.ts`; the footer's "last printed" date is the build time (`BUILD_DATE`).
 - `pnpm audit --prod` should stay clean; patched transitive versions are pinned under `overrides` in `pnpm-workspace.yaml`.
+
+## Contributing and reports
+
+Bug fixes, accessibility improvements, broken-link reports, and typo corrections are welcome.
+Read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request. Please discuss new
+features, redesigns, and changes to personal content first.
+
+Use the [issue tracker](https://github.com/KhaledSaeed18/khaledsaeed.tech/issues/new/choose)
+for website problems and suggestions. Participation follows the
+[Code of Conduct](CODE_OF_CONDUCT.md). Report vulnerabilities privately as described in
+[SECURITY.md](SECURITY.md). For work inquiries, use the [contact page](https://khaledsaeed.tech/contact).
+
+## License and reuse
+
+Original reusable code is [MIT licensed](LICENSE). Personal content and assets, including my
+writing, biography, résumé, portrait, and branding, are excluded from that license. See
+[CONTENT_LICENSE.md](CONTENT_LICENSE.md) for the scope and third-party material notice.
+If you reuse the code for your own site, replace the personal content and assets with your own.

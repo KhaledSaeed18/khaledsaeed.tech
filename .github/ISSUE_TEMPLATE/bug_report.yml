@@ -1,0 +1,41 @@
+name: Bug report
+description: Report a website bug, accessibility problem, or broken link.
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Search existing issues first. For security vulnerabilities, email contact@khaledsaeed.tech privately. For work inquiries, use https://khaledsaeed.tech/contact. Remove private information from screenshots and logs.
+  - type: input
+    id: page
+    attributes:
+      label: Affected page
+      description: Paste the page URL or path. For a build problem, say local setup.
+      placeholder: https://khaledsaeed.tech/work
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Describe the problem and what you expected instead. For accessibility issues, describe the barrier you encountered.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Include the links, keys, or actions that trigger the problem.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Browser and device
+      description: Include browser version, operating system, device or viewport size, and assistive technology if relevant. For local problems, include the commit, Node.js and pnpm versions, and failing command.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Screenshots or additional context
+      description: Optional screenshots, error output, or a minimal example. Remove private information before uploading.
