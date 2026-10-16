@@ -11,6 +11,7 @@ import { MarkUp } from "@/components/keys/mark-up"
 import { Plates } from "@/components/keys/plates"
 import { QuoteCard } from "@/components/keys/quote-card"
 import { PrintResume } from "@/components/print/print-resume"
+import { OfflinePress } from "@/components/press/offline-press"
 import { Receipt } from "@/components/receipt/receipt"
 import { VisitLog } from "@/components/receipt/visit-log"
 import { PersonJsonLd } from "@/components/person-json-ld"
@@ -114,6 +115,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const routes = await siteRoutes()
   return (
     <html
       lang="en"
@@ -146,7 +148,7 @@ export default async function RootLayout({
         <ConsoleProof />
         <TabHold />
         <KeyboardLayer
-          routes={await siteRoutes()}
+          routes={routes}
           email={socialLinks.find((l) => l.key === "email")!.handle}
           bookingUrl={siteConfig.bookingUrl}
         />
@@ -157,6 +159,10 @@ export default async function RootLayout({
         <VisitLog />
         <Receipt edition={process.env.BUILD_COMMIT ?? ""} />
         <PrintResume />
+        <OfflinePress
+          edition={process.env.BUILD_COMMIT ?? ""}
+          sheets={routes.filter((r) => r.kind === "page").map((r) => r.href)}
+        />
         <RevealObserver />
         <PersonJsonLd />
       </body>
