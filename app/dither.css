@@ -260,3 +260,14 @@
     animation: none;
   }
 }
+
+/* The printer's loupe (components/keys/loupe.tsx) shows a still copy of the
+   page: nothing inside it animates or reveals on its own. */
+.loupe-stage * {
+  animation: none !important;
+  transition: none !important;
+}
+.loupe-stage [data-reveal] {
+  opacity: 1 !important;
+  transform: none !important;
+}

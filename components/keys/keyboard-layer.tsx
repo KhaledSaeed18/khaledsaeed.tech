@@ -36,6 +36,8 @@ const LEGEND: [string[], string][] = [
   [["g", "c"], "contact"],
   [["j", "k"], "next and previous item in a list"],
   [["p"], "proof mode: grid, frame and type"],
+  [["⌥"], "hold for the printer's loupe; scroll to change power"],
+  [["l"], "leave the loupe down (esc lifts it)"],
   [["⌘", "P"], "print this sheet: the résumé, or a case study on its page"],
   [["?"], "this legend"],
   [["esc"], "close"],

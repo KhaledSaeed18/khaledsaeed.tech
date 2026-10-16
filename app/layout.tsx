@@ -6,6 +6,7 @@ import { ViewTransition } from "react"
 import "./globals.css"
 import { ConsoleProof } from "@/components/console-proof"
 import { KeyboardLayer } from "@/components/keys/keyboard-layer"
+import { Loupe } from "@/components/keys/loupe"
 import { MarkUp } from "@/components/keys/mark-up"
 import { PrintResume } from "@/components/print/print-resume"
 import { PersonJsonLd } from "@/components/person-json-ld"
@@ -146,6 +147,7 @@ export default async function RootLayout({
           bookingUrl={siteConfig.bookingUrl}
         />
         <MarkUp />
+        <Loupe />
         <PrintResume />
         <RevealObserver />
         <PersonJsonLd />

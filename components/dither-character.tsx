@@ -2,6 +2,7 @@
 
 import * as React from "react"
 
+import { loupeTap } from "@/lib/loupe-tap"
 import { cn } from "@/lib/utils"
 
 /**
@@ -843,6 +844,8 @@ export function DitherCharacter({ className }: { className?: string }) {
         dev && params.has("q") ? Number(params.get("q")) : TIERS[tier].quality
       )
       ctx.drawArrays(ctx.TRIANGLES, 0, 3)
+      // the printer's loupe copies the frame while the buffer still holds it
+      loupeTap.tap(cnv)
 
       // Hit test the dot under the pointer (alpha is 1 only on the figure).
       // readPixels stalls the pipeline, so only when the pointer moved, and
@@ -1061,8 +1064,13 @@ export function DitherCharacter({ className }: { className?: string }) {
     init()
     checkSleep()
     const sleepTimer = window.setInterval(checkSleep, 30_000)
+    // a still portrait draws one frame for the loupe when it asks
+    const offRedraw = loupeTap.onRedraw(() => {
+      if (!running) render()
+    })
 
     return () => {
+      offRedraw()
       window.clearInterval(sleepTimer)
       disposed = true
       stop()

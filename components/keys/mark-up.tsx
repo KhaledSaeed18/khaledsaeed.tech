@@ -86,7 +86,7 @@ function wantsNative(e: MouseEvent) {
 
 const say = (text: string) =>
   window.dispatchEvent(new CustomEvent("ks:notice", { detail: text }))
-const command = (name: "palette" | "proof") =>
+const command = (name: "palette" | "proof" | "loupe") =>
   window.dispatchEvent(new CustomEvent("ks:command", { detail: name }))
 
 const copy = (text: string, done: string) =>
@@ -320,6 +320,12 @@ export function MarkUp() {
         label: "Proof mode",
         hint: "p",
         run: () => command("proof"),
+      },
+      {
+        id: "loupe",
+        label: "Printer's loupe",
+        hint: "hold ⌥ / l",
+        run: () => command("loupe"),
       },
       {
         id: "print",
