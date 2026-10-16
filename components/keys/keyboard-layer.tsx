@@ -38,6 +38,7 @@ const LEGEND: [string[], string][] = [
   [["p"], "proof mode: grid, frame and type"],
   [["⌥"], "hold for the printer's loupe; scroll to change power"],
   [["l"], "leave the loupe down (esc lifts it)"],
+  [["x"], "separate the plates: the page by ink, in 3D"],
   [["⌘", "P"], "print this sheet: the résumé, or a case study on its page"],
   [["?"], "this legend"],
   [["esc"], "close"],
@@ -136,6 +137,16 @@ export function KeyboardLayer({
         run: () =>
           window.dispatchEvent(
             new CustomEvent("ks:command", { detail: "receipt" })
+          ),
+      },
+      {
+        id: "plates",
+        label: "Separate the plates",
+        kind: "action",
+        hint: "x",
+        run: () =>
+          window.dispatchEvent(
+            new CustomEvent("ks:command", { detail: "plates" })
           ),
       },
       {

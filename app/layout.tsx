@@ -8,6 +8,7 @@ import { ConsoleProof } from "@/components/console-proof"
 import { KeyboardLayer } from "@/components/keys/keyboard-layer"
 import { Loupe } from "@/components/keys/loupe"
 import { MarkUp } from "@/components/keys/mark-up"
+import { Plates } from "@/components/keys/plates"
 import { QuoteCard } from "@/components/keys/quote-card"
 import { PrintResume } from "@/components/print/print-resume"
 import { Receipt } from "@/components/receipt/receipt"
@@ -152,6 +153,7 @@ export default async function RootLayout({
         <MarkUp />
         <QuoteCard />
         <Loupe />
+        <Plates />
         <VisitLog />
         <Receipt edition={process.env.BUILD_COMMIT ?? ""} />
         <PrintResume />

@@ -289,3 +289,48 @@
     animation: none;
   }
 }
+
+/*
+ * Plate separation (components/keys/plates.tsx): copies of the page, one per
+ * ink, stacked in 3D. The copies are still, like the loupe's. The stack
+ * fanning out is the feature itself, so it moves; with reduced motion it
+ * simply appears apart.
+ */
+.plates {
+  perspective: 4000px;
+}
+.plates-stack {
+  transform-style: preserve-3d;
+  transform-origin: 50% 50%;
+  transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.plates-stack .plate {
+  transition:
+    transform 900ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 250ms ease;
+}
+.plates-stack.dragging {
+  transition: none;
+}
+.plate-paper * {
+  animation: none !important;
+  transition: none !important;
+  view-transition-name: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+.plate-paper [data-reveal] {
+  opacity: 1 !important;
+  transform: none !important;
+}
+.plate-paper > header,
+.plate-paper > main,
+.plate-paper > footer {
+  overflow-x: clip;
+}
+@media (prefers-reduced-motion: reduce) {
+  .plates-stack,
+  .plates-stack .plate {
+    transition: none;
+  }
+}
