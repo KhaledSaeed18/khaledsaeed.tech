@@ -39,6 +39,7 @@ const LEGEND: [string[], string][] = [
   [["⌥"], "hold for the printer's loupe; scroll to change power"],
   [["l"], "leave the loupe down (esc lifts it)"],
   [["x"], "separate the plates: the page by ink, in 3D"],
+  [["v"], "revision marks on a case study (← → between printings)"],
   [["⌘", "P"], "print this sheet: the résumé, or a case study on its page"],
   [["?"], "this legend"],
   [["esc"], "close"],

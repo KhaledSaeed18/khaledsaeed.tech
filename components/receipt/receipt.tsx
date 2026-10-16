@@ -112,6 +112,8 @@ function compose(
   if (c("copies")) lines.push(row("copied", String(c("copies"))))
   if (c("quotes")) lines.push(row("quote cards set", String(c("quotes"))))
   if (c("plates")) lines.push(row("plates pulled", String(c("plates"))))
+  if (c("revisions"))
+    lines.push(row("proofs marked up", String(c("revisions"))))
 
   lines.push(
     rule(true),

@@ -1,0 +1,482 @@
+{
+  "patchgrid": [
+    {
+      "sha": "acc8590",
+      "date": "2026-09-30",
+      "subject": "Add projects, profile and uses content"
+    }
+  ],
+  "node-express-boilerplate": [
+    {
+      "sha": "acc8590",
+      "date": "2026-09-30",
+      "subject": "Add projects, profile and uses content"
+    }
+  ],
+  "team-flow": [
+    {
+      "sha": "acc8590",
+      "date": "2026-09-30",
+      "subject": "Add projects, profile and uses content"
+    }
+  ],
+  "dotclaude": [
+    {
+      "sha": "acc8590",
+      "date": "2026-09-30",
+      "subject": "Add projects, profile and uses content"
+    }
+  ],
+  "mcce": [
+    {
+      "sha": "acc8590",
+      "date": "2026-09-30",
+      "subject": "Add projects, profile and uses content"
+    }
+  ],
+  "jwt-toolkit": [
+    {
+      "sha": "acc8590",
+      "date": "2026-09-30",
+      "subject": "Add projects, profile and uses content"
+    }
+  ],
+  "wakehold": [
+    {
+      "sha": "acc8590",
+      "date": "2026-09-30",
+      "subject": "Add projects, profile and uses content"
+    }
+  ],
+  "repo-scout": [
+    {
+      "sha": "acc8590",
+      "date": "2026-09-30",
+      "subject": "Add projects, profile and uses content",
+      "words": {
+        "tagline": "Point it at a folder, see the whole codebase. Local-first repository analytics.",
+        "summary": "Repo Scout scans any Git repository on disk and turns it into an interactive dashboard of architecture graphs, code metrics, dependency trees, commit history, contributors and duplicate code. Everything is computed locally and stored in SQLite.",
+        "problem": "Understanding an unfamiliar codebase means juggling five tools with five output formats, and some of them want your source uploaded.",
+        "approach": [
+          {
+            "title": "One scan, the whole picture",
+            "body": "Architecture, metrics, dependencies, history and duplicates all come from a single scan instead of five tools to reconcile."
+          },
+          {
+            "title": "Never leaves the machine",
+            "body": "No external APIs, no telemetry, no uploads. A Go backend and a SQLite file on disk; the frontend only talks to localhost."
+          },
+          {
+            "title": "Built for real sizes",
+            "body": "The scanner streams and batch-inserts instead of holding the repository in memory."
+          }
+        ],
+        "highlights": [
+          "Local-first, zero upload",
+          "Go scanner with streaming inserts",
+          "Interactive architecture graphs"
+        ]
+      }
+    },
+    {
+      "sha": "2c6f713",
+      "date": "2026-10-10",
+      "subject": "Refresh auth, drainscope and Repo Scout portfolio content",
+      "words": {
+        "tagline": "Explore a codebase through architecture maps, searchable files and Git history, all on your machine.",
+        "summary": "Repo Scout turns a local Git repository into a navigable atlas of its code and history. A redesigned React interface connects activity calendars, file ownership, searchable source, architecture graphs and duplicate code, backed by a Go scanner and SQLite with live scan progress.",
+        "problem": "Understanding an unfamiliar codebase means juggling five tools with five output formats, and some of them want your source uploaded.",
+        "approach": [
+          {
+            "title": "An interface built for exploration",
+            "body": "A survey-map visual identity, a repository switcher and grouped navigation connect dedicated views for overview, activity, commits, contributors, branches, files, search, metrics, dependencies and duplicates. Light, dark and system themes, keyboard-accessible repository picking and a mobile menu carry the same interface across screens."
+          },
+          {
+            "title": "History with the right clock",
+            "body": "Commit calendars, hour-of-week activity and streaks use each author's local time. A paginated commit log links to contributors and file ownership, while a lazy file tree and sortable table expose per-file size, complexity and history."
+          },
+          {
+            "title": "Findings you can trace",
+            "body": "Architecture graphs collapse imports to folders at a chosen depth, lay out importers beside their dependencies and let you select a node to trace its connections. Cycle and potentially dead-file findings, duplicate code samples with linked locations, and highlighted search matches lead back to the source. Graphs export as SVG."
+          },
+          {
+            "title": "A scan you can watch and control",
+            "body": "The Go pipeline streams and batch-inserts files, history, dependencies, imports and duplicate blocks, then builds a SQLite FTS5 content index. Persisted background jobs report progress over WebSocket, support pause, resume and cancel, and re-queue interrupted scans after a crash. Completing a scan refreshes the open views."
+          },
+          {
+            "title": "Never leaves the machine",
+            "body": "No account, external APIs, telemetry or source uploads. The API binds to loopback by default, the frontend talks to localhost, and WebSocket connections are limited to the same origin. Files, commits and contributors export as CSV or JSON."
+          }
+        ],
+        "highlights": [
+          "Redesigned interface with dedicated code and history views, light and dark themes and mobile navigation",
+          "Folder-level architecture maps with traceable imports and SVG export",
+          "Indexed source search, linked duplicate samples and per-file ownership",
+          "Live scan progress with pause, resume, cancel and crash recovery",
+          "Showcased on a real TanStack Query scan: 3,602 files, 5,517 commits and 1,141 contributors"
+        ]
+      }
+    }
+  ],
+  "dir-analysis-tool": [
+    {
+      "sha": "acc8590",
+      "date": "2026-09-30",
+      "subject": "Add projects, profile and uses content"
+    }
+  ],
+  "gauge": [
+    {
+      "sha": "acc8590",
+      "date": "2026-09-30",
+      "subject": "Add projects, profile and uses content"
+    }
+  ],
+  "sever": [
+    {
+      "sha": "acc8590",
+      "date": "2026-09-30",
+      "subject": "Add projects, profile and uses content"
+    }
+  ],
+  "baud": [
+    {
+      "sha": "acc8590",
+      "date": "2026-09-30",
+      "subject": "Add projects, profile and uses content"
+    }
+  ],
+  "yalla-learn": [
+    {
+      "sha": "acc8590",
+      "date": "2026-09-30",
+      "subject": "Add projects, profile and uses content"
+    }
+  ],
+  "drainscope": [
+    {
+      "sha": "4e398b2",
+      "date": "2026-10-09",
+      "subject": "Add drainscope, the Linux energy monitor",
+      "words": {
+        "tagline": "Per-app battery and energy usage for the Linux desktop, measured from hardware counters.",
+        "summary": "drainscope measures energy from RAPL counters and the battery, attributes it to apps, terminal workloads and system services, keeps local history, and shows it on the command line, in GNOME's quick settings and in a desktop app. No component runs as root.",
+        "problem": "Windows, macOS and Android have told you which app drained the battery for years. Linux hasn't. The counters exist, but they are root-only, they measure the whole machine, and nothing attributes them to the apps that spent the energy.",
+        "approach": [
+          {
+            "title": "Measure, then attribute",
+            "body": "Every 5 seconds a user service reads RAPL energy counters, the batteries, cgroup v2 CPU time and GPU time from DRM fdinfo. Energy above the machine's learned idle floor goes to whoever was active, reconciled against the battery over 10 second windows, so apps, terminal workloads and systemd services each get their share."
+          },
+          {
+            "title": "Least privilege, by construction",
+            "body": "No component runs as root. A sandboxed sampler with a single capability reads the root-only counters and serves them over D-Bus only to the active local session, rate-limited and quantized against the Platypus side channel. An optional eBPF probe counts CPU wakeups and per-app network bytes without ever seeing addresses or contents. Both are confined by SELinux and exit when idle."
+          },
+          {
+            "title": "Where you already look",
+            "body": "History stays on your machine. A CLI answers the questions people actually ask (since unplugged, the last 24 hours, live power, battery lost in suspend, what keeps waking the CPU, battery wear), a GNOME Shell quick settings menu shows the same numbers, and a desktop app draws them on a stacked timeline."
+          }
+        ],
+        "highlights": [
+          "No component runs as root; sampler and probe each hold only the capabilities they need",
+          "Signed RPMs for Fedora 44, 45 and rawhide on COPR",
+          "Validated against real hardware, with recorded traces replayed in tests",
+          "Nothing leaves the machine; no component uses the network"
+        ]
+      }
+    },
+    {
+      "sha": "2c6f713",
+      "date": "2026-10-10",
+      "subject": "Refresh auth, drainscope and Repo Scout portfolio content",
+      "words": {
+        "tagline": "Per-app battery and energy usage for the Linux desktop, measured from hardware counters.",
+        "summary": "drainscope measures energy from RAPL counters and the battery and estimates each app, terminal workload and system service's share. Local history appears in a CLI, GNOME's quick settings and a desktop app, with CSV and JSON exports. The v0.1.3 release improves network attribution and reduces the monitor's own CPU use; no component runs as root.",
+        "problem": "Windows, macOS and Android have told you which app drained the battery for years. Linux hasn't. The counters exist, but they are root-only, they measure the whole machine, and nothing attributes them to the apps that spent the energy.",
+        "approach": [
+          {
+            "title": "Measure, then attribute",
+            "body": "A user service reads RAPL energy counters, the batteries, cgroup v2 CPU time and GPU time from DRM fdinfo. Energy above the machine's learned idle floor goes to whoever was active, reconciled against the battery over 10 second windows, so apps, terminal workloads and systemd services each get their share."
+          },
+          {
+            "title": "Least privilege, by construction",
+            "body": "No component runs as root. A sandboxed sampler with a single capability reads the root-only counters and serves them over D-Bus only to the active local session, rate-limited and quantized against the Platypus side channel. An optional eBPF probe counts CPU wakeups and per-app network bytes without ever seeing addresses or contents. Both are confined by SELinux and exit when idle."
+          },
+          {
+            "title": "Where you already look",
+            "body": "History stays on your machine. A CLI answers the questions people actually ask: since unplugged, the last 24 hours, live power, battery lost in suspend, CPU wakeups, network traffic and battery wear. GNOME's quick settings shows the same numbers, and a libadwaita desktop app draws a stacked timeline. Short-lived apps, commands and services get explicit labels."
+          },
+          {
+            "title": "Charge network work to the app",
+            "body": "Model v3 assigns network softirq and threaded interrupt-handler CPU time to apps by their measured traffic. Hardware trace replays and battery validation keep that estimate testable. Optional network readings can fail without stopping collection, and an older probe remains usable through a compatibility fallback."
+          },
+          {
+            "title": "A monitor with a smaller footprint",
+            "body": "The daemon samples every 15 seconds while nobody is watching and every 5 seconds while a view is open. One timer wakeup, batched probe readings and a leaner cgroup walk reduce overhead; the extension subscribes to ticks only while its menu is open. On the development laptop, idle CPU use on battery fell from 0.82–1.0% to 0.28% of one CPU."
+          },
+          {
+            "title": "History you can take with you",
+            "body": "The summary, report, sleep, health, wakeups and network commands export every row as CSV or JSON in joules, watts and Unix seconds. JSON includes the period, measured coverage and model version, with unknown amounts kept distinct from zero."
+          }
+        ],
+        "highlights": [
+          "No component runs as root; sampler and probe each hold only the capabilities they need",
+          "Signed RPMs for Fedora 44, 45 and rawhide on COPR",
+          "Adaptive sampling lowered measured idle CPU use to 0.28% of one CPU on the development laptop",
+          "Model v3 attributes network interrupt work to the apps generating traffic",
+          "CSV and JSON exports across six CLI views, with coverage and model version in JSON",
+          "Validated against real hardware, with recorded traces replayed in tests",
+          "Nothing leaves the machine; no component uses the network"
+        ]
+      }
+    },
+    {
+      "sha": "40c7371",
+      "date": "2026-10-14",
+      "subject": "Update DrainScope case study for v1.0.0",
+      "words": {
+        "tagline": "See where your Linux laptop's battery goes, by app, terminal command and service.",
+        "summary": "drainscope measures energy from hardware counters and the battery, then estimates each app's share, including time in use and in the background. A GNOME Quick Settings extension, desktop app and CLI show local history, sleep loss, battery health, wakeups and network activity. Version 1.0.0 is the first stable release, backed by failure testing and a 48-hour soak test on the development laptop.",
+        "problem": "A battery percentage says how much charge is left, but not which app spent it or whether it was working in the background. Linux exposes energy and activity counters across the kernel and desktop, with different permissions and gaps in hardware support. I wanted to turn those readings into a useful account of where the battery went, without running a monitor as root.",
+        "approach": [
+          {
+            "title": "Measure the total, explain each share",
+            "body": "RAPL counters and battery readings provide the measured energy. A user service combines cgroup v2 CPU time and GPU time from DRM fdinfo to estimate each consumer's share above a learned idle floor. Model v4 also shares energy by CPU time when RAPL is unavailable. Network softirq and threaded interrupt work follow the apps' measured traffic, while Idle and Display & devices remain visible parts of the total."
+          },
+          {
+            "title": "In use or in the background",
+            "body": "The GNOME extension reports the focused app's ID, never its window title. The daemon uses focused time to split each app's energy into in use, background and unknown, shown in app details, CLI reports and exports. Without focus data, the split stays unknown; terminal tabs and services are not classified. In a controlled test with two equal loads, in-use energy shares matched focused-time shares within 0.6 percentage points."
+          },
+          {
+            "title": "Three ways into the same history",
+            "body": "GNOME 50 and 51 get a Quick Settings tile showing the top consumers since unplugging. The GTK and libadwaita app adds a stacked timeline, per-consumer detail and views for the last hour, 24 hours or 7 days. The CLI adds live power and reports filtered by period, consumer kind or power source. Lists stay stable as readings change, and the app follows daemon stops and restarts with clear status messages."
+          },
+          {
+            "title": "Activity, sleep and battery wear",
+            "body": "The optional eBPF probe counts per-app CPU wakeups and network bytes, excluding loopback traffic. Sleep history records battery loss and reports wake reasons only when reliable. Daily battery-health records track capacity against design and charge cycles. Attribution pauses across suspend, and the since-unplugged session resets after charging while the machine was off."
+          },
+          {
+            "title": "Least privilege and local history",
+            "body": "No component runs as root or opens a network socket. The sampler and optional probe run as dedicated users with one and three Linux capabilities respectively, confined by systemd sandboxes and SELinux where enabled. polkit restricts counter access to the active local session; readings are rate-limited and coarsened. Energy and focus history stay in the user's local SQLite database."
+          },
+          {
+            "title": "Keep measuring when parts fail",
+            "body": "The daemon can start without writable history, using in-memory storage, and keeps measuring when the disk fills. Missing sampler or probe services degrade the available readings instead of stopping collection. It recovers from an unreadable database, stops safely on a newer schema, and handles counter resets after service restarts. A documented failure checklist covers denied permissions, missing services, full disks and desktop restarts; drainscope doctor explains what needs attention."
+          },
+          {
+            "title": "A stable release with measured overhead",
+            "body": "Sampling slows to every 15 seconds when no view is watching and returns to 5 seconds while a view is open. Batched readings, faster history queries and a once-a-minute refresh for the 7-day view keep the cost down. Across a 48-hour soak of the code shipped as 1.0, the daemon averaged 0.179% of one CPU and peaked at 14.1 MB on the development laptop, with no service warnings, extension errors or SELinux denials. These are daemon figures, not the cost of all components combined."
+          },
+          {
+            "title": "Reports you can take with you",
+            "body": "Summary, report, sleep, health, wakeups and network views export every row as CSV or JSON in joules, watts and Unix seconds. Reports include foreground, background and unknown energy plus focused time; JSON includes the period, measured coverage and model version. Unknown readings stay distinct from zero, including history recorded before focus tracking existed."
+          },
+          {
+            "title": "Packaged, documented and upgradeable",
+            "body": "The first stable release ships signed COPR packages for Fedora 44, 45 and rawhide, with installation checked on Fedora 44 and 45. Updates arrive through dnf and restart the daemon. Release downloads also include Fedora 44 RPMs and the extension zip. Architecture, installation, troubleshooting and contribution guides accompany the release; the extensions.gnome.org listing is still awaiting review."
+          },
+          {
+            "title": "Make the limits visible",
+            "body": "Validation uses recorded trace replays and real measurements on an Intel i7-8550U laptop with i915 graphics. AMD Zen support is expected from fixtures but has not been tested on real hardware; its integrated-GPU energy is split by CPU time, and Intel xe GPU energy is not yet split per app. Light, bursty work remains undercharged by proportional sharing. The published model and validation explain these limits rather than presenting per-app estimates as direct measurements."
+          }
+        ],
+        "highlights": [
+          "First stable release, v1.0.0, published on October 14, 2026",
+          "Foreground and background energy in app details, CLI reports and exports, with unknown time kept explicit",
+          "Model v4 supports battery-only attribution alongside CPU, GPU and network activity accounting",
+          "Per-app wakeups and traffic, suspend loss and daily battery-health history",
+          "48-hour soak test with 0.18% average daemon CPU and 14.1 MB peak daemon memory on the development laptop",
+          "Failure recovery checked across missing services, permission denials, full disks and restarts",
+          "Signed Fedora 44, 45 and rawhide packages; GNOME 50 and 51 support",
+          "Local history, no network access and no component running as root"
+        ]
+      }
+    }
+  ],
+  "node-authentication-template": [
+    {
+      "sha": "f42dbc3",
+      "date": "2026-10-09",
+      "subject": "Add four projects and a Systems group",
+      "words": {
+        "tagline": "A complete authentication backend: email verification, two-factor sign-in, refresh tokens and rate limits, ready to fork.",
+        "summary": "An Express and TypeScript authentication service on PostgreSQL and Prisma. It covers sign-up with an emailed one-time code, password reset, TOTP two-factor authentication with QR enrolment, short-lived access tokens with refresh tokens, and a login history, with rate limiting and input sanitization on every endpoint.",
+        "problem": "Every project needs authentication, and rushed implementations skip the same parts: verifying the email, a second factor, token rotation and rate limits. This template ships them already done.",
+        "approach": [
+          {
+            "title": "The whole account lifecycle",
+            "body": "Sign-up sends a one-time code by email through the Gmail API, with resend, forgot and reset password flows, and a login history per user."
+          },
+          {
+            "title": "Two factors, two tokens",
+            "body": "TOTP two-factor authentication with QR code enrolment, verification, sign-in and disable flows. Sessions use 20 minute access tokens and 7 day refresh tokens."
+          },
+          {
+            "title": "Hostile input assumed",
+            "body": "Rate limits on every authentication endpoint, Zod validation, HTML sanitization, strong password rules that reject common passwords, bcrypt with configurable rounds, security headers and CORS."
+          }
+        ],
+        "highlights": [
+          "TOTP two-factor authentication with QR enrolment",
+          "Email verification and password reset by one-time code",
+          "Rate limiting on every authentication endpoint",
+          "Short-lived access tokens, longer-lived refresh tokens"
+        ]
+      }
+    },
+    {
+      "sha": "2c6f713",
+      "date": "2026-10-10",
+      "subject": "Refresh auth, drainscope and Repo Scout portfolio content",
+      "words": {
+        "tagline": "Passkeys, OpenID Connect and revocable sessions in an authentication backend ready to fork.",
+        "summary": "An Express 5 and TypeScript authentication API on PostgreSQL and Prisma 7, with passwordless passkeys, TOTP recovery codes and a headless OpenID Connect provider. Rotating tokens, account self-service, reliable email delivery and tracing cover the work around sign-in too.",
+        "problem": "Authentication is more than issuing a token. People need passwordless sign-in, a way to recover a second factor, control over their sessions and their data, and an identity other apps can trust. The starter should handle those lifecycles together.",
+        "approach": [
+          {
+            "title": "Passkeys and a recoverable second factor",
+            "body": "WebAuthn passkeys support sign-in without typing an email or password, with user verification, single-use challenges and clone detection. Password sign-in can require a short-lived TOTP challenge, with encrypted secrets, replay protection and ten one-time recovery codes."
+          },
+          {
+            "title": "An identity other apps can use",
+            "body": "A headless OpenID Connect provider supports authorization code flow with PKCE, discovery, userinfo and consent for third-party clients, plus token introspection and revocation endpoints. Access and ID tokens use rotating ES256 signing keys published through JWKS, so other services can verify them."
+          },
+          {
+            "title": "Sessions you can actually end",
+            "body": "Opaque refresh tokens rotate on every use; reuse revokes the session. Every authenticated API request checks that its server-side session is active. Users can list sessions, revoke one, log out everywhere and inspect a paginated login history."
+          },
+          {
+            "title": "The whole account lifecycle",
+            "body": "Email verification, password reset and confirmed email changes use single-use codes stored as HMACs, with attempt limits and resend cooldowns. Users can edit their profile, export their account data and delete their account after re-authentication."
+          },
+          {
+            "title": "Security at each boundary",
+            "body": "Argon2id replaces bcrypt, upgrading existing hashes on sign-in. Breached password screening uses k-anonymity, failed sign-ins trigger account lockout, and recovery endpoints avoid revealing whether an account exists. Rate limits can share a Redis store, with Helmet, strict CORS and validated configuration around the API."
+          },
+          {
+            "title": "Delivery and operations built in",
+            "body": "A PostgreSQL outbox commits email and security notices with the change that caused them, then retries delivery through workers. OpenTelemetry traces and business metrics, redacted structured logs, health checks and OpenAPI docs make the service inspectable. Integration tests use a real database; CI scans code and container images."
+          }
+        ],
+        "highlights": [
+          "Passwordless WebAuthn passkeys and TOTP with one-time recovery codes",
+          "OpenID Connect with PKCE, consent and rotating ES256 keys",
+          "Refresh token reuse detection and immediate session revocation in the API",
+          "Confirmed email changes, account data export and self-service deletion",
+          "Transactional email outbox, security alerts and an account activity log",
+          "OpenTelemetry, OpenAPI, database integration tests and container security scans"
+        ]
+      }
+    }
+  ],
+  "sleep-track": [
+    {
+      "sha": "f42dbc3",
+      "date": "2026-10-09",
+      "subject": "Add four projects and a Systems group",
+      "words": {
+        "tagline": "Sleep logging with weekly analytics: a FastAPI service and a retro-styled Next.js client.",
+        "summary": "A FastAPI and PostgreSQL API that logs sleep sessions with quality ratings and computes statistics, a timeline and weekly summaries with a consistency score, paired with a retro-styled Next.js client that charts them.",
+        "problem": "Logging sleep is easy. Turning the log into something you can act on, like how consistent your week was, takes analysis on the server and an account system that holds up.",
+        "approach": [
+          {
+            "title": "A typed, documented API",
+            "body": "FastAPI with Tortoise ORM on PostgreSQL, schema migrations with Aerich, and interactive OpenAPI documentation at /docs and /redoc out of the box."
+          },
+          {
+            "title": "Analytics on the server",
+            "body": "Statistics, a timeline and a weekly summary with average hours, quality and a consistency score are computed by the API, so the client only has to draw them."
+          },
+          {
+            "title": "A client with character",
+            "body": "A Next.js client in a retro DaisyUI theme, with Zustand for state and Chart.js for the weekly charts, behind JWT authentication with bcrypt password hashing."
+          }
+        ],
+        "highlights": [
+          "Interactive OpenAPI docs generated from the code",
+          "Schema migrations with Aerich",
+          "JWT authentication with bcrypt hashing",
+          "Weekly consistency score computed server-side"
+        ]
+      }
+    },
+    {
+      "sha": "ec1bbe2",
+      "date": "2026-10-12",
+      "subject": "Update the SleepTrack case study for v2",
+      "words": {
+        "tagline": "A sleep journal with an analytics engine: an async FastAPI service and a Next.js and daisyUI app.",
+        "summary": "SleepTrack turns logged nights into a nightly score, trends, a chronotype estimate, the habits that help or hurt your sleep and a weekly report. Version 2 is a ground-up rewrite: an async FastAPI service on PostgreSQL and Redis with a background worker, and a Next.js 16 app typed from the API's OpenAPI schema.",
+        "problem": "Logging sleep is the easy part. Making the log useful means knowing which night a session belongs to, which habits change your sleep and how steady your schedule really is, all in your own time zone and behind an account system you can trust with health data.",
+        "approach": [
+          {
+            "title": "Analytics that respect the clock",
+            "body": "Bedtimes are averaged as angles, so 23:30 and 00:30 average to midnight instead of noon, and every night belongs to the date it began in the user's time zone. The API computes a weighted score from duration, quality, latency, awakenings and bedtime, plus consistency, sleep debt, streaks, chronotype and social jet lag, cached per user in Redis."
+          },
+          {
+            "title": "Insights in plain language",
+            "body": "A rule engine behind a pluggable provider compares nights with and without each tag and ranks findings such as caffeine lowering your sleep quality. An ARQ worker emails weekly reports in each user's time zone, sends optional bedtime reminders and clears out demo accounts."
+          },
+          {
+            "title": "Sessions built to be trusted",
+            "body": "Argon2id passwords, 15-minute access tokens and hashed refresh tokens that rotate on every use: reuse revokes the device, with a short grace window for two tabs refreshing at once. CSRF protection, Redis rate limits, device management, an audit log, email verification and optional Google sign-in with PKCE sit around it."
+          },
+          {
+            "title": "Rules the database enforces",
+            "body": "PostgreSQL rejects overlapping nights with an exclusion constraint, allows one running timer per user through a partial unique index and searches notes with a trigram index. Every error leaves the API as an RFC 9457 problem document with a stable code."
+          },
+          {
+            "title": "A client typed from the schema",
+            "body": "The Next.js app generates its types from the OpenAPI schema, keeps the access token in memory and refreshes it single-flight. A same-origin route handler streams /api to the service and forwards the client address, so rate limits see real users. It has two themes, a command menu, a mobile dock and charts with table views."
+          },
+          {
+            "title": "Tested against the real thing",
+            "body": "Over a thousand backend tests run on real PostgreSQL and Redis, and Playwright drives sign-up with email confirmation, the journal, the timer and settings against the live API in CI. Both repos ship Docker images, a Compose stack and GitHub Actions, and a one-click demo seeds 90 nights."
+          }
+        ],
+        "highlights": [
+          "Weighted sleep score with circular bedtime statistics, chronotype and tag impact",
+          "Rotating refresh tokens with reuse detection and CSRF protection",
+          "Overlapping nights rejected by a Postgres exclusion constraint",
+          "Weekly email reports and bedtime reminders from a background worker",
+          "Client types generated from the API's OpenAPI schema",
+          "1,032 backend tests at 98% coverage plus Playwright end-to-end tests in CI"
+        ]
+      }
+    }
+  ],
+  "freertos-riscv": [
+    {
+      "sha": "f42dbc3",
+      "date": "2026-10-09",
+      "subject": "Add four projects and a Systems group"
+    }
+  ],
+  "multilingual-translation": [
+    {
+      "sha": "f42dbc3",
+      "date": "2026-10-09",
+      "subject": "Add four projects and a Systems group"
+    }
+  ],
+  "deck-kit": [
+    {
+      "sha": "6575656",
+      "date": "2026-10-14",
+      "subject": "Add deck-kit project and presentation object support"
+    }
+  ],
+  "urljail": [
+    {
+      "sha": "5e693a4",
+      "date": "2026-10-15",
+      "subject": "Add urljail and osreflog case studies, feature them on the home press"
+    }
+  ],
+  "osreflog": [
+    {
+      "sha": "5e693a4",
+      "date": "2026-10-15",
+      "subject": "Add urljail and osreflog case studies, feature them on the home press"
+    }
+  ]
+}
