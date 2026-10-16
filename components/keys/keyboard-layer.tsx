@@ -26,14 +26,30 @@ const GOTO: Record<string, string> = {
   c: "/contact",
 }
 
-const LEGEND: [string[], string][] = [
+/** `g` then a letter: the pages, in one row of the legend. */
+const GOTO_LEGEND: [string, string][] = [
+  ["h", "home"],
+  ["w", "work"],
+  ["e", "experience"],
+  ["a", "about"],
+  ["r", "writing"],
+  ["c", "contact"],
+]
+
+const LEGEND: [string[], React.ReactNode][] = [
   [["⌘", "K"], "open the job ticket (also /)"],
-  [["g", "h"], "home"],
-  [["g", "w"], "work"],
-  [["g", "e"], "experience"],
-  [["g", "a"], "about"],
-  [["g", "r"], "writing"],
-  [["g", "c"], "contact"],
+  [
+    ["g", "…"],
+    <>
+      go to a page:{" "}
+      {GOTO_LEGEND.map(([k, page], i) => (
+        <React.Fragment key={k}>
+          {i > 0 && " / "}
+          <span className="font-mono text-xs text-foreground">{k}</span> {page}
+        </React.Fragment>
+      ))}
+    </>,
+  ],
   [["j", "k"], "next and previous item in a list"],
   [["p"], "proof mode: grid, frame and type"],
   [["⌥"], "hold for the printer's loupe; scroll to change power"],
@@ -424,14 +440,14 @@ export function KeyboardLayer({
               role="dialog"
               aria-modal="true"
               aria-label="Keyboard shortcuts"
-              className="rise-in mx-auto mt-[12vh] w-[min(34rem,calc(100%-2rem))] border border-border bg-card p-6 shadow-2xl"
+              className="rise-in mx-auto my-[6vh] max-h-[88vh] w-[min(34rem,calc(100%-2rem))] overflow-y-auto border border-border bg-card p-6 shadow-2xl"
             >
               <p className="font-mono text-xs text-muted-foreground">
                 <span className="text-brand">{"// "}</span>key legend
               </p>
               <dl className="mt-5 grid gap-y-3">
                 {LEGEND.map(([keys, what]) => (
-                  <div key={what} className="flex items-center gap-4">
+                  <div key={keys.join("")} className="flex items-center gap-4">
                     <dt className="flex w-24 shrink-0 gap-1.5">
                       {keys.map((k) => (
                         <kbd
