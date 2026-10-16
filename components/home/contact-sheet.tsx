@@ -2,6 +2,7 @@ import type * as React from "react"
 
 import { CopyEmail } from "@/components/home/copy-email"
 import { FlipLogo } from "@/components/flip-logo"
+import { CalendarGlyph, SaveGlyph } from "@/components/print/glyphs"
 import { Sheet } from "@/components/print/sheet"
 import { siteConfig, socialLinks } from "@/lib/site"
 
@@ -50,16 +51,18 @@ export function Postcard() {
             href={siteConfig.bookingUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center bg-foreground px-4 py-2.5 font-mono text-xs text-background transition-opacity hover:opacity-85 focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+            className="group inline-flex items-center gap-2 bg-foreground px-4 py-2.5 font-mono text-xs text-background transition-opacity hover:opacity-85 focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
           >
+            <CalendarGlyph className="size-4" />
             book a call
           </a>
           <CopyEmail address={email.handle} />
           <a
             href="/khaled-saeed.vcf"
             download
-            className="inline-flex items-center border border-border px-4 py-2.5 font-mono text-xs text-muted-foreground transition-colors hover:border-brand/40 hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+            className="group inline-flex items-center gap-2 border border-border px-4 py-2.5 font-mono text-xs text-muted-foreground transition-colors hover:border-brand/40 hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
           >
+            <SaveGlyph className="size-4" />
             save contact
           </a>
         </div>

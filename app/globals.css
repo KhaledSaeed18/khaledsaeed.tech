@@ -2,6 +2,7 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "./dither.css";
+@import "./glyphs.css";
 
 @custom-variant dark (&:is(.dark *));
 

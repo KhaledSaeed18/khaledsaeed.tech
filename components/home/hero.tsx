@@ -1,7 +1,5 @@
-import { CalendarCheckIcon } from "@hugeicons/core-free-icons"
-import { HugeiconsIcon } from "@hugeicons/react"
-
 import { DitherCharacter } from "@/components/dither-character"
+import { CalendarGlyph } from "@/components/print/glyphs"
 import { SpecLabel } from "@/components/print/sheet"
 import { SocialLinks } from "@/components/social-links"
 import { siteConfig } from "@/lib/site"
@@ -50,11 +48,7 @@ export function Hero() {
               rel="noopener noreferrer"
               className="group inline-flex items-center gap-2 bg-foreground px-4 py-2.5 font-mono text-xs tracking-wide text-background transition-opacity hover:opacity-85 focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
             >
-              <HugeiconsIcon
-                icon={CalendarCheckIcon}
-                className="size-4"
-                strokeWidth={1.6}
-              />
+              <CalendarGlyph className="size-4" />
               book a call
             </a>
             <SocialLinks />

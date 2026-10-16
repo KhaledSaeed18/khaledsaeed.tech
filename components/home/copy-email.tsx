@@ -2,6 +2,7 @@
 
 import * as React from "react"
 
+import { CopyGlyph } from "@/components/print/glyphs"
 import { cn } from "@/lib/utils"
 
 /** Copies an address to the clipboard and says so for a moment. */
@@ -32,11 +33,12 @@ export function CopyEmail({
         }
       }}
       className={cn(
-        "inline-flex items-center gap-2 border border-border px-4 py-2.5 font-mono text-xs transition-colors hover:border-brand/40 hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none",
+        "group inline-flex items-center gap-2 border border-border px-4 py-2.5 font-mono text-xs transition-colors hover:border-brand/40 hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none",
         copied ? "text-brand" : "text-muted-foreground",
         className
       )}
     >
+      <CopyGlyph done={copied} className="size-4" />
       <span aria-live="polite">{copied ? "copied" : "copy address"}</span>
     </button>
   )

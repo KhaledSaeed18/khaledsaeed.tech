@@ -1,0 +1,123 @@
+/*
+ * Glyphs (components/print/glyphs.tsx). Every glyph carries --on, 0 at rest
+ * and 1 while it, or the .group it sits in, is hovered or focused. The parts
+ * read --on, so each move is a single short transition there and back:
+ * the teal plate fades in a step out of register, and one part moves.
+ */
+.glyph {
+  --on: 0;
+  --glyph-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+.group:hover .glyph,
+.group:focus-visible .glyph,
+.glyph:hover {
+  --on: 1;
+}
+
+.glyph * {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition:
+    transform 420ms var(--glyph-ease),
+    opacity 260ms ease-out;
+}
+
+/* The second plate: teal, under the ink, knocked a step out of register. */
+.glyph-plate {
+  color: var(--teal);
+  opacity: calc(var(--on) * 0.9);
+  transform: translate(calc(var(--on) * 1.25px), calc(var(--on) * 1px));
+}
+
+/* github: looks up, wags */
+.glyph .g-head {
+  transform: rotate(calc(var(--on) * -7deg));
+}
+.glyph .g-tail {
+  transform-origin: right bottom;
+  transform: rotate(calc(var(--on) * 28deg));
+}
+.glyph[data-glyph="github"] .g-eyes {
+  opacity: var(--on);
+}
+
+/* linkedin: the tittle hops */
+.glyph .g-tittle {
+  transform: translateY(calc(var(--on) * -1.75px));
+}
+
+/* x: the hairline parts along its own line, away from the bar */
+.glyph .g-hair-up {
+  transform: translate(calc(var(--on) * 1px), calc(var(--on) * -1px));
+}
+.glyph .g-hair-down {
+  transform: translate(calc(var(--on) * -1px), calc(var(--on) * 1px));
+}
+
+/* dev.to: the type lifts */
+.glyph .g-type {
+  transform: translateY(calc(var(--on) * -1px));
+}
+
+/* instagram: the lens focuses in, the aperture opens, the flash fires */
+.glyph .g-lens {
+  transform: scale(calc(1 - var(--on) * 0.12));
+}
+.glyph .g-aperture {
+  transform: scale(calc(1 + var(--on) * 1.2));
+}
+.glyph .g-flash {
+  transform: scale(calc(1 + var(--on) * 0.5));
+}
+
+/* discord: tilts, smiles with its eyes */
+.glyph .g-face {
+  transform: rotate(calc(var(--on) * -8deg));
+}
+.glyph[data-glyph="discord"] .g-eyes {
+  transform: scaleY(calc(1 - var(--on) * 0.6));
+}
+
+/* mail: the flap opens, a letter rises out */
+.glyph .g-flap {
+  transform-origin: center top;
+  transform: scaleY(calc(1 - var(--on) * 0.65));
+}
+.glyph .g-letter {
+  opacity: var(--on);
+  transform: translateY(calc((1 - var(--on)) * 4px));
+}
+
+/* calendar: the rings lift, the tick is stamped */
+.glyph .g-rings {
+  transform: translateY(calc(var(--on) * -1px));
+}
+.glyph[data-glyph="calendar"] .g-tick {
+  transform: rotate(calc(var(--on) * -10deg)) scale(calc(1 + var(--on) * 0.15));
+}
+
+/* copy: the top sheet slides off; a tick prints once it is done */
+.glyph .g-sheet {
+  transform: translate(calc(var(--on) * 1.25px), calc(var(--on) * 1.25px));
+}
+.glyph[data-glyph="copy"] .g-tick {
+  opacity: 0;
+  transform: translateY(2px);
+}
+.glyph[data-glyph="copy"].is-done .g-tick {
+  opacity: 1;
+  transform: none;
+}
+
+/* save: the arrow drops into the tray */
+.glyph .g-arrow {
+  transform: translateY(calc(var(--on) * 2px));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* nothing moves: parts that appear simply show, in register */
+  .glyph * {
+    transition: none;
+    transform: none !important;
+  }
+}
