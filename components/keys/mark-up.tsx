@@ -5,6 +5,7 @@ import * as React from "react"
 import { createPortal } from "react-dom"
 
 import { cn } from "@/lib/utils"
+import { logVisit } from "@/lib/visit"
 
 const REPO = "https://github.com/KhaledSaeed18/khaledsaeed.tech"
 
@@ -86,7 +87,7 @@ function wantsNative(e: MouseEvent) {
 
 const say = (text: string) =>
   window.dispatchEvent(new CustomEvent("ks:notice", { detail: text }))
-const command = (name: "palette" | "proof" | "loupe") =>
+const command = (name: "palette" | "proof" | "loupe" | "receipt") =>
   window.dispatchEvent(new CustomEvent("ks:command", { detail: name }))
 
 const copy = (text: string, done: string) =>
@@ -225,6 +226,7 @@ export function MarkUp() {
     if (!spot) return
     const no = count + 1
     setCount(no)
+    logVisit("stamps")
     setStamps((s) =>
       [
         ...s,
@@ -326,6 +328,12 @@ export function MarkUp() {
         label: "Printer's loupe",
         hint: "hold ⌥ / l",
         run: () => command("loupe"),
+      },
+      {
+        id: "receipt",
+        label: "Print my visit receipt",
+        hint: "ks-58",
+        run: () => command("receipt"),
       },
       {
         id: "print",

@@ -9,6 +9,8 @@ import { KeyboardLayer } from "@/components/keys/keyboard-layer"
 import { Loupe } from "@/components/keys/loupe"
 import { MarkUp } from "@/components/keys/mark-up"
 import { PrintResume } from "@/components/print/print-resume"
+import { Receipt } from "@/components/receipt/receipt"
+import { VisitLog } from "@/components/receipt/visit-log"
 import { PersonJsonLd } from "@/components/person-json-ld"
 import { RevealObserver } from "@/components/print/reveal-observer"
 import { SiteFooter } from "@/components/site-footer"
@@ -148,6 +150,8 @@ export default async function RootLayout({
         />
         <MarkUp />
         <Loupe />
+        <VisitLog />
+        <Receipt edition={process.env.BUILD_COMMIT ?? ""} />
         <PrintResume />
         <RevealObserver />
         <PersonJsonLd />

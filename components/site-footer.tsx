@@ -2,6 +2,7 @@ import Link from "next/link"
 import type * as React from "react"
 
 import { Rule, SpecLabel } from "@/components/print/sheet"
+import { ReceiptButton } from "@/components/receipt/receipt"
 import { formatDate } from "@/lib/format"
 import { nav, siteConfig, socialLinks, subPages } from "@/lib/site"
 
@@ -123,6 +124,9 @@ export function SiteFooter() {
                   >
                     sitemap
                   </a>
+                </li>
+                <li>
+                  <ReceiptButton className="inline-block min-w-6 text-left" />
                 </li>
               </ul>
             </div>

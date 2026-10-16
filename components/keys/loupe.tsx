@@ -5,6 +5,7 @@ import * as React from "react"
 import { createPortal } from "react-dom"
 
 import { loupeTap } from "@/lib/loupe-tap"
+import { logVisit } from "@/lib/visit"
 
 /** Magnifying powers, stepped through with the wheel. */
 const POWERS = [3, 4, 6, 8, 12]
@@ -273,6 +274,7 @@ export function Loupe() {
     const host = stage.current
     const glass = lens.current
     inks.current = readInks()
+    logVisit("loupe")
     let plate: Plate | null = null
 
     // the portrait (and any canvas) arrives frame by frame

@@ -129,6 +129,16 @@ export function KeyboardLayer({
         },
       },
       {
+        id: "receipt",
+        label: "Print my visit receipt",
+        kind: "action",
+        hint: "ks-58",
+        run: () =>
+          window.dispatchEvent(
+            new CustomEvent("ks:command", { detail: "receipt" })
+          ),
+      },
+      {
         id: "proof",
         label: "Toggle proof mode",
         kind: "action",
