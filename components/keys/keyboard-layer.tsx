@@ -243,6 +243,22 @@ export function KeyboardLayer({
     return () => window.removeEventListener("keydown", onKey)
   }, [open, proof, close, router])
 
+  // the mark-up slip (right-click) borrows the ticket, proof mode and notice
+  React.useEffect(() => {
+    const onCommand = (e: Event) => {
+      const name = (e as CustomEvent<string>).detail
+      if (name === "palette") setOpen("palette")
+      else if (name === "proof") setProof((v) => !v)
+    }
+    const onNotice = (e: Event) => setNotice((e as CustomEvent<string>).detail)
+    window.addEventListener("ks:command", onCommand)
+    window.addEventListener("ks:notice", onNotice)
+    return () => {
+      window.removeEventListener("ks:command", onCommand)
+      window.removeEventListener("ks:notice", onNotice)
+    }
+  }, [])
+
   // focus the field when the ticket opens; lock the page behind it
   React.useEffect(() => {
     if (!open) return

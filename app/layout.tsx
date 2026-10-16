@@ -6,6 +6,7 @@ import { ViewTransition } from "react"
 import "./globals.css"
 import { ConsoleProof } from "@/components/console-proof"
 import { KeyboardLayer } from "@/components/keys/keyboard-layer"
+import { MarkUp } from "@/components/keys/mark-up"
 import { PrintResume } from "@/components/print/print-resume"
 import { PersonJsonLd } from "@/components/person-json-ld"
 import { RevealObserver } from "@/components/print/reveal-observer"
@@ -144,6 +145,7 @@ export default async function RootLayout({
           email={socialLinks.find((l) => l.key === "email")!.handle}
           bookingUrl={siteConfig.bookingUrl}
         />
+        <MarkUp />
         <PrintResume />
         <RevealObserver />
         <PersonJsonLd />

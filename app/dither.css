@@ -235,3 +235,28 @@
     transparent
   );
 }
+
+/*
+ * The mark-up slip's rubber stamp (components/keys/mark-up.tsx): pressed
+ * into the sheet at the spot, its ink broken up by the dither like a real
+ * impression. It lands with a short press, a fade and a slight settle.
+ */
+@keyframes stamp-press {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(var(--rot)) scale(1.18);
+  }
+}
+.proof-stamp {
+  transform: translate(-50%, -50%) rotate(var(--rot));
+  mask-image: var(--dither-13);
+  -webkit-mask-image: var(--dither-13);
+  mask-size: var(--dither-tile);
+  -webkit-mask-size: var(--dither-tile);
+  animation: stamp-press 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .proof-stamp {
+    animation: none;
+  }
+}
