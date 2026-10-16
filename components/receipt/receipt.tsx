@@ -110,6 +110,7 @@ function compose(
     row("keys pressed", String(c("keys")))
   )
   if (c("copies")) lines.push(row("copied", String(c("copies"))))
+  if (c("quotes")) lines.push(row("quote cards set", String(c("quotes"))))
 
   lines.push(
     rule(true),

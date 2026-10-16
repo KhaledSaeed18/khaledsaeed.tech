@@ -8,6 +8,7 @@ import { ConsoleProof } from "@/components/console-proof"
 import { KeyboardLayer } from "@/components/keys/keyboard-layer"
 import { Loupe } from "@/components/keys/loupe"
 import { MarkUp } from "@/components/keys/mark-up"
+import { QuoteCard } from "@/components/keys/quote-card"
 import { PrintResume } from "@/components/print/print-resume"
 import { Receipt } from "@/components/receipt/receipt"
 import { VisitLog } from "@/components/receipt/visit-log"
@@ -149,6 +150,7 @@ export default async function RootLayout({
           bookingUrl={siteConfig.bookingUrl}
         />
         <MarkUp />
+        <QuoteCard />
         <Loupe />
         <VisitLog />
         <Receipt edition={process.env.BUILD_COMMIT ?? ""} />

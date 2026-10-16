@@ -4,6 +4,8 @@ import { usePathname } from "next/navigation"
 import * as React from "react"
 import { createPortal } from "react-dom"
 
+import { requestQuoteCard } from "@/components/keys/quote-card"
+import { fragment, quoteFits } from "@/lib/quote-text"
 import { cn } from "@/lib/utils"
 import { logVisit } from "@/lib/visit"
 
@@ -52,14 +54,6 @@ function sourceFile(pathname: string) {
   if (slug && (top === "work" || top === "writing"))
     return `app/${top}/[slug]/page.tsx`
   return `app${pathname}/page.tsx`
-}
-
-/** A text fragment (#:~:text=) that points at the selected words. */
-function fragment(text: string) {
-  const enc = (s: string) => encodeURIComponent(s).replace(/-/g, "%2D")
-  const words = text.replace(/\s+/g, " ").trim().split(" ")
-  if (words.length <= 8) return enc(words.join(" "))
-  return `${enc(words.slice(0, 4).join(" "))},${enc(words.slice(-4).join(" "))}`
 }
 
 /** The section the pointer sat in, by its heading. */
@@ -267,6 +261,13 @@ export function MarkUp() {
           run: () => copy(passage, "copied a link that lands on the passage"),
         }
       )
+      if (quoteFits(spot.selection) && pathname !== "/quote")
+        here.push({
+          id: "card",
+          label: "Set it as a quote card",
+          hint: "1200×630",
+          run: () => requestQuoteCard({ text: spot.selection, from: pathname }),
+        })
     }
     if (spot.link) {
       const link = spot.link

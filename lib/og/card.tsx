@@ -173,3 +173,120 @@ export const stockHex: Record<string, string> = {
   bone: "#ebe7e1",
   stone: "#a6a09a",
 }
+
+/**
+ * A pull quote, set like a printed one: a terracotta opening mark, the words
+ * large, and the page they came from. Type steps down as the quote grows so
+ * the longest one (280 characters) still fits the card.
+ */
+export async function quoteCard({
+  quote,
+  eyebrow,
+  source,
+}: {
+  quote: string
+  eyebrow: string
+  source: string
+}) {
+  const [hanken, mono] = await fontsP
+  const n = quote.length
+  const size = n < 70 ? 64 : n < 120 ? 54 : n < 180 ? 44 : n < 230 ? 38 : 33
+
+  return new ImageResponse(
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        background: BG,
+        padding: "60px 72px 56px",
+        fontFamily: "Hanken",
+        color: INK,
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          fontFamily: "Mono",
+          fontSize: 22,
+          color: MUTED,
+        }}
+      >
+        <span style={{ color: BRAND, marginRight: 14 }}>{"//"}</span>
+        pull quote / {eyebrow}
+      </div>
+
+      <div style={{ display: "flex", alignItems: "flex-start" }}>
+        <div
+          style={{
+            display: "flex",
+            fontSize: 150,
+            lineHeight: 0.8,
+            color: BRAND,
+            marginRight: 22,
+            marginTop: 4,
+          }}
+        >
+          “
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
+          <div
+            style={{
+              display: "flex",
+              fontSize: size,
+              lineHeight: 1.16,
+              letterSpacing: "-0.02em",
+            }}
+          >
+            {quote}
+          </div>
+          <div
+            style={{
+              display: "flex",
+              marginTop: 28,
+              fontFamily: "Mono",
+              fontSize: 22,
+              color: MUTED,
+            }}
+          >
+            {`khaled saeed, ${(source.length > 60 ? `${source.slice(0, 59)}…` : source).toLowerCase()}`}
+          </div>
+        </div>
+      </div>
+
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+          {[16, 14, 12, 10, 8, 6, 4, 2, 1].map((l) => (
+            <Tile key={l} level={l} />
+          ))}
+          <div
+            style={{
+              display: "flex",
+              marginLeft: 18,
+              fontFamily: "Mono",
+              fontSize: 20,
+              color: MUTED,
+            }}
+          >
+            khaledsaeed.tech
+          </div>
+        </div>
+      </div>
+    </div>,
+    {
+      ...ogSize,
+      fonts: [
+        { name: "Hanken", data: hanken, weight: 500, style: "normal" },
+        { name: "Mono", data: mono, weight: 400, style: "normal" },
+      ],
+    }
+  )
+}
