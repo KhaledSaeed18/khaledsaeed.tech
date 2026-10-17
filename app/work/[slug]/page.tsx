@@ -26,7 +26,7 @@ import {
 } from "@/lib/content/projects"
 import { getMyStars } from "@/lib/data/github"
 import { pageMeta } from "@/lib/metadata"
-import { formatDate, formatNumber } from "@/lib/format"
+import { formatNumber } from "@/lib/format"
 import { revisionsOf } from "@/lib/revisions"
 
 export function generateStaticParams() {
@@ -74,7 +74,6 @@ export default async function ProjectPage({
   const prev = catalog[(i - 1 + catalog.length) % catalog.length]
 
   const revisions = revisionsOf(p)
-  const printed = revisions.printings.at(-1)?.date
 
   const facts: Fact[] = [
     ["year", p.year],
@@ -86,14 +85,6 @@ export default async function ProjectPage({
       : stars
         ? ([["stars", formatNumber(stars)]] as Fact[])
         : []),
-    ...(printed
-      ? ([
-          [
-            "revision",
-            `rev ${revisions.printings.length}, ${formatDate(printed).toLowerCase()}`,
-          ],
-        ] as Fact[])
-      : []),
   ]
 
   return (
