@@ -38,7 +38,75 @@
     {
       "sha": "acc8590",
       "date": "2026-09-30",
-      "subject": "Add projects, profile and uses content"
+      "subject": "Add projects, profile and uses content",
+      "words": {
+        "tagline": "A CLI that shows exactly how JWT signing works, and where it breaks.",
+        "summary": "A Python command-line toolkit for inspecting, verifying, cracking and securing JSON Web Tokens. The JWS logic is implemented in the open on top of cryptography, with no dependency on pyjwt, so you can read exactly how verification works.",
+        "problem": "JWT bugs hide in the details: alg=none, algorithm confusion, weak HMAC secrets, keys smuggled in the header. Most libraries hide those details on purpose.",
+        "approach": [
+          {
+            "title": "Audit without a key",
+            "body": "Static checks flag alg=none, weak HMAC, jwk in the header and other CVE-referenced misconfigurations before you even have the secret."
+          },
+          {
+            "title": "Attack your own verifier",
+            "body": "Forge attack-shaped variants such as alg=none and algorithm confusion, then point them at your own service to prove it rejects them."
+          },
+          {
+            "title": "Honest cryptography",
+            "body": "Constant-time signature comparison, JWKS verification of standard claims, a streamed multi-threaded wordlist cracker and strong secret generation."
+          }
+        ],
+        "highlights": [
+          "Published on PyPI, installable with pipx or uv",
+          "Decode, audit, verify, sign, forge, crack, generate",
+          "JSON output for scripting"
+        ]
+      }
+    },
+    {
+      "sha": "94430b0",
+      "date": "2026-10-17",
+      "subject": "Update JWT Toolkit case study for v1.1.0",
+      "words": {
+        "tagline": "Inspect, compare and stress-test JWTs, with verification you can read.",
+        "summary": "A Python security CLI for debugging token changes, checking signatures and testing your own verifier. Version 1.1.0 adds token diffs, EdDSA and practical key inputs while tightening parsing, claim validation and scriptable errors. The JWS logic stays readable on top of cryptography, without pyjwt or python-jose.",
+        "problem": "A decoded token can look convincing while its verifier accepts an invalid expiry, ignores a critical header or trusts the wrong algorithm. Debugging those failures also means comparing claims, handling real keys and getting dependable results into CI.",
+        "approach": [
+          {
+            "title": "Make verification boundaries explicit",
+            "body": "Verification matches algorithm names case-sensitively, rejects unsupported crit headers and non-finite or non-numeric time claims, and expires a token at its exp second. Headers and payloads must be JSON objects. These fixes close acceptance edge cases and turn malformed input into a reported error instead of a crash."
+          },
+          {
+            "title": "Explain what changed between tokens",
+            "body": "The new diff command walks nested headers and payloads with JSON Pointer paths, highlighting identity, permission and lifetime fields. It preserves array order and JSON types, and distinguishes encoding-only changes from changed claims. JSON output and an optional failure exit code make it useful for regression checks; comparison does not verify either token."
+          },
+          {
+            "title": "Work with the keys applications use",
+            "body": "Ed25519, Ed448 and EdDSA join HMAC, RSA, RSA-PSS and ECDSA, including OKP keys from JWKS. X.509 certificates and encrypted private keys reduce key-conversion work. Secret files keep HMAC values out of command arguments, while payload files, relative lifetimes and raw secret output make test fixtures easier to script."
+          },
+          {
+            "title": "Crack the candidates you actually supplied",
+            "body": "Wordlist lines retain spaces, leading # characters and non-UTF-8 bytes, so valid candidates are no longer silently changed or skipped. Bounded batches run in worker processes to bypass CPython's GIL, preserving the first match in wordlist order. Small lists avoid process startup costs, and a bundled list makes the command usable immediately after installation."
+          },
+          {
+            "title": "Keep security findings honest",
+            "body": "Keyless audits flag risky headers, missing claims and weak configurations; --require now checks every named claim, including custom ones. Forge produces attack-shaped tokens for your own verifier and labels header-only variants whose rejection cannot rule out the named flaw. Untrusted text renders literally, preventing crafted claims from crashing or restyling terminal reports."
+          },
+          {
+            "title": "Ship a CLI that automation can trust",
+            "body": "Every --json failure path returns an error document with a stable code. Wordlist downloads stay on verified TLS and use the installed release's tag. Before PyPI publication, the tagged commit must pass tests, coverage, lint, types and security checks, and its tag must match the package version. Trusted Publishing adds distribution attestations."
+          }
+        ],
+        "highlights": [
+          "v1.1.0 released on 17 October 2026, installable with pipx or uv",
+          "Token diffs with JSON Pointer paths and CI exit codes",
+          "EdDSA, JWKS, certificates and encrypted private keys",
+          "UTC and relative timestamps for decoded time claims",
+          "Bundled wordlist and bounded process-based cracking",
+          "Stable JSON errors and a validated PyPI publishing workflow"
+        ]
+      }
     }
   ],
   "wakehold": [
