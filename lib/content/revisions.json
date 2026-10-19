@@ -235,7 +235,65 @@
     {
       "sha": "acc8590",
       "date": "2026-09-30",
-      "subject": "Add projects, profile and uses content"
+      "subject": "Add projects, profile and uses content",
+      "words": {
+        "tagline": "A registry of Claude Code skills, agents, commands and hooks, installable in one line.",
+        "summary": "My collection of Claude Code extensions for engineering, git, testing, security and research workflows. It is distributed as a shadcn GitHub registry and as installable plugins, with a searchable catalog site.",
+        "problem": "AI coding agents are only as good as the procedures you give them, and good procedures end up scattered across projects and dotfiles.",
+        "approach": [
+          {
+            "title": "Four kinds of extension",
+            "body": "Skills load themselves when a request matches, agents take whole side tasks in their own context, commands run on demand, and hooks fire on every event with no model judgment."
+          },
+          {
+            "title": "Two ways to install",
+            "body": "Whole plugins through Claude Code, or single items through the shadcn CLI straight into a project's .claude folder."
+          },
+          {
+            "title": "A thesis toolkit",
+            "body": "One plugin covers a full research lifecycle: literature search, verified citations, synthesis, methodology, LaTeX and an examiner-style reviewer."
+          }
+        ],
+        "highlights": [
+          "Catalog with search and filters at dotclaude.khaledsaeed.tech",
+          "Skills, agents, commands and hooks across nine categories",
+          "Distributed as a shadcn GitHub registry"
+        ]
+      }
+    },
+    {
+      "sha": "9428a14",
+      "date": "2026-10-19",
+      "subject": "Update the dotclaude case study",
+      "words": {
+        "tagline": "A registry of Claude Code skills, agents, commands and hooks, installable in one line.",
+        "summary": "My collection of Claude Code extensions for engineering, git, testing, security and research workflows: 136 items in 17 plugins, generated from one source tree and validated in CI. It is distributed as a shadcn GitHub registry and as installable plugins, with a searchable static catalog site.",
+        "problem": "AI coding agents are only as good as the procedures you give them, and good procedures end up scattered across projects and dotfiles.",
+        "approach": [
+          {
+            "title": "Four kinds of extension",
+            "body": "Skills load themselves when a request matches, agents take whole side tasks in their own context, commands run on demand, and hooks fire on every event with no model judgment: a command guard, a sensitive-file guard, a stop gate that runs the tests before Claude can stop, format on edit."
+          },
+          {
+            "title": "Two ways to install",
+            "body": "Whole plugins through the Claude Code marketplace, where hooks activate on install, or single items through the shadcn CLI straight into a project's .claude folder."
+          },
+          {
+            "title": "One source, everything else generated",
+            "body": "Each item is a folder with a manifest. The registry files, the README catalog, the plugin tree, the site data, one crawlable page per item, the sitemap and llms.txt are generated from it, and CI fails if a generated file is stale."
+          },
+          {
+            "title": "A thesis toolkit",
+            "body": "One plugin covers a full research lifecycle: literature search, verified BibTeX, citation checking, statistics, methodology, LaTeX and Word output, with an examiner-style reviewer and a paper critic as agents."
+          }
+        ],
+        "highlights": [
+          "Catalog with search and filters at dotclaude.khaledsaeed.tech",
+          "86 skills, 17 agents, 18 commands and 15 hooks across 15 categories",
+          "Distributed as 17 plugins and as a shadcn GitHub registry",
+          "Hooks are deterministic; advisory ones never block"
+        ]
+      }
     }
   ],
   "mcce": [
@@ -1138,7 +1196,78 @@
     {
       "sha": "6575656",
       "date": "2026-10-14",
-      "subject": "Add deck-kit project and presentation object support"
+      "subject": "Add deck-kit project and presentation object support",
+      "words": {
+        "tagline": "HTML slides, a synced presenter view and one file that runs with Wi-Fi off.",
+        "summary": "A reusable presentation kit built with plain HTML, CSS and TypeScript. Write slides as small HTML files, present with step-aware notes and a pace timer, then ship a self-contained deck or PDF. Four portable agent skills guide research, writing, verification and design, with a review stop after each phase.",
+        "problem": "A talk needs more than slides: a script, a shorter cut, reliable presenter controls and a fallback when the network fails. I wanted to keep all of that in a repository, reuse the engine for the next talk and change the design without rewriting the content.",
+        "approach": [
+          {
+            "title": "Content, theme and engine stay separate",
+            "body": "Each slide is an HTML partial with semantic markup, build steps and speaker notes. A deck manifest sets the order, timing and alternate profiles. CSS tokens and layouts own the design; the vanilla TypeScript engine handles navigation on a fixed 1920 by 1080 canvas, scaled to fit the screen."
+          },
+          {
+            "title": "A presenter view that keeps up",
+            "body": "The presenter sees the current step, next slide, highlighted script and pace against target timings. Either window can advance the talk. BroadcastChannel sync has an opener fallback for local files; keyboard, clicker and touch controls share the same navigation, with overview and blackout a key away."
+          },
+          {
+            "title": "A workflow with review built in",
+            "body": "Four skills create a talk, add slides, retheme it or prepare delivery. The new-deck workflow moves through brief, research, content, verification and design, pausing for review at each phase. Shared instructions work with Codex, Claude Code and other compatible agents; slides can also be written by hand."
+          },
+          {
+            "title": "Ready for the room, with a fallback",
+            "body": "Vite builds a static site or one deck.html that opens from a USB stick, including the presenter view. Export slides to PDF and notes to a printable script. Separate engine and deck browser suites check navigation, sync, slide fit, accessibility, print and offline behavior, with external requests blocked."
+          }
+        ],
+        "highlights": [
+          "Single-file offline delivery, static hosting and PDF export",
+          "Two-way presenter sync with step-aware notes and a persistent timer",
+          "Alternate talk profiles with their own slide order and target timings",
+          "Keyboard and clicker controls, overview, blackout and touch navigation",
+          "Portable agent skills with explicit review stages",
+          "Two complete talks with distinct themes on the same framework-free engine"
+        ]
+      }
+    },
+    {
+      "sha": "be3a06d",
+      "date": "2026-10-19",
+      "subject": "Update the deck-kit case study for v1.2.0",
+      "words": {
+        "tagline": "HTML slides, a synced presenter view and one file that runs with Wi-Fi off.",
+        "summary": "A reusable presentation kit built with plain HTML, CSS and TypeScript. Write slides as small HTML files, present with step-aware notes and a pace timer, then ship a self-contained deck or PDF. Four portable agent skills guide research, writing, verification and design, with a review stop after each phase; since v1.2.0 they work with Codex, Claude Code and any agent that reads AGENTS.md.",
+        "problem": "A talk needs more than slides: a script, a shorter cut, reliable presenter controls and a fallback when the network fails. I wanted to keep all of that in a repository, reuse the engine for the next talk and change the design without rewriting the content.",
+        "approach": [
+          {
+            "title": "Content, theme and engine stay separate",
+            "body": "Each slide is an HTML partial with semantic markup, build steps and speaker notes. A deck manifest sets the order, timing and alternate profiles. CSS tokens and layouts own the design; the vanilla TypeScript engine handles navigation on a fixed 1920 by 1080 canvas, scaled to fit the screen, and tests enforce that the engine holds no visual literals."
+          },
+          {
+            "title": "A presenter view that keeps up",
+            "body": "The presenter sees the current step, next slide, highlighted script and pace against target timings. Either window can advance the talk. BroadcastChannel sync has an opener fallback for local files; keyboard, clicker and touch controls share the same navigation, with overview and blackout a key away."
+          },
+          {
+            "title": "A workflow with review built in",
+            "body": "Four skills create a talk, add slides, retheme it or prepare delivery. The new-deck workflow moves through brief, research, content, verification and design, pausing for review at each phase. Nothing on screen changes without approval: unapproved text is marked and fails the lint until resolved."
+          },
+          {
+            "title": "Lint for slides",
+            "body": "A dev overlay and a check command flag too much prose per slide, em dashes, exclamation marks, emoji, inline styles and tables without captions. A live region announces slides, hidden slides are inert, and axe runs on every slide."
+          },
+          {
+            "title": "Ready for the room, with a fallback",
+            "body": "Vite builds a static site or one deck.html that opens from a USB stick, including the presenter view. Export slides to PDF and notes to a printable script. Separate engine and deck browser suites check navigation, sync, slide fit, accessibility, print and offline behavior."
+          }
+        ],
+        "highlights": [
+          "Single-file offline delivery, static hosting and PDF export",
+          "Two-way presenter sync with step-aware notes and a persistent timer",
+          "Alternate talk profiles with their own slide order and target timings",
+          "Keyboard and clicker controls, overview, blackout and touch navigation",
+          "Portable agent skills with explicit review stages, AGENTS.md canonical",
+          "Two complete talks with distinct themes on the same framework-free engine"
+        ]
+      }
     }
   ],
   "urljail": [
