@@ -84,10 +84,22 @@ ${(Object.keys(groups) as (keyof typeof groups)[])
         .filter((p) => p.group === g)
         .map(
           (p) =>
-            `- [${p.name}](${url(`/work/${p.slug}`)}): ${p.tagline} Stack: ${p.stack.join(", ")}.` +
+            `- [${p.name}](${url(`/work/${p.slug}`)}): ${p.tagline}` +
+            (p.plain ? ` ${p.plain}` : "") +
+            ` Stack: ${p.stack.join(", ")}.` +
             (p.status ? ` Status: ${p.status}.` : "") +
+            (p.audience ? ` For: ${p.audience}.` : "") +
             (p.proof
               ? ` Measured: ${p.proof.map((m) => `${m.value} ${m.label}`).join("; ")}.`
+              : "") +
+            (p.install?.length
+              ? ` Install: ${p.install.map((s) => `\`${s.command}\``).join(" or ")}.`
+              : "") +
+            (p.timeline?.length
+              ? ` Latest: ${p.timeline.at(-1)!.title} (${p.timeline.at(-1)!.date}).`
+              : "") +
+            (p.faq?.length
+              ? `\n  ${p.faq.map((f) => `- Q: ${f.q} A: ${f.a}`).join("\n  ")}`
               : "")
         )
         .join("\n")

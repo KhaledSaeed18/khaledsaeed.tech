@@ -63,6 +63,55 @@ export type Project = {
    */
   proof?: Proof[]
   featured?: boolean
+  /**
+   * The project explained to someone who does not write software: what it
+   * is for and why it matters, in two or three plain sentences. No stack.
+   */
+  plain?: string
+  /** How to get it running, as copyable commands. Only for things that ship. */
+  install?: Install[]
+  /** Engineering decisions worth defending: what was chosen, what it cost. */
+  decisions?: Decision[]
+  /** The project's printings: releases and milestones, oldest first. */
+  timeline?: Milestone[]
+  /** Questions a reader is likely to ask, answered from the docs. */
+  faq?: Faq[]
+  /** Slugs of case studies that share a lineage, a stack or a problem. */
+  related?: string[]
+  /** Where it runs, for structured data: "macOS 14 or later", "Linux (Fedora 44+)". */
+  platform?: string
+  /** Who it is for, in a few words: "teams running IT support", "anyone with a Mac". */
+  audience?: string
+}
+
+export type Install = {
+  /** What the command does, lowercase: "install from pypi". */
+  label: string
+  command: string
+  /** A requirement or caveat, lowercase: "needs python 3.11 or later". */
+  note?: string
+}
+
+export type Decision = {
+  /** What was chosen: "Postgres row level security". */
+  chose: string
+  /** What it was chosen over: "filtering every query by tenant in code". */
+  over: string
+  /** Why, and what it cost. One or two sentences. */
+  why: string
+}
+
+export type Milestone = {
+  /** ISO date, or a month: "2026-10-14", "2026-07". */
+  date: string
+  /** "v1.0.0" or a milestone name: "first commit", "live gate done". */
+  title: string
+  body?: string
+}
+
+export type Faq = {
+  q: string
+  a: string
 }
 
 export type Proof = {

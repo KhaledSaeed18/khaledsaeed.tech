@@ -1,19 +1,56 @@
 import type { Metadata } from "next"
 
-import { BreadcrumbJsonLd } from "@/components/json-ld"
+import { abs, BreadcrumbJsonLd, JsonLd, personRef } from "@/components/json-ld"
+import { FactStrip, type Fact } from "@/components/print/fact-strip"
 import { PageIntro } from "@/components/print/page-intro"
 import { WorkLedger } from "@/components/work/work-ledger"
 import { catalog, groupOrder, groups } from "@/lib/content/projects"
+import { getMyRepos } from "@/lib/data/github"
+import { formatNumber } from "@/lib/format"
 import { pageMeta } from "@/lib/metadata"
 import { siteConfig, siteIdentity } from "@/lib/site"
 
 export const metadata: Metadata = pageMeta({
   title: "Work",
-  description: `Open-source projects by ${siteIdentity}: web platforms, developer CLIs, native macOS apps, Linux tools and embedded systems.`,
+  description: `${catalog.length} open-source projects by ${siteIdentity}, each with a case study: multi-tenant platforms, developer CLIs, native macOS apps, Linux system tools and embedded systems.`,
   path: "/work",
+  keywords: [
+    "Khaled Saeed projects",
+    "KhaledSaeed18",
+    "open source portfolio",
+    "case studies",
+    ...groupOrder.map((g) => groups[g].title),
+  ],
 })
 
-export default function WorkPage() {
+export default async function WorkPage() {
+  const repos = await getMyRepos()
+  const stars = catalog.reduce((n, p) => n + (repos[p.repo]?.stars ?? 0), 0)
+  const languages = new Set(
+    catalog.flatMap((p) =>
+      p.stack.filter((s) =>
+        ["TypeScript", "Python", "Swift", "Go", "Rust", "C", "MATLAB"].includes(
+          s
+        )
+      )
+    )
+  )
+  const measured = catalog.reduce((n, p) => n + (p.proof?.length ?? 0), 0)
+  const releases = catalog.reduce(
+    (n, p) =>
+      n + (p.timeline?.filter((m) => /^v?\d+\.\d+/.test(m.title)).length ?? 0),
+    0
+  )
+  const totals: Fact[] = [
+    ["projects", catalog.length],
+    ["languages", languages.size],
+    ["releases", releases],
+    ["measured figures", measured],
+    ...(Object.keys(repos).length
+      ? ([["github stars", formatNumber(stars)]] as Fact[])
+      : []),
+  ]
+
   return (
     <>
       <PageIntro
@@ -30,12 +67,14 @@ export default function WorkPage() {
             >
               {siteConfig.username}
             </a>
-            . Each job opens a short case study: the problem, how it works, and
-            what I would point a reviewer at.
+            . Each job opens a case study: the problem, how it works, what was
+            measured, the decisions behind it and how to try it.
           </>
         }
         meta={`${catalog.length} projects`}
-      />
+      >
+        <FactStrip facts={totals} className="mt-12" />
+      </PageIntro>
 
       <div className="frame mt-12">
         <WorkLedger
@@ -44,6 +83,32 @@ export default function WorkPage() {
         />
       </div>
 
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          "@id": abs("/work"),
+          name: "Work",
+          description: `Open-source projects by ${siteIdentity}, each with a case study.`,
+          url: abs("/work"),
+          author: personRef,
+          mainEntity: {
+            "@type": "ItemList",
+            "@id": abs("/work#catalog"),
+            name: `Projects by ${siteConfig.name}`,
+            numberOfItems: catalog.length,
+            itemListOrder: "https://schema.org/ItemListOrderAscending",
+            itemListElement: catalog.map((p, i) => ({
+              "@type": "ListItem",
+              position: i + 1,
+              name: p.name,
+              description: p.tagline,
+              url: abs(`/work/${p.slug}`),
+              item: { "@id": abs(`/work/${p.slug}#project`) },
+            })),
+          },
+        }}
+      />
       <BreadcrumbJsonLd
         items={[
           { name: "Home", path: "/" },
