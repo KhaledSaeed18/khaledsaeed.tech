@@ -983,50 +983,194 @@ export const projects: Project[] = [
   {
     slug: "dir-analysis-tool",
     name: "dir-analysis-tool",
+    updatedAt: "2026-10-19",
     tagline:
-      "A single-pass, streaming CLI for finding what is eating your disk.",
+      "Find out what is taking up space: largest folders, duplicates, stale files and size budgets for CI, in one pass.",
     summary:
-      "dat walks a directory once, streams file hashes without loading files into memory, and reports the largest files, duplicated content, empty files and a breakdown by type, with a shareable HTML report.",
+      "dat is a memory-bounded directory analyzer for the terminal and for CI. It walks a tree once and reports the largest folders and files, duplicated content, empty and stale files and a breakdown by type, then prints it as a table, JSON, Markdown, CSV or a single-file HTML report. Version 3 adds directory diffs, a watch mode, size budgets that fail a build, and a typed library API that returns exactly what the CLI prints.",
     year: 2025,
     group: "tools",
     kind: "npm CLI",
     object: "folder",
     stock: "bone",
-    stack: ["TypeScript", "Node.js", "GitHub Actions", "npm"],
+    stack: [
+      "TypeScript",
+      "Node.js",
+      "Commander",
+      "Vitest",
+      "tsdown",
+      "semantic-release",
+      "GitHub Actions",
+      "npm",
+    ],
     repo: "dir-analysis-tool",
     links: [
       { label: "npm", href: "https://www.npmjs.com/package/dir-analysis-tool" },
       { label: "Source", href: gh("dir-analysis-tool") },
-    ],
-    proof: [
-      { value: "1,100+", label: "npm downloads", note: "in the last year" },
       {
-        value: "1",
-        label: "filesystem pass",
-        note: "streaming md5, constant memory on multi-gigabyte trees",
+        label: "v3.0.0 release",
+        href: `${gh("dir-analysis-tool")}/releases/tag/v3.0.0`,
+      },
+      {
+        label: "Changelog",
+        href: `${gh("dir-analysis-tool")}/blob/main/CHANGELOG.md`,
+      },
+    ],
+    status: "v3.0.0 released",
+    platform: "Node.js 22.12 or later on macOS, Linux and Windows",
+    audience: "developers with a full disk, and teams that want a build to fail when a folder grows",
+    plain:
+      "When a disk fills up, the hard part is finding out why. dat looks through a folder and tells you which sub-folders and files take the most room, which files are exact copies of each other and what has not been touched in years. It can also watch a folder, compare two folders, and refuse to let a project ship if its output grows past a limit you set.",
+    proof: [
+      {
+        value: "28,660",
+        label: "files scanned in 0.13 s",
+        note: "this site's node_modules, 442 mib, warm cache, measured on 19 oct 2026",
+      },
+      {
+        value: "0.5 s",
+        label: "with duplicate detection",
+        note: "same tree: 1,559 duplicate groups, 6.3 mib reclaimable",
+      },
+      {
+        value: "162",
+        label: "tests, 94.6% statements",
+        note: "vitest, thresholds enforced in ci on 3 operating systems and 3 node versions",
+      },
+      {
+        value: "1,149",
+        label: "npm downloads in a year",
+        note: "api.npmjs.org, year to 16 oct 2026",
       },
     ],
     problem:
-      "Disk audits either load everything into memory or give you a wall of output you cannot act on or pipe anywhere.",
+      "Disk audits either load everything into memory or give you a wall of output you cannot act on or pipe anywhere. The ones that are fast tend to lie a little: they count hard links twice, follow symlink cycles, or skip unreadable paths without saying so.",
     approach: [
       {
-        title: "One walk, constant memory",
-        body: "A single filesystem traversal with streaming MD5 hashing stays flat on multi-gigabyte trees.",
+        title: "One walk, bounded memory",
+        body: "Every file is stat'ed exactly once. Top-N lists live in bounded heaps, one concurrency limiter covers every filesystem call so wide trees cannot exhaust handles, and depth-first scheduling keeps the queue small. The author's benchmark holds about 9 MB for 140,000 files.",
       },
       {
-        title: "Actionable, not just accurate",
-        body: "Duplicates come with wasted-space totals, plus large and empty file detection and a top-N list.",
+        title: "Duplicates in three stages",
+        body: "Files are grouped by size first. Candidates over 256 KiB are then compared by a SHA-256 sample of their first and last 64 KiB, and only survivors get a full streaming hash with reused buffers. Most files are never read in full, which made duplicates about four times faster than version 2.",
       },
       {
-        title: "Plays well with others",
-        body: "Clean ANSI-free JSON, a progress bar that disables itself outside a TTY, CSV exports and a self-contained HTML report.",
+        title: "Answers that point somewhere",
+        body: "The headline is the largest folders, and a folder that is 95% one child folds into it so the list points at where the data lives instead of repeating parents. Large, stale, empty and duplicate files come with totals you can act on, and ordering is by size then path, never discovery order.",
+      },
+      {
+        title: "Budgets, diffs and a watch",
+        body: "Rules like size<=2MB or duplicates=0 fail a build with exit code 2 and name the rule. dat compare lists what was added, removed and changed between two trees, by content on request. dat watch follows a folder with native filesystem events and streams NDJSON.",
+      },
+      {
+        title: "Five outputs, one shape",
+        body: "Pretty, JSON with a versioned schema, Markdown for a pull request summary, CSV with a section column and neutralised formula cells, and an HTML report in a single file with inline charts and a content security policy that blocks all network access. Progress and warnings go to stderr; stdout carries only the report.",
+      },
+      {
+        title: "A library that is the CLI",
+        body: "analyze, compare and every renderer are exported as typed ESM, and the library's return value is exactly what --format json prints. Releases are cut by semantic-release from conventional commits with npm provenance, after a matrix of three operating systems and three Node versions passes.",
       },
     ],
     highlights: [
-      "1,100+ npm downloads in the last year",
-      "Streaming duplicate detection",
-      "Automated releases with GitHub Actions",
+      "Largest folders, largest files, duplicates, stale and empty files, type breakdown",
+      "Size budgets for CI that exit 2, directory diffs and a watch mode",
+      "Pretty, JSON, Markdown, CSV and single-file HTML output",
+      "Hard links counted once, symlink cycles detected, unreadable paths reported",
+      "Typed library API with the same results as the CLI",
+      "Published with npm provenance after tests on macOS, Linux and Windows",
     ],
+    decisions: [
+      {
+        chose: "staged SHA-256 duplicate detection",
+        over: "hashing every file in full",
+        why: "Grouping by size and sampling 128 KiB of large candidates rules out most files before any full read. Duplicates got about four times faster on a 140,000-file tree, at the cost of a third code path and tests for every stage.",
+      },
+      {
+        chose: "largest folders as the headline",
+        over: "largest files",
+        why: "A full disk is usually a folder problem: caches, build output, old exports. Folding a folder into a child that holds 95% of it keeps the list short, though it hides the parent's name until you expand the tree.",
+      },
+      {
+        chose: "binary units by default",
+        over: "decimal units",
+        why: "Finder, Explorer and du disagree with each other; KiB and MiB match what the filesystem allocates. The --si flag switches, and a bare 100 still means 100 MiB so version 2 scripts keep working.",
+      },
+      {
+        chose: "one exclude pattern per flag",
+        over: "a comma-separated list",
+        why: "A list argument kept swallowing the directory argument that followed it. Repeating the flag is more typing but never ambiguous, and gitignore syntax covers most of what people were listing anyway.",
+      },
+      {
+        chose: "stdout for the report only",
+        over: "mixing progress into the output",
+        why: "Piping dat into jq or a step summary has to work without flags. Progress, warnings and status go to stderr and the progress line only draws when stderr is a terminal.",
+      },
+    ],
+    install: [
+      {
+        label: "run it on a folder without installing",
+        command: "npx dir-analysis-tool ~/Downloads",
+        note: "node 22.12 or later",
+      },
+      {
+        label: "find duplicates and files untouched for two years",
+        command: "dat . -d --stale 2y",
+      },
+      {
+        label: "fail a build when the output grows",
+        command: 'dat dist -b "size<=2MB" -b "duplicates=0" -f markdown',
+        note: "exit code 2 when a budget fails",
+      },
+      {
+        label: "use it from code",
+        command: "npm install dir-analysis-tool",
+      },
+    ],
+    timeline: [
+      {
+        date: "2025-06-20",
+        title: "v1.0.0",
+        body: "An interactive directory analyzer with a progress bar and a tree view, published to npm the same day.",
+      },
+      {
+        date: "2026-04-28",
+        title: "v2.0.5",
+        body: "A rewrite with a streaming engine and subcommands, a dat binary, and semantic-release cutting versions from conventional commits.",
+      },
+      {
+        date: "2026-07-03",
+        title: "v2.0.7",
+        body: "A new README with a banner and badges; the npm page stays current because documentation commits ship as patches.",
+      },
+      {
+        date: "2026-10-18",
+        title: "v3.0.0",
+        body: "Engine and CLI rewritten: largest folders, compare, watch, budgets, Markdown output, a library API, a versioned JSON schema and staged SHA-256 duplicates. Old flag names still work with a warning.",
+      },
+    ],
+    faq: [
+      {
+        q: "Why does the total differ from du?",
+        a: "du reports allocated blocks. dat's headline is the sum of file lengths, and its on-disk line matches du. It also skips .git and node_modules unless you pass --all, and counts hard-linked data once.",
+      },
+      {
+        q: "Is it safe to run on a huge directory?",
+        a: "Memory does not grow with the number of files unless you ask for a listing report, filesystem concurrency is capped, unreadable paths are reported instead of aborting the scan, and Ctrl+C exits cleanly with code 130.",
+      },
+      {
+        q: "Does it change anything on disk?",
+        a: "No. It only reads. The only files it writes are the reports you ask for with --output, --html or --csv, and the config file created by dat init.",
+      },
+      {
+        q: "How do I use it in CI?",
+        a: "Run it with one or more -b budgets and the markdown format, and append the output to the job summary. A failed budget exits with code 2 and names the rule that failed.",
+      },
+      {
+        q: "Will my version 2 scripts break?",
+        a: "Mostly not. Old flag names and config keys are still read with a deprecation warning. The JSON shape moved to schema version 3 and units are binary by default, so check anything that parses the output.",
+      },
+    ],
+    related: ["repo-scout", "jwt-toolkit"],
   },
   {
     slug: "gauge",
