@@ -899,7 +899,56 @@
     {
       "sha": "acc8590",
       "date": "2026-09-30",
-      "subject": "Add projects, profile and uses content"
+      "subject": "Add projects, profile and uses content",
+      "words": {
+        "tagline": "My final year project: an AI learning platform across web, mobile, desktop and API.",
+        "summary": "The senior project for my B.S. in Computer Engineering. A learning and productivity platform with AI chat over PDFs and images, mind maps, flashcards, study plans and quizzes, delivered as a web app, a mobile app, a desktop app and a shared backend.",
+        "problem": "Students juggle a dozen tools to study one subject. The goal was one place that turns material into practice.",
+        "approach": [
+          {
+            "title": "Four clients, one backend",
+            "body": "Web, mobile and desktop apps share a single TypeScript API, so every feature ships everywhere at once."
+          },
+          {
+            "title": "AI where it helps",
+            "body": "Chat with PDFs and images, generate mind maps, flashcards, quizzes and study plans from any topic."
+          }
+        ],
+        "highlights": [
+          "Web, mobile, desktop and API in TypeScript",
+          "AI-powered study tools",
+          "Delivered as my B.S. senior project"
+        ]
+      }
+    },
+    {
+      "sha": "dffb556",
+      "date": "2026-10-19",
+      "subject": "Update the Yalla Learn case study",
+      "words": {
+        "tagline": "My final year project: an AI learning platform across web, mobile, desktop and API.",
+        "summary": "The senior project for my B.S. in Computer Engineering. A learning and productivity platform with AI chat over PDFs and images, mind maps, flashcards, study plans, quizzes and a voice assistant, plus a Pomodoro timer, kanban boards, a resume builder and a community with Q&A, a blog and a job board. Delivered as a Next.js web app, an Expo mobile app, an Electron desktop app and an Express backend, then archived.",
+        "problem": "Students juggle a dozen tools to study one subject. The goal was one place that turns material into practice, on whatever device the student has in hand.",
+        "approach": [
+          {
+            "title": "Four clients, one backend",
+            "body": "A Next.js web app, an Expo mobile app and an Electron desktop app share an Express and Prisma API on PostgreSQL, with JWT sessions, two-factor codes and email through OAuth2, so every account and every feature behaves the same across devices."
+          },
+          {
+            "title": "AI where it helps",
+            "body": "Chat with PDFs and images, generate mind maps, flashcards, quizzes with scoring and explanations, concept explanations and study plans from any topic, with an AI web search and a voice assistant, built on the AI SDK with Gemini and OpenAI models behind it."
+          },
+          {
+            "title": "The rest of a student's day",
+            "body": "A Pomodoro timer and focus mode, kanban boards with drag and drop, an expense tracker, a resume builder with templates, and a community with questions and answers, a blog and a job portal."
+          }
+        ],
+        "highlights": [
+          "Web, mobile, desktop and API in TypeScript",
+          "Nine AI-powered study tools and five productivity tools",
+          "Delivered as my B.S. senior project, then archived with an honest notice"
+        ]
+      }
     }
   ],
   "drainscope": [
@@ -990,6 +1039,68 @@
           {
             "title": "Measure the total, explain each share",
             "body": "RAPL counters and battery readings provide the measured energy. A user service combines cgroup v2 CPU time and GPU time from DRM fdinfo to estimate each consumer's share above a learned idle floor. Model v4 also shares energy by CPU time when RAPL is unavailable. Network softirq and threaded interrupt work follow the apps' measured traffic, while Idle and Display & devices remain visible parts of the total."
+          },
+          {
+            "title": "In use or in the background",
+            "body": "The GNOME extension reports the focused app's ID, never its window title. The daemon uses focused time to split each app's energy into in use, background and unknown, shown in app details, CLI reports and exports. Without focus data, the split stays unknown; terminal tabs and services are not classified. In a controlled test with two equal loads, in-use energy shares matched focused-time shares within 0.6 percentage points."
+          },
+          {
+            "title": "Three ways into the same history",
+            "body": "GNOME 50 and 51 get a Quick Settings tile showing the top consumers since unplugging. The GTK and libadwaita app adds a stacked timeline, per-consumer detail and views for the last hour, 24 hours or 7 days. The CLI adds live power and reports filtered by period, consumer kind or power source. Lists stay stable as readings change, and the app follows daemon stops and restarts with clear status messages."
+          },
+          {
+            "title": "Activity, sleep and battery wear",
+            "body": "The optional eBPF probe counts per-app CPU wakeups and network bytes, excluding loopback traffic. Sleep history records battery loss and reports wake reasons only when reliable. Daily battery-health records track capacity against design and charge cycles. Attribution pauses across suspend, and the since-unplugged session resets after charging while the machine was off."
+          },
+          {
+            "title": "Least privilege and local history",
+            "body": "No component runs as root or opens a network socket. The sampler and optional probe run as dedicated users with one and three Linux capabilities respectively, confined by systemd sandboxes and SELinux where enabled. polkit restricts counter access to the active local session; readings are rate-limited and coarsened. Energy and focus history stay in the user's local SQLite database."
+          },
+          {
+            "title": "Keep measuring when parts fail",
+            "body": "The daemon can start without writable history, using in-memory storage, and keeps measuring when the disk fills. Missing sampler or probe services degrade the available readings instead of stopping collection. It recovers from an unreadable database, stops safely on a newer schema, and handles counter resets after service restarts. A documented failure checklist covers denied permissions, missing services, full disks and desktop restarts; drainscope doctor explains what needs attention."
+          },
+          {
+            "title": "A stable release with measured overhead",
+            "body": "Sampling slows to every 15 seconds when no view is watching and returns to 5 seconds while a view is open. Batched readings, faster history queries and a once-a-minute refresh for the 7-day view keep the cost down. Across a 48-hour soak of the code shipped as 1.0, the daemon averaged 0.179% of one CPU and peaked at 14.1 MB on the development laptop, with no service warnings, extension errors or SELinux denials. These are daemon figures, not the cost of all components combined."
+          },
+          {
+            "title": "Reports you can take with you",
+            "body": "Summary, report, sleep, health, wakeups and network views export every row as CSV or JSON in joules, watts and Unix seconds. Reports include foreground, background and unknown energy plus focused time; JSON includes the period, measured coverage and model version. Unknown readings stay distinct from zero, including history recorded before focus tracking existed."
+          },
+          {
+            "title": "Packaged, documented and upgradeable",
+            "body": "The first stable release ships signed COPR packages for Fedora 44, 45 and rawhide, with installation checked on Fedora 44 and 45. Updates arrive through dnf and restart the daemon. Release downloads also include Fedora 44 RPMs and the extension zip. Architecture, installation, troubleshooting and contribution guides accompany the release; the extensions.gnome.org listing is still awaiting review."
+          },
+          {
+            "title": "Make the limits visible",
+            "body": "Validation uses recorded trace replays and real measurements on an Intel i7-8550U laptop with i915 graphics. AMD Zen support is expected from fixtures but has not been tested on real hardware; its integrated-GPU energy is split by CPU time, and Intel xe GPU energy is not yet split per app. Light, bursty work remains undercharged by proportional sharing. The published model and validation explain these limits rather than presenting per-app estimates as direct measurements."
+          }
+        ],
+        "highlights": [
+          "First stable release, v1.0.0, published on October 14, 2026",
+          "Foreground and background energy in app details, CLI reports and exports, with unknown time kept explicit",
+          "Model v4 supports battery-only attribution alongside CPU, GPU and network activity accounting",
+          "Per-app wakeups and traffic, suspend loss and daily battery-health history",
+          "48-hour soak test with 0.18% average daemon CPU and 14.1 MB peak daemon memory on the development laptop",
+          "Failure recovery checked across missing services, permission denials, full disks and restarts",
+          "Signed Fedora 44, 45 and rawhide packages; GNOME 50 and 51 support",
+          "Local history, no network access and no component running as root"
+        ]
+      }
+    },
+    {
+      "sha": "f879196",
+      "date": "2026-10-19",
+      "subject": "Extend the drainscope case study",
+      "words": {
+        "tagline": "See where your Linux laptop's battery goes, by app, terminal command and service.",
+        "summary": "drainscope measures energy from hardware counters and the battery, then estimates each app's share, including time in use and in the background. A GNOME Quick Settings extension, desktop app and CLI show local history, sleep loss, battery health, wakeups and network activity. Version 1.0.0 is the first stable release, backed by failure testing and a 48-hour soak test on the development laptop.",
+        "problem": "A battery percentage says how much charge is left, but not which app spent it or whether it was working in the background. Linux exposes energy and activity counters across the kernel and desktop, with different permissions and gaps in hardware support. I wanted to turn those readings into a useful account of where the battery went, without running a monitor as root.",
+        "approach": [
+          {
+            "title": "Measure the total, explain each share",
+            "body": "RAPL counters and battery readings provide the measured energy. A user service combines cgroup v2 CPU time and GPU time from DRM fdinfo to estimate each consumer's share above a learned idle floor. Without RAPL, battery energy is shared by CPU time above a learned idle floor, and model v4 keeps attributing when RAPL drops out partway through a window. Network softirq and threaded interrupt work follow the apps' measured traffic, while Idle and Display & devices remain visible parts of the total."
           },
           {
             "title": "In use or in the background",
@@ -1285,14 +1396,127 @@
     {
       "sha": "f42dbc3",
       "date": "2026-10-09",
-      "subject": "Add four projects and a Systems group"
+      "subject": "Add four projects and a Systems group",
+      "words": {
+        "tagline": "FreeRTOS ported to 64-bit RISC-V and booted on QEMU, from the startup code and linker script up.",
+        "summary": "A port of the FreeRTOS kernel to RV64 on QEMU's virt machine: bare-metal startup in assembly, a linker script that lays out RAM from 0x80000000, machine-mode timer interrupts driving a 1 kHz tick, and two preemptive tasks that prove the scheduler. Built for the CENG507 embedded systems course.",
+        "problem": "A real-time OS hides the hardware from applications, but first someone has to tame the hardware: start the core with no firmware, lay out memory, take the timer interrupt and save every register on a context switch. The goal was to do that by hand on an open instruction set.",
+        "approach": [
+          {
+            "title": "Bare metal, from the reset vector",
+            "body": "An assembly startup file sets up the stack and jumps to C with no BIOS at all. A linker script places code, data and a 64 KB stack in RAM from 0x80000000 on QEMU's virt machine."
+          },
+          {
+            "title": "The timer drives the scheduler",
+            "body": "The machine-mode timer, through MTIME and MTIMECMP, raises a 1 kHz tick. mtvec points at the FreeRTOS trap handler, which saves the context in assembly and lets the kernel preempt."
+          },
+          {
+            "title": "Proven by tasks, checked in the disassembly",
+            "body": "Two tasks with different periods interleave under preemption. The build emits an ELF with symbols, a raw binary and a full disassembly listing, targeting rv64imac_zicsr with the lp64 ABI."
+          }
+        ],
+        "highlights": [
+          "Boots with no firmware on QEMU's virt machine",
+          "Preemptive scheduling on a 1 kHz tick, stack overflow checks on",
+          "RV64IMAC with Zicsr, medany code model",
+          "Course project for CENG507, Embedded Systems"
+        ]
+      }
+    },
+    {
+      "sha": "92a3950",
+      "date": "2026-10-19",
+      "subject": "Update the FreeRTOS on RISC-V case study",
+      "words": {
+        "tagline": "FreeRTOS brought up on 64-bit RISC-V and booted on QEMU with no firmware, from the startup code and linker script up.",
+        "summary": "A bare-metal bring-up of the FreeRTOS kernel on QEMU's RV64 virt machine: startup in assembly, a linker script that lays out RAM from 0x80000000, the CLINT machine timer driving a 1 kHz tick through the stock RISC-V port, and two preemptive tasks that prove the scheduler. The whole image is 30 KB. Built for the CENG507 embedded systems course.",
+        "problem": "A real-time OS hides the hardware from applications, but first someone has to tame the hardware: start the core with no firmware, lay out memory, take the timer interrupt and hand the kernel a context to switch. The goal was to do that by hand on an open instruction set.",
+        "approach": [
+          {
+            "title": "Bare metal, from the reset vector",
+            "body": "An assembly startup file sets up a 4 KB boot stack, zeroes .bss, points mtvec at the FreeRTOS trap handler, enables machine interrupts and jumps to C with no BIOS at all. A linker script places code, data and a 64 KB interrupt stack in RAM from 0x80000000 on QEMU's virt machine."
+          },
+          {
+            "title": "The timer drives the scheduler",
+            "body": "The CLINT machine timer, through mtime and mtimecmp, raises a 1 kHz tick: 10,000 counts at 10 MHz. Every trap, timer or ecall, enters the upstream RISC-V port's handler, which saves the context in assembly, lets the kernel pick a task, and returns with mret to whichever one it chose."
+          },
+          {
+            "title": "Proven by tasks, checked in the disassembly",
+            "body": "Two tasks with 500 ms and 1000 ms periods interleave under preemption, using vTaskDelayUntil so they never drift, with stack overflow checking on. The build emits an ELF with symbols, a raw binary and a full disassembly listing, targeting rv64imac_zicsr with the lp64 ABI and the medany code model."
+          },
+          {
+            "title": "Small-data sections, found the hard way",
+            "body": "RISC-V compilers put small globals in .sbss, which the first startup code did not zero. The linker script now folds the small-data sections into .rodata, .data and .bss so one loop clears everything, and the interrupt stack is aligned to 16 bytes because the port asserts it."
+          }
+        ],
+        "highlights": [
+          "Boots with no firmware on QEMU's virt machine",
+          "Preemptive scheduling on a 1 kHz tick, stack overflow checks on",
+          "RV64IMAC with Zicsr, medany code model, 30 KB image",
+          "Setup documented for Linux, macOS and Windows, with GDB over QEMU",
+          "Course project for CENG507, Embedded Systems"
+        ]
+      }
     }
   ],
   "multilingual-translation": [
     {
       "sha": "f42dbc3",
       "date": "2026-10-09",
-      "subject": "Add four projects and a Systems group"
+      "subject": "Add four projects and a Systems group",
+      "words": {
+        "tagline": "Translation between 200 languages that runs entirely in the browser, with no server and no API key.",
+        "summary": "A React app that runs Meta's NLLB-200 model, distilled to 600M parameters, in the browser through Transformers.js and WebAssembly. The model loads in a Web Worker, is cached after the first download, and streams translations back as they are generated.",
+        "problem": "Translation usually means sending your text to someone else's server. For quick, private use, the model itself can come to the user instead.",
+        "approach": [
+          {
+            "title": "The model comes to you",
+            "body": "NLLB-200 distilled to 600M parameters runs through Transformers.js on WebAssembly. The first visit downloads it once and the browser caches it, so later translations run fully offline from the page."
+          },
+          {
+            "title": "Never block the page",
+            "body": "Inference runs in a Web Worker and talks to the interface by messages, so typing and scrolling stay smooth while the model loads and works."
+          },
+          {
+            "title": "Stream as it translates",
+            "body": "Output streams back progressively instead of arriving all at once, so long passages start reading immediately."
+          }
+        ],
+        "highlights": [
+          "200+ languages, including low-resource ones",
+          "No backend: inference runs in a Web Worker",
+          "Live on Hugging Face Spaces"
+        ]
+      }
+    },
+    {
+      "sha": "4561aad",
+      "date": "2026-10-19",
+      "subject": "Update the multilingual translation case study",
+      "words": {
+        "tagline": "Translation across a 200-language model that runs entirely in the browser, with no server and no API key.",
+        "summary": "A React app that runs Meta's NLLB-200 model, distilled to 600M parameters, in the browser through Transformers.js and WebAssembly. The model loads in a Web Worker, is cached after the first download, and streams translations back as they are generated. Built in one evening in February 2025 and still live on Hugging Face Spaces.",
+        "problem": "Translation usually means sending your text to someone else's server. For quick, private use, the model itself can come to the user instead.",
+        "approach": [
+          {
+            "title": "The model comes to you",
+            "body": "NLLB-200 distilled to 600M parameters runs through Transformers.js on WebAssembly. The first visit downloads about 300 MB once and the browser caches it, so later translations need no network for the model."
+          },
+          {
+            "title": "Never block the page",
+            "body": "Inference runs in a Web Worker and talks to the interface by messages, so typing and scrolling stay smooth while the model loads and works. Per-file progress bars show the download."
+          },
+          {
+            "title": "Stream as it translates",
+            "body": "Output streams back token by token instead of arriving all at once, so long passages start reading immediately. A searchable dropdown picks source and target among the 194 languages."
+          }
+        ],
+        "highlights": [
+          "194 languages, including low-resource ones, from a 200-language model",
+          "No backend: inference runs in a Web Worker on WebAssembly",
+          "Live on Hugging Face Spaces as a static site"
+        ]
+      }
     }
   ],
   "deck-kit": [
@@ -1584,6 +1808,13 @@
           "v0.2.0 installable from COPR on Fedora 44, 45 and rawhide, with a GNOME app"
         ]
       }
+    }
+  ],
+  "eeng527-dsp": [
+    {
+      "sha": "05478fa",
+      "date": "2026-10-19",
+      "subject": "Add the EENG527 signal processing case study"
     }
   ]
 }
