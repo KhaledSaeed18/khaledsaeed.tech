@@ -113,7 +113,75 @@
     {
       "sha": "acc8590",
       "date": "2026-09-30",
-      "subject": "Add projects, profile and uses content"
+      "subject": "Add projects, profile and uses content",
+      "words": {
+        "tagline": "Keeps a Mac awake exactly as long as the work is alive, then lets it sleep.",
+        "summary": "A session-aware wake controller for macOS: a menu bar app, a CLI and a local control endpoint. A running process, a listening port, a wrapped command, an agent session or a timer each hold the machine open, and the hold releases itself when the last one ends.",
+        "problem": "Keep-awake tools are a switch you flip on and forget to flip off. They model a timer, not the thing you actually care about.",
+        "approach": [
+          {
+            "title": "Sessions, not switches",
+            "body": "Tell it what to watch: a build, a dev server on :3000, a Claude Code session, an app. It stays awake while that thing runs."
+          },
+          {
+            "title": "Cleans up after itself",
+            "body": "When the last session ends it can sleep the display, sleep the Mac, shut down, restart or notify. Run the agent overnight, shut down when it finishes."
+          },
+          {
+            "title": "Legible",
+            "body": "The menu lists every reason the Mac is awake, including other apps' power assertions like a call or audio playing."
+          }
+        ],
+        "highlights": [
+          "Menu bar app, CLI and local HTTP control endpoint",
+          "Watches processes, ports, commands, agents and timers",
+          "Native Swift with IOKit power assertions"
+        ]
+      }
+    },
+    {
+      "sha": "d51b08d",
+      "date": "2026-10-19",
+      "subject": "Update the Wakehold case study",
+      "words": {
+        "tagline": "Keeps a Mac awake exactly as long as the work is alive, then lets it sleep.",
+        "summary": "A session-aware wake controller for macOS: a menu bar app, a CLI and a local control endpoint over a Unix socket. A running process, a listening port, a wrapped command, a coding agent's session, a chosen app or a timer each hold the machine open, and the hold releases itself when the last one ends. When it does, the Mac can notify you, sleep or shut down.",
+        "problem": "Keep-awake tools are a switch you flip on and forget to flip off. They model a timer, not the thing you actually care about: the build, the dev server, the agent that will finish at some point in the night.",
+        "approach": [
+          {
+            "title": "Sessions, not switches",
+            "body": "Tell it what to watch: a build, a dev server on :3000, a process id, an app, a Claude Code or Codex session, or just twenty minutes. Every session is one type conforming to one protocol, and the Mac is awake exactly while at least one is active. Nothing toggles the power assertion directly; one reconcile step derives it from the sessions."
+          },
+          {
+            "title": "Leases, not goodbyes",
+            "body": "Agent hooks open a lease keyed by the session id and renew it on every event. A crash or a kill never sends an end hook, so the lease's expiry is the source of truth, not the goodbye. The hooks are no-ops when the app is not running, so they never block the agent."
+          },
+          {
+            "title": "Cleans up after itself",
+            "body": "When the last session ends it can notify, sleep the display, sleep the Mac, shut down or restart. Each action is armed per occasion, shown in the menu and cancelable. Run the agent overnight, shut down when it finishes."
+          },
+          {
+            "title": "Guardrails for the battery",
+            "body": "A hold can release itself on battery, below a chosen charge or in Low Power Mode. The display stays on by default, with one switch to let it sleep while the system stays awake. The system-level assertion that fights the lid is never used."
+          },
+          {
+            "title": "Legible",
+            "body": "The menu lists every reason the Mac is awake, including other apps' power assertions like a call, audio or a stray caffeinate, named by their owning process. Wakehold's own holds show up in pmset like everyone else's."
+          },
+          {
+            "title": "A socket, not a port",
+            "body": "The CLI and hooks talk to the app over HTTP on a Unix domain socket under Application Support, mode 0600 with a peer check. A localhost port would be reachable from a browser and any local process; a socket is scoped by the filesystem, and curl still works."
+          }
+        ],
+        "highlights": [
+          "Menu bar app, CLI and a control endpoint over a Unix socket",
+          "Watches processes, ports, commands, agents, apps and timers",
+          "Hooks for Claude Code, Codex, Gemini CLI and Cursor with crash-safe leases",
+          "Post-session sleep, shutdown, restart or notify; battery guardrails",
+          "Localised in English and Arabic, with mirrored layout",
+          "Native Swift with IOKit power assertions, no Electron"
+        ]
+      }
     }
   ],
   "repo-scout": [
@@ -190,7 +258,75 @@
     {
       "sha": "acc8590",
       "date": "2026-09-30",
-      "subject": "Add projects, profile and uses content"
+      "subject": "Add projects, profile and uses content",
+      "words": {
+        "tagline": "A single-pass, streaming CLI for finding what is eating your disk.",
+        "summary": "dat walks a directory once, streams file hashes without loading files into memory, and reports the largest files, duplicated content, empty files and a breakdown by type, with a shareable HTML report.",
+        "problem": "Disk audits either load everything into memory or give you a wall of output you cannot act on or pipe anywhere.",
+        "approach": [
+          {
+            "title": "One walk, constant memory",
+            "body": "A single filesystem traversal with streaming MD5 hashing stays flat on multi-gigabyte trees."
+          },
+          {
+            "title": "Actionable, not just accurate",
+            "body": "Duplicates come with wasted-space totals, plus large and empty file detection and a top-N list."
+          },
+          {
+            "title": "Plays well with others",
+            "body": "Clean ANSI-free JSON, a progress bar that disables itself outside a TTY, CSV exports and a self-contained HTML report."
+          }
+        ],
+        "highlights": [
+          "1,100+ npm downloads in the last year",
+          "Streaming duplicate detection",
+          "Automated releases with GitHub Actions"
+        ]
+      }
+    },
+    {
+      "sha": "6456ef6",
+      "date": "2026-10-19",
+      "subject": "Update the dir-analysis-tool case study for v3.0.0",
+      "words": {
+        "tagline": "Find out what is taking up space: largest folders, duplicates, stale files and size budgets for CI, in one pass.",
+        "summary": "dat is a memory-bounded directory analyzer for the terminal and for CI. It walks a tree once and reports the largest folders and files, duplicated content, empty and stale files and a breakdown by type, then prints it as a table, JSON, Markdown, CSV or a single-file HTML report. Version 3 adds directory diffs, a watch mode, size budgets that fail a build, and a typed library API that returns exactly what the CLI prints.",
+        "problem": "Disk audits either load everything into memory or give you a wall of output you cannot act on or pipe anywhere. The ones that are fast tend to lie a little: they count hard links twice, follow symlink cycles, or skip unreadable paths without saying so.",
+        "approach": [
+          {
+            "title": "One walk, bounded memory",
+            "body": "Every file is stat'ed exactly once. Top-N lists live in bounded heaps, one concurrency limiter covers every filesystem call so wide trees cannot exhaust handles, and depth-first scheduling keeps the queue small. The author's benchmark holds about 9 MB for 140,000 files."
+          },
+          {
+            "title": "Duplicates in three stages",
+            "body": "Files are grouped by size first. Candidates over 256 KiB are then compared by a SHA-256 sample of their first and last 64 KiB, and only survivors get a full streaming hash with reused buffers. Most files are never read in full, which made duplicates about four times faster than version 2."
+          },
+          {
+            "title": "Answers that point somewhere",
+            "body": "The headline is the largest folders, and a folder that is 95% one child folds into it so the list points at where the data lives instead of repeating parents. Large, stale, empty and duplicate files come with totals you can act on, and ordering is by size then path, never discovery order."
+          },
+          {
+            "title": "Budgets, diffs and a watch",
+            "body": "Rules like size<=2MB or duplicates=0 fail a build with exit code 2 and name the rule. dat compare lists what was added, removed and changed between two trees, by content on request. dat watch follows a folder with native filesystem events and streams NDJSON."
+          },
+          {
+            "title": "Five outputs, one shape",
+            "body": "Pretty, JSON with a versioned schema, Markdown for a pull request summary, CSV with a section column and neutralised formula cells, and an HTML report in a single file with inline charts and a content security policy that blocks all network access. Progress and warnings go to stderr; stdout carries only the report."
+          },
+          {
+            "title": "A library that is the CLI",
+            "body": "analyze, compare and every renderer are exported as typed ESM, and the library's return value is exactly what --format json prints. Releases are cut by semantic-release from conventional commits with npm provenance, after a matrix of three operating systems and three Node versions passes."
+          }
+        ],
+        "highlights": [
+          "Largest folders, largest files, duplicates, stale and empty files, type breakdown",
+          "Size budgets for CI that exit 2, directory diffs and a watch mode",
+          "Pretty, JSON, Markdown, CSV and single-file HTML output",
+          "Hard links counted once, symlink cycles detected, unreadable paths reported",
+          "Typed library API with the same results as the CLI",
+          "Published with npm provenance after tests on macOS, Linux and Windows"
+        ]
+      }
     }
   ],
   "gauge": [
