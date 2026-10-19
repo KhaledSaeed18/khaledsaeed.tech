@@ -3445,6 +3445,131 @@ export const projects: Project[] = [
     related: ["eeng527-dsp", "mcce"],
   },
   {
+    slug: "eeng527-dsp",
+    name: "Delay and tone, by hand",
+    tagline:
+      "Finding an echo's delay by cross-correlation and removing one tone from a recording with a filter designed from first principles.",
+    summary:
+      "Two digital signal processing exercises in MATLAB and GNU Octave for the EENG527 course. Part A builds a decaying, noisy copy of a sine pulse and recovers its delay from the cross-correlation peak. Part B finds the dominant tone in a seven-second recording, designs a bandstop FIR filter with the window method and filters it out, writing the result back as audio.",
+    year: 2026,
+    updatedAt: "2026-10-19",
+    group: "systems",
+    kind: "Signal processing project",
+    object: "wave",
+    stock: "bone",
+    stack: ["MATLAB", "GNU Octave", "FFT", "FIR filters"],
+    repo: "EENG527-Project",
+    links: [{ label: "Source", href: gh("EENG527-Project") }],
+    platform: "GNU Octave 6 or later with the signal package, or MATLAB with two small edits",
+    audience: "students meeting correlation and filter design, and anyone who wants the arithmetic behind a notch filter",
+    plain:
+      "Two small experiments in how computers handle signals. The first measures how late a noisy, fading echo of a beep arrives, by sliding the original over it until they line up. The second takes a recording with an annoying whistle in it, finds the whistle's pitch, and designs a filter that removes that one tone while leaving the rest of the sound alone.",
+    proof: [
+      {
+        value: "0",
+        label: "samples of delay error",
+        note: "100 samples expected, 100 found, at 1 khz with noise on a decaying pulse",
+      },
+      {
+        value: "1500.01 Hz",
+        label: "tone detected",
+        note: "fft peak of a 7 s recording; the stopband is 1470 to 1530 hz",
+      },
+      {
+        value: "2,521",
+        label: "filter taps",
+        note: "hann window for a 40 db target, 70 hz transition bands at 44.1 khz",
+      },
+    ],
+    problem:
+      "A course on digital signal processing is full of formulas that only mean something once you have watched them work on a real signal. The assignment was to implement two of them without a toolbox doing the thinking: estimate a delay in noise, and remove a tone with a filter you sized yourself.",
+    approach: [
+      {
+        title: "Delay from the correlation peak",
+        body: "A truncated sine pulse is copied into a longer signal at a chosen delay, scaled by an exponential decay and buried in Gaussian noise. Cross-correlating the noisy copy with the original gives a peak at the lag where they line up, and dividing by the sample rate turns it into seconds. The script asks for every parameter so the noise and decay can be pushed until the peak is lost.",
+      },
+      {
+        title: "Find the tone before removing it",
+        body: "The recording is made mono and normalised, and a zero-padded FFT finds the strongest component between 50 Hz and 8 kHz. A test tone at that frequency can be added so the whistle is easy to hear before and after.",
+      },
+      {
+        title: "Size the filter from the specification",
+        body: "The window is chosen from the required stopband attenuation: rectangular to 21 dB, Hann to 44, Hamming above. The length comes from the narrower transition band, rounded to odd so the centre tap is an integer and the phase is linear. The ideal bandstop is a delta minus the difference of two ideal lowpass responses, then multiplied by the window.",
+      },
+      {
+        title: "Check the result in both domains",
+        body: "The filtered audio is written next to the input, and figures show the signal and its spectrum before and after, the ideal and windowed impulse responses and the magnitude response in dB. After filtering, the band around the tone sits about 22 dB below the strongest remaining component.",
+      },
+    ],
+    highlights: [
+      "Cross-correlation delay estimate exact to the sample on a decaying, noisy pulse",
+      "Bandstop FIR designed by the window method from the attenuation spec",
+      "Runs in GNU Octave with the signal package; MATLAB needs two edits",
+      "Course project for EENG527, Digital Signal Processing",
+    ],
+    decisions: [
+      {
+        chose: "the window method",
+        over: "an equiripple design",
+        why: "The window method is the one the course teaches and every number in it can be derived by hand: the window from the attenuation, the length from the transition width. Equiripple designs are shorter but opaque.",
+      },
+      {
+        chose: "an odd filter length",
+        over: "the computed even length",
+        why: "An odd length puts the centre tap on an integer sample, so the filter has exact linear phase and the delay it adds is a whole number of samples.",
+      },
+      {
+        chose: "random noise on every run",
+        over: "a fixed seed",
+        why: "The point of part A is to see the peak survive noise. Each run draws fresh noise, so the plots change while the delay estimate should not.",
+      },
+    ],
+    install: [
+      {
+        label: "install octave with the signal package",
+        command: "brew install octave && octave --eval \"pkg load signal; disp('signal ok')\"",
+        note: "fedora: dnf install octave octave-signal; ubuntu: apt install octave octave-signal",
+      },
+      {
+        label: "estimate a delay",
+        command: "cd PartA && octave --persist PartA.m",
+        note: "asks for eight values; the readme lists the example inputs",
+      },
+      {
+        label: "remove the tone",
+        command: "cd PartB && octave --persist PartB.m",
+        note: "writes audio_v1-filtered.wav next to the input",
+      },
+    ],
+    timeline: [
+      {
+        date: "2026-01-10",
+        title: "First commit",
+        body: "Both parts, written in a day.",
+      },
+      {
+        date: "2026-10-09",
+        title: "README with the design rules",
+        body: "Setup for three platforms, the window table, the length formula and the verified results.",
+      },
+    ],
+    faq: [
+      {
+        q: "Why a Hann window?",
+        a: "The specification asks for 40 dB of stopband attenuation. That falls between the 21 dB a rectangular window gives and the 44 dB Hann reaches, so Hann is the shortest window that meets it.",
+      },
+      {
+        q: "Why 2,521 taps?",
+        a: "The transition bands are 70 Hz wide at a 44.1 kHz sample rate. The Hann rule of eight pi over the transition width gives 2,520, plus one to make the length odd.",
+      },
+      {
+        q: "Does it run in MATLAB?",
+        a: "Yes, with the Signal Processing Toolbox and two edits the README lists: drop the package load line and replace one Octave-only function.",
+      },
+    ],
+    related: ["freertos-riscv", "mcce"],
+  },
+  {
     slug: "multilingual-translation",
     name: "Multilingual translation",
     tagline:
