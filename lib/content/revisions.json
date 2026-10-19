@@ -300,7 +300,66 @@
     {
       "sha": "acc8590",
       "date": "2026-09-30",
-      "subject": "Add projects, profile and uses content"
+      "subject": "Add projects, profile and uses content",
+      "words": {
+        "tagline": "The study hub for my master's program: every course file, past exam and planner in one index.",
+        "summary": "An independent, student-built index for the LIU M.S. in Computer and Communication Engineering. It syncs shared Google Drive folders into one searchable site, and adds the plan of study, a prerequisite roadmap, a GPA calculator, a tuition planner and an in-browser PDF editor.",
+        "problem": "Course material lived in three channels that each lost something: official slides with no past exams, and chat groups that were hard to search and not open to everyone.",
+        "approach": [
+          {
+            "title": "Drive as the source of truth",
+            "body": "A scheduled sync indexes the shared Drive folders by semester, course and material type, so the site tracks what is actually shared without anyone maintaining it by hand."
+          },
+          {
+            "title": "The program on one screen",
+            "body": "Plan of study, prerequisite roadmap, admissions flow and tuition figures, with a planner that works a year of fees out from them."
+          },
+          {
+            "title": "Works offline",
+            "body": "An installable PWA with saved files, RSS updates and exports to PDF, CSV and JSON."
+          }
+        ],
+        "highlights": [
+          "Weekly automatic sync from Google Drive",
+          "In-browser PDF editor for any indexed file",
+          "Runs on Cloudflare Workers"
+        ]
+      }
+    },
+    {
+      "sha": "8a330ab",
+      "date": "2026-10-19",
+      "subject": "Update the MCCE case study",
+      "words": {
+        "tagline": "The study hub for my master's program: every course file, past exam and planner in one index.",
+        "summary": "An independent, student-built index for the LIU M.S. in Computer and Communication Engineering. It syncs shared Google Drive folders into one searchable site every week, 895 files across 16 courses at the last crawl, and adds the plan of study, a prerequisite roadmap, a GPA calculator, a tuition planner, a directory of 400 tools and an in-browser PDF editor. No sign-in, no tracking, no backend.",
+        "problem": "Course material lived in three channels that each lost something: official slides with no past exams, and chat groups that were hard to search and not open to everyone.",
+        "approach": [
+          {
+            "title": "Drive as the source of truth",
+            "body": "A scheduled GitHub Action crawls three shared Drive folders through a service account every Monday, classifies every file by semester, course and material type, and commits the index back as JSON. The site has no backend: the index is the data, cached in the browser after the first visit."
+          },
+          {
+            "title": "The program on one screen",
+            "body": "Plan of study, a prerequisite roadmap drawn as a graph with credit totals, admissions tracks and tuition figures, with a planner that works a year of fees out in dollars and pounds, and a GPA calculator that projects the end of the program and shares a link."
+          },
+          {
+            "title": "Mark up a PDF without touching it",
+            "body": "Any indexed file opens in an editor with drawing, text, shapes, page rotation and reordering. The markup stays in the browser and saves as a copy, so the shared file in Drive never changes."
+          },
+          {
+            "title": "Everything else a student searches for",
+            "body": "A command palette with recents, past exams grouped by course and term, a feed of recent additions with RSS, and a directory of about 400 tools and 285 repositories by category, cost and licence, including a thesis toolkit by stage."
+          }
+        ],
+        "highlights": [
+          "Weekly automatic sync from Google Drive, link check the hour after",
+          "Search with filters, command palette, course pages and past exams",
+          "GPA projection, tuition planner and a prerequisite roadmap",
+          "In-browser PDF editor for any indexed file",
+          "Installable PWA that works offline, on Cloudflare Workers"
+        ]
+      }
     }
   ],
   "jwt-toolkit": [
