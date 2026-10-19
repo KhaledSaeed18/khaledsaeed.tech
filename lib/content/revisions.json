@@ -1377,14 +1377,213 @@
     {
       "sha": "5e693a4",
       "date": "2026-10-15",
-      "subject": "Add urljail and osreflog case studies, feature them on the home press"
+      "subject": "Add urljail and osreflog case studies, feature them on the home press",
+      "words": {
+        "tagline": "Opens a link you don't trust inside a throwaway microVM and reports what the page actually does.",
+        "summary": "urljail restores a Firecracker microVM from a snapshot, opens the URL in sandboxed Chrome and records the visit from two sides: the browser through the DevTools Protocol, and the host through eBPF, its own DNS resolver and the firewall. The report covers redirects, DNS, TLS SNI, forms, screenshots and phishing indicators, then the VM is destroyed. It is in active development on my Linux machine.",
+        "problem": "You get a link you don't trust. Static checks look at the URL string, the domain's age or a blocklist, which is exactly what attackers optimize against, and they say nothing about what the page does. Hosted scanners answer part of it but are black boxes: you can't see how the browser was set up, how traffic was captured, or how often the page lied to the scanner. Opening it on your own machine is the one thing you must not do.",
+        "approach": [
+          {
+            "title": "A fresh microVM for every link",
+            "body": "Each URL gets a Firecracker microVM restored from a snapshot with Chrome already running, about a quarter of a second before navigation starts. A guest agent drives Chrome over a DevTools Protocol pipe and streams the evidence back over vsock. When the visit ends, the VM is destroyed and nothing survives except the evidence."
+          },
+          {
+            "title": "Two witnesses",
+            "body": "The browser reports requests, redirects, forms and the DOM from inside. The host watches from outside: an eBPF program on the VM's TAP device records flows and the TLS ClientHello SNI, a resolver logs DNS, the firewall logs blocked attempts and a pcap is written. The report reconciles both views, and a disagreement between them is itself a finding."
+          },
+          {
+            "title": "Fails closed",
+            "body": "Each VM sits in its own network namespace with no route to the host, the LAN or cloud metadata addresses. Live traffic leaves only through a WireGuard tunnel in a separate namespace, so if the tunnel drops there is no route at all. The daemon refuses to serve until its own isolation self-test passes."
+          },
+          {
+            "title": "Jailed and confined",
+            "body": "Every Firecracker process runs under the jailer as its own unprivileged user, in a chroot with seccomp, cgroup limits on memory, tasks and CPU, rate-limited network and disk, and an SELinux policy module. The guest is treated as hostile, so reports are built by an unprivileged helper and everything the guest says is evidence, not truth."
+          },
+          {
+            "title": "No proxy in the middle",
+            "body": "There is no man-in-the-middle proxy, so servers see a real Chrome TLS fingerprint. Chrome's key log ships back with the capture so traffic can be decrypted offline, and every report comes with a HAR export."
+          },
+          {
+            "title": "Cloaking measured, not assumed",
+            "body": "Browser countermeasures are switchable snapshot profiles, so the same URL opens under six of them at once. On 172 fresh candidates from Certificate Transparency logs, only the HeadlessChrome User-Agent ever changed what a site showed, and every case was infrastructure such as Cloudflare's bot challenge, not a phishing kit."
+          },
+          {
+            "title": "Indicators scored against labels",
+            "body": "Report indicators flag details forms on free hosting, brand lures, fake human checks and phishing kits recognised by page structure. Each rule is scored against labelled runs and held-out sets from live feeds, then replayed across every stored run to count false alarms before it stays."
+          },
+          {
+            "title": "A dashboard on top",
+            "body": "A NestJS service with Postgres and a BullMQ queue talks gRPC to the daemon, and a Next.js dashboard submits URLs, lists runs and renders the redirect chain, network graph and screenshot. Hostile data is shown as text and never linked, and the daemon stays the only privileged component."
+          }
+        ],
+        "highlights": [
+          "A Firecracker microVM per URL, restored from a snapshot in about 0.24 s",
+          "Host-side eBPF capture of flows and TLS SNI, reconciled with the browser's view",
+          "WireGuard-only egress that fails closed, gated by an isolation self-test",
+          "Every VMM jailed as its own user, with seccomp, cgroups and SELinux",
+          "A cloaking study across six browser profiles on fresh phishing candidates",
+          "In active development; the live gate and the control plane are done"
+        ]
+      }
+    },
+    {
+      "sha": "b3e4b3f",
+      "date": "2026-10-19",
+      "subject": "Update the urljail case study",
+      "words": {
+        "tagline": "Opens a link you don't trust inside a throwaway microVM and reports what the page actually does.",
+        "summary": "urljail restores a Firecracker microVM from a snapshot, opens the URL in sandboxed Chrome and records the visit from two sides: the browser through the DevTools Protocol, and the host through eBPF, its own DNS resolver and the firewall. The report covers redirects, DNS, TLS SNI, forms, screenshots and phishing indicators scored against six blind held-out sets, then the VM is destroyed. It is in active development on my Linux machine.",
+        "problem": "You get a link you don't trust. Static checks look at the URL string, the domain's age or a blocklist, which is exactly what attackers optimize against, and they say nothing about what the page does. Hosted scanners answer part of it but are black boxes: you can't see how the browser was set up, how traffic was captured, or how often the page lied to the scanner. Opening it on your own machine is the one thing you must not do.",
+        "approach": [
+          {
+            "title": "A fresh microVM for every link",
+            "body": "Each URL gets a Firecracker microVM restored from a snapshot with Chrome already running, about a quarter of a second before navigation starts. A guest agent drives Chrome over a DevTools Protocol pipe and streams the evidence back over vsock. When the visit ends, the VM is destroyed and nothing survives except the evidence."
+          },
+          {
+            "title": "Two witnesses",
+            "body": "The browser reports requests, redirects, forms and the DOM from inside. The host watches from outside: an eBPF program on the VM's TAP device records flows and the TLS ClientHello SNI, a resolver logs DNS, the firewall logs blocked attempts and a pcap is written. The report reconciles both views, and a disagreement between them is itself a finding."
+          },
+          {
+            "title": "Fails closed",
+            "body": "Each VM sits in its own network namespace with no route to the host, the LAN or cloud metadata addresses. Live traffic leaves only through a WireGuard tunnel in a separate namespace, so if the tunnel drops there is no route at all. The daemon refuses to serve until its own isolation self-test passes. During a two-minute tunnel outage, 93 URLs were refused, as designed."
+          },
+          {
+            "title": "Jailed and confined",
+            "body": "Every Firecracker process runs under the jailer as its own unprivileged user, in a chroot with seccomp, cgroup limits on memory, tasks and CPU, rate-limited network and disk, and an SELinux policy module. The guest is treated as hostile, so reports are built by an unprivileged helper and everything the guest says is evidence, not truth."
+          },
+          {
+            "title": "No proxy in the middle",
+            "body": "There is no man-in-the-middle proxy, so servers see a real Chrome TLS fingerprint. Chrome's key log ships back with the capture so traffic can be decrypted offline, and every report comes with a HAR export."
+          },
+          {
+            "title": "Cloaking measured, not assumed",
+            "body": "Browser countermeasures are switchable snapshot profiles, so the same URL opens under up to six of them at once. On 172 fresh candidates from Certificate Transparency logs, only the HeadlessChrome User-Agent ever changed what a site showed, and every case was infrastructure such as Cloudflare's bot challenge, not a phishing kit."
+          },
+          {
+            "title": "Indicators scored against labels",
+            "body": "Report indicators flag details forms on free hosting, brand lures, fake human checks and phishing kits recognised by page structure. Each rule is scored against 498 labelled pages and six blind held-out sets from live feeds, then replayed across every stored run to count false alarms before it stays. A rule that fired on nothing was removed."
+          },
+          {
+            "title": "A dashboard on top",
+            "body": "A NestJS service with Postgres and a BullMQ queue talks gRPC to the daemon, and a Next.js dashboard submits URLs, lists runs and renders the redirect chain, network graph and screenshot. Hostile data is shown as text and never linked, and the daemon stays the only privileged component."
+          }
+        ],
+        "highlights": [
+          "A Firecracker microVM per URL, restored from a snapshot in about 0.24 s",
+          "Host-side eBPF capture of flows and TLS SNI, reconciled with the browser's view",
+          "WireGuard-only egress that fails closed, gated by an isolation self-test",
+          "Every VMM jailed as its own user, with seccomp, cgroups and SELinux",
+          "A cloaking study across six browser profiles on fresh phishing candidates",
+          "Indicators held to blind sets: 62% of phishing pages flagged in the latest, kits matched 5 of 5",
+          "In active development; the live gate and the control plane are done"
+        ]
+      }
     }
   ],
   "osreflog": [
     {
       "sha": "5e693a4",
       "date": "2026-10-15",
-      "subject": "Add urljail and osreflog case studies, feature them on the home press"
+      "subject": "Add urljail and osreflog case studies, feature them on the home press",
+      "words": {
+        "tagline": "A reflog for a Linux system: what changed, who changed it, and which change broke it.",
+        "summary": "osreflog records every change to a Fedora system together with its cause: the package transaction, service, command or app that made it. It rebuilds the system as it was at any point, bisects a regression down to a single cause by testing each step in a throwaway container or VM, and undoes that cause file by file. It is in active development on my Linux machine.",
+        "problem": "When a Linux desktop breaks, you know one thing: it worked last week. Package history covers packages only, the journal shows events but not state, and snapshot tools show the whole system at a moment but not what changed between two snapshots, who changed it, or which change broke things. There is no git bisect for an operating system.",
+        "approach": [
+          {
+            "title": "Two witnesses",
+            "body": "A live witness records who changes each file as it happens, with a filesystem-wide fanotify mark and eBPF tracing every write back to its process and package transaction. A state witness proves what changed between read-only btrfs snapshots from the send stream. When they disagree, for example a change made while the daemon was stopped, the gap is reported instead of smoothed over."
+          },
+          {
+            "title": "Causes, not files",
+            "body": "Changes are grouped into causes: a dnf transaction, a systemd service, a terminal command, an app writing a setting. Writes a daemon makes on someone's behalf over D-Bus, from tools like timedatectl or nmcli, are credited to the caller. osreflog why shows who changed a file and a readable diff of what it means."
+          },
+          {
+            "title": "Git's vocabulary on purpose",
+            "body": "log, show, diff, blame, bisect and undo work on causes, and references read like git's reflog: c42, @{1}, @{boot-1}, @{yesterday}. Diffs are computed after each checkpoint and cached, so the diff after a real dnf transaction comes back in 6 ms."
+          },
+          {
+            "title": "Bisect down to one cause",
+            "body": "Snapshots are coarse, so osreflog rebuilds the states between them by replaying causes into a writable clone. Each step is tested in a throwaway systemd-nspawn container in under a second, or in a QEMU VM that boots the clone's own kernel over virtiofs in about 14 seconds. Every replay says whether it was exact or approximate."
+          },
+          {
+            "title": "Undo without rolling back",
+            "body": "osreflog undo reverts one cause path by path as a 3-way merge, leaving alone anything that changed since and refusing on conflict. Package causes are handed to dnf. Dry run is the default, a checkpoint is taken before every apply, and an undo can itself be undone. GNOME settings get the same treatment through dconf."
+          },
+          {
+            "title": "Observe before touching",
+            "body": "Nothing wrote to the live root until a write gate passed: the full undo matrix in a contained scratch root, with symlink-swap races and magic links refused by openat2 resolution. Config parsers run in a sandboxed worker and were each fuzzed for an hour. Secrets are never stored and command lines are redacted."
+          },
+          {
+            "title": "Cheap enough to leave on",
+            "body": "The idle daemon used 0.0% CPU and 26 MB of memory on the development laptop, and a checkpoint adds under a second to a dnf transaction. The ledger is local, root-only SQLite with a hash chain, so tampering is evident."
+          },
+          {
+            "title": "Metal bisect next",
+            "body": "Some regressions only show on real hardware. The next phase reboots once into a disposable clone, with the default boot entry checked untouched after every probe, and it stays behind a boot gate tested in a nested VM first. A GTK and libadwaita app and COPR packaging, like drainscope's, come last."
+          }
+        ],
+        "highlights": [
+          "Every change to /etc and system state recorded with its cause",
+          "A live fanotify and eBPF witness reconciled with btrfs send-stream diffs",
+          "Cause-level bisect in nspawn containers or VMs that boot the snapshot's kernel",
+          "3-way undo that refuses on conflict, dry run by default",
+          "5 of 5 seeded regressions found within the probe bound",
+          "In active development on Fedora 44; metal bisect is next"
+        ]
+      }
+    },
+    {
+      "sha": "d4c2d0c",
+      "date": "2026-10-19",
+      "subject": "Update the osreflog case study for v0.2.0",
+      "words": {
+        "tagline": "A reflog for a Linux system: what changed, who changed it, and which change broke it.",
+        "summary": "osreflog records every change to a Fedora system together with its cause: the package transaction, service, command or app that made it. It rebuilds the system as it was at any point, bisects a regression down to a single cause by testing each step in a throwaway container, a VM or a one-shot reboot on real hardware, and undoes that cause file by file. Version 0.2.0 ships from COPR with a GNOME app, and the 48-hour soak is running.",
+        "problem": "When a Linux desktop breaks, you know one thing: it worked last week. Package history covers packages only, the journal shows events but not state, and snapshot tools show the whole system at a moment but not what changed between two snapshots, who changed it, or which change broke things. There is no git bisect for an operating system.",
+        "approach": [
+          {
+            "title": "Two witnesses",
+            "body": "A live witness records who changes each file as it happens, with a filesystem-wide fanotify mark and eBPF tracing every write back to its process and package transaction. A state witness proves what changed between read-only btrfs snapshots from the send stream. When they disagree, for example a change made while the daemon was stopped, the gap is reported instead of smoothed over."
+          },
+          {
+            "title": "Causes, not files",
+            "body": "Changes are grouped into causes: a dnf transaction, a systemd service, a terminal command, an app writing a setting. Writes a daemon makes on someone's behalf over D-Bus, from tools like timedatectl or nmcli, are credited to the caller. osreflog why shows who changed a file and a readable diff of what it means."
+          },
+          {
+            "title": "Git's vocabulary on purpose",
+            "body": "log, show, diff, why, bisect and undo work on causes, and references read like git's reflog: c42, @{1}, @{boot-1}, @{yesterday}. Diffs are computed after each checkpoint and cached, so the diff after a real dnf transaction comes back in 6 ms."
+          },
+          {
+            "title": "Bisect down to one cause, in three tiers",
+            "body": "Snapshots are coarse, so osreflog rebuilds the states between them by replaying causes into a writable clone. Each step is tested in a throwaway systemd-nspawn container in under a second, in a QEMU VM that boots the clone's own kernel over virtiofs in about 14 seconds, or, for regressions that only show on real hardware, by one reboot into a one-shot boot entry. Every replay says whether it was exact or approximate."
+          },
+          {
+            "title": "Undo without rolling back",
+            "body": "osreflog undo reverts one cause path by path as a 3-way merge, leaving alone anything that changed since and refusing on conflict. Package causes are handed to dnf. Dry run is the default, a checkpoint is taken before every apply, replaced files go to an attic, and an undo can itself be undone. GNOME settings get the same treatment through dconf."
+          },
+          {
+            "title": "Observe before touching",
+            "body": "Nothing wrote to the live root until a write gate passed: the full undo matrix in a contained scratch root, with symlink-swap races and magic links refused by openat2 resolution, 3,541 race runs and no escape. Metal probes waited for a boot gate tested in a nested VM first, with a boot doctor checking the default entry at every boot. Config parsers run in a sandboxed worker and were each fuzzed for an hour. Secrets are never stored and command lines are redacted."
+          },
+          {
+            "title": "A desktop app, packaged and hardened",
+            "body": "A GTK and libadwaita app browses history, shows what changed since, previews an undo and walks a bisect, with search, coloured diffs and toasts. Signed COPR packages cover Fedora 44, 45 and rawhide, and were installed on a fresh Fedora 44 VM with every check passing. Version 0.2.0 added system call filters, a sandboxed user agent and an SELinux module; systemd rates the user agent's exposure at 1.0, down from 8.0."
+          },
+          {
+            "title": "Cheap enough to leave on",
+            "body": "The daemon uses 0.08% of one CPU at rest and a checkpoint adds under a second to a dnf transaction. Memory sits around 41 MB just started and grows with big diffs, capped by a 768 MB unit limit. The ledger is local, root-only SQLite with a hash chain, so tampering is evident. A 48-hour soak started on 17 October; its result is not published yet."
+          }
+        ],
+        "highlights": [
+          "Every change to /etc and system state recorded with its cause",
+          "A live fanotify and eBPF witness reconciled with btrfs send-stream diffs",
+          "Cause-level bisect in containers, in VMs that boot the snapshot's kernel, or on real hardware",
+          "3-way undo that refuses on conflict, dry run by default, undoable itself",
+          "5 of 5 seeded regressions found within the probe bound; a real regression found on metal in 3 probes",
+          "v0.2.0 installable from COPR on Fedora 44, 45 and rawhide, with a GNOME app"
+        ]
+      }
     }
   ]
 }
