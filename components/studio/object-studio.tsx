@@ -402,6 +402,29 @@ float oBisect(vec3 p) {
   return min(min(rail, nodes), min(culprit, marker)) * k;
 }
 
+float oWave(vec3 p) {
+  // a sine trace on a scope: the pulse, one period and a half, as a tube
+  // over its baseline, with the tone's notch cut from a spectrum bar below
+  vec3 q = p - vec3(0.0, 0.05, 0.0);
+  float d = 1e5;
+  vec3 prev = vec3(-0.92, 0.0, 0.0);
+  for (int i = 1; i <= 24; i++) {
+    float t = -0.92 + float(i) * (1.84 / 24.0);
+    vec3 c = vec3(t, 0.42 * sin((t + 0.92) / 1.84 * 3.0 * PI), 0.0);
+    d = min(d, sdCapsule(q, prev, c, 0.075));
+    prev = c;
+  }
+  // baseline rod
+  d = min(d, sdBox(q - vec3(0.0, 0.0, 0.0), vec3(0.98, 0.022, 0.022)));
+  // spectrum bar under the trace, with the stopband cut out of it
+  vec3 b = q - vec3(0.0, -0.72, 0.0);
+  float bar = sdBox(b, vec3(0.98, 0.09, 0.09));
+  bar = max(bar, -sdBox(b - vec3(0.3, 0.0, 0.0), vec3(0.12, 0.2, 0.2)));
+  // the tone that was there, as a pin above the notch
+  float pin = sdBox(q - vec3(0.3, -0.5, 0.0), vec3(0.03, 0.12, 0.03));
+  return min(d, min(bar, pin));
+}
+
 float map(vec3 p) {
   if (u_obj == 0) return oTenants(p);
   if (u_obj == 1) return oPipeline(p);
@@ -423,7 +446,8 @@ float map(vec3 p) {
   if (u_obj == 17) return oPadlock(p);
   if (u_obj == 18) return oPresentation(p);
   if (u_obj == 19) return oCage(p);
-  return oBisect(p);
+  if (u_obj == 20) return oBisect(p);
+  return oWave(p);
 }
 
 float mapT(vec3 p, float ang) {
@@ -464,7 +488,7 @@ void main() {
   float f = floor(frag.x / u_cells);
   vec2 local = vec2(mod(frag.x, u_cells), frag.y) / u_cells - 0.5;
   // a gentle swing rather than a full spin, so flat objects never go edge-on
-  bool planar = u_obj == 0 || u_obj == 1 || u_obj == 2 || u_obj == 5 || u_obj == 7 || u_obj == 8 || u_obj == 9 || u_obj == 10 || u_obj == 11 || u_obj == 16 || u_obj == 17 || u_obj == 18 || u_obj == 20;
+  bool planar = u_obj == 0 || u_obj == 1 || u_obj == 2 || u_obj == 5 || u_obj == 7 || u_obj == 8 || u_obj == 9 || u_obj == 10 || u_obj == 11 || u_obj == 16 || u_obj == 17 || u_obj == 18 || u_obj == 20 || u_obj == 21;
   float ang = planar ? 0.3 + 0.36 * sin(f / u_frames * 2.0 * PI) : 0.55 + 0.55 * sin(f / u_frames * 2.0 * PI);
 
   // three-quarter view from slightly above

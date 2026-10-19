@@ -72,6 +72,10 @@ export function PrintProject({ project: p }: { project: Project }) {
     : "text-[8pt] leading-[1.45]"
   let n = 0
   const next = () => ++n
+  const version = p.timeline
+    ?.map((m) => m.title)
+    .filter((t) => /^v?\d+\.\d+/.test(t))
+    .at(-1)
 
   // margin boxes only take a string, so the slug line's text is set here
   const slug = `proof printed from khaledsaeed.tech/work/${p.slug}${edition ? `, edition ${edition}` : ""}, ${date}`
@@ -87,6 +91,7 @@ export function PrintProject({ project: p }: { project: Project }) {
               {"// "}
               {kindPhrase(p.kind)}, {p.year}
               {p.status ? ` / ${p.status.toLowerCase()}` : ""}
+              {version ? ` / ${version}` : ""}
             </p>
             <h1 className="mt-[1.5mm] font-heading text-[30pt] leading-none font-medium tracking-tight">
               {p.name}
@@ -127,6 +132,12 @@ export function PrintProject({ project: p }: { project: Project }) {
               <section className="mb-[5mm]">
                 <Head index={next()}>summary</Head>
                 <p className="text-[9pt] leading-[1.5]">{p.summary}</p>
+              </section>
+            )}
+            {dense && p.plain && (
+              <section className="mb-[5mm]">
+                <Head index={next()}>in plain words</Head>
+                <p className="text-[9pt] leading-[1.5]">{p.plain}</p>
               </section>
             )}
 
@@ -207,6 +218,24 @@ export function PrintProject({ project: p }: { project: Project }) {
                 {p.stack.join(", ")}
               </p>
             </section>
+
+            {p.install && (
+              <section className="mt-[5mm]">
+                <Head index={next()}>try it</Head>
+                <ul className="space-y-[1.2mm]">
+                  {p.install.map((s) => (
+                    <li key={s.command} className="break-inside-avoid">
+                      <p className="font-mono text-[6.5pt] text-[#6b635c]">
+                        {s.label}
+                      </p>
+                      <p className="font-mono text-[7.5pt] leading-snug break-all">
+                        $ {s.command}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
           </div>
         </div>
       </div>
