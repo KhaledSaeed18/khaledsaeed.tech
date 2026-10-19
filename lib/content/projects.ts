@@ -2631,11 +2631,11 @@ export const projects: Project[] = [
   {
     slug: "urljail",
     name: "urljail",
-    updatedAt: "2026-10-15",
+    updatedAt: "2026-10-19",
     tagline:
       "Opens a link you don't trust inside a throwaway microVM and reports what the page actually does.",
     summary:
-      "urljail restores a Firecracker microVM from a snapshot, opens the URL in sandboxed Chrome and records the visit from two sides: the browser through the DevTools Protocol, and the host through eBPF, its own DNS resolver and the firewall. The report covers redirects, DNS, TLS SNI, forms, screenshots and phishing indicators, then the VM is destroyed. It is in active development on my Linux machine.",
+      "urljail restores a Firecracker microVM from a snapshot, opens the URL in sandboxed Chrome and records the visit from two sides: the browser through the DevTools Protocol, and the host through eBPF, its own DNS resolver and the firewall. The report covers redirects, DNS, TLS SNI, forms, screenshots and phishing indicators scored against six blind held-out sets, then the VM is destroyed. It is in active development on my Linux machine.",
     year: 2026,
     group: "systems",
     kind: "Phishing URL sandbox",
@@ -2668,9 +2668,17 @@ export const projects: Project[] = [
         label: "Cloaking study",
         href: `${gh("urljail")}/blob/main/docs/research/r1-results.md`,
       },
+      {
+        label: "Decisions",
+        href: `${gh("urljail")}/tree/main/docs/decisions`,
+      },
     ],
     status: "In active development",
     featured: true,
+    platform: "Linux with KVM, cgroups v2 and BTF; developed on Fedora 44",
+    audience: "security teams triaging reported links, and anyone who wants to see what a page does before a person does",
+    plain:
+      "Someone sends you a link and you are not sure it is safe. urljail opens it inside a tiny throwaway virtual computer that is destroyed afterwards, and writes down everything the page tried to do: where it redirected, what it asked for, what it looked like. You never have to open the link yourself, and the page cannot tell it is being watched.",
     proof: [
       {
         value: "242 ms",
@@ -2688,9 +2696,19 @@ export const projects: Project[] = [
         note: "certificate transparency candidates, the cloaking study",
       },
       {
-        value: "5,385",
+        value: "6,400",
         label: "stored runs replayed per rule",
         note: "every new indicator is checked against them for false alarms",
+      },
+      {
+        value: "62%",
+        label: "of phishing pages flagged, blind",
+        note: "23 of 37 in the sixth held-out set, 7 false alarms on 91 others",
+      },
+      {
+        value: "19",
+        label: "decision records in 7 days",
+        note: "132 commits from 10 to 16 oct 2026",
       },
     ],
     problem:
@@ -2706,7 +2724,7 @@ export const projects: Project[] = [
       },
       {
         title: "Fails closed",
-        body: "Each VM sits in its own network namespace with no route to the host, the LAN or cloud metadata addresses. Live traffic leaves only through a WireGuard tunnel in a separate namespace, so if the tunnel drops there is no route at all. The daemon refuses to serve until its own isolation self-test passes.",
+        body: "Each VM sits in its own network namespace with no route to the host, the LAN or cloud metadata addresses. Live traffic leaves only through a WireGuard tunnel in a separate namespace, so if the tunnel drops there is no route at all. The daemon refuses to serve until its own isolation self-test passes. During a two-minute tunnel outage, 93 URLs were refused, as designed.",
       },
       {
         title: "Jailed and confined",
@@ -2718,11 +2736,11 @@ export const projects: Project[] = [
       },
       {
         title: "Cloaking measured, not assumed",
-        body: "Browser countermeasures are switchable snapshot profiles, so the same URL opens under six of them at once. On 172 fresh candidates from Certificate Transparency logs, only the HeadlessChrome User-Agent ever changed what a site showed, and every case was infrastructure such as Cloudflare's bot challenge, not a phishing kit.",
+        body: "Browser countermeasures are switchable snapshot profiles, so the same URL opens under up to six of them at once. On 172 fresh candidates from Certificate Transparency logs, only the HeadlessChrome User-Agent ever changed what a site showed, and every case was infrastructure such as Cloudflare's bot challenge, not a phishing kit.",
       },
       {
         title: "Indicators scored against labels",
-        body: "Report indicators flag details forms on free hosting, brand lures, fake human checks and phishing kits recognised by page structure. Each rule is scored against labelled runs and held-out sets from live feeds, then replayed across every stored run to count false alarms before it stays.",
+        body: "Report indicators flag details forms on free hosting, brand lures, fake human checks and phishing kits recognised by page structure. Each rule is scored against 498 labelled pages and six blind held-out sets from live feeds, then replayed across every stored run to count false alarms before it stays. A rule that fired on nothing was removed.",
       },
       {
         title: "A dashboard on top",
@@ -2735,8 +2753,102 @@ export const projects: Project[] = [
       "WireGuard-only egress that fails closed, gated by an isolation self-test",
       "Every VMM jailed as its own user, with seccomp, cgroups and SELinux",
       "A cloaking study across six browser profiles on fresh phishing candidates",
+      "Indicators held to blind sets: 62% of phishing pages flagged in the latest, kits matched 5 of 5",
       "In active development; the live gate and the control plane are done",
     ],
+    decisions: [
+      {
+        chose: "restoring a snapshot on demand",
+        over: "a pool of pre-warmed VMs",
+        why: "A restore takes a quarter of a second, which made the pool and its bookkeeping unnecessary. Clone safety needed real work instead: the kernel clock and the VM generation id reseed each clone, and 25 of 25 TLS ClientHello randoms came out distinct.",
+      },
+      {
+        chose: "TLS visibility through Chrome's key log",
+        over: "a man-in-the-middle proxy",
+        why: "A proxy changes the TLS fingerprint, and fingerprinting is exactly what cloaking looks at. The key log ships with the pcap, so traffic decrypts offline and the server saw a real Chrome.",
+      },
+      {
+        chose: "a root daemon with unprivileged VMMs",
+        over: "a rootless design",
+        why: "Namespaces, nftables, eBPF and the jailer need root. The daemon keeps that privilege, every VMM runs as its own uid in a chroot, the report builder is an unprivileged child, and the parsers that face the guest are fuzzed.",
+      },
+      {
+        chose: "a VPN exit in its own network namespace",
+        over: "egress from the home connection",
+        why: "The guest saw the VPN's address and never the home address, and when the tunnel is down there is no route at all. One datacenter exit is a known limit of the cloaking study.",
+      },
+      {
+        chose: "indicators without a verdict",
+        over: "a phishing classifier in the core",
+        why: "The tool reports behaviour and scored heuristics; deciding is downstream. Every rule carries its in-sample and held-out numbers, and false alarms are listed rather than tuned away.",
+      },
+    ],
+    install: [
+      {
+        label: "build the daemon and the cli",
+        command: "make build && make test && make fuzz",
+        note: "go 1.27, firecracker 1.17, kvm, clang, nft, unbound and wireguard tools",
+      },
+      {
+        label: "open a link in a throwaway vm",
+        command: "urljail detonate https://suspicious.example",
+        note: "only after the isolation tests and the live gate pass on your machine",
+      },
+      {
+        label: "bring up the dashboard, no root",
+        command: "control-plane/scripts/setup.sh",
+        note: "postgres and redis as podman quadlets; dashboard at 127.0.0.1:7800",
+      },
+    ],
+    timeline: [
+      {
+        date: "2026-10-10",
+        title: "First commit",
+      },
+      {
+        date: "2026-10-12",
+        title: "Live gate passed",
+        body: "Hand boot, the vertical slice, the network layer with eBPF SNI capture, snapshot restore at 202 ms, the jailer and SELinux, then WireGuard-only egress with the development sudo rule removed.",
+      },
+      {
+        date: "2026-10-13",
+        title: "Cloaking study published",
+        body: "172 fresh URLs under five or six profiles: only the User-Agent ever mattered.",
+      },
+      {
+        date: "2026-10-14",
+        title: "Control plane done",
+        body: "NestJS, Postgres and BullMQ behind a Next.js dashboard, HAR export, perceptual-hash similarity and the first indicators.",
+      },
+      {
+        date: "2026-10-16",
+        title: "Six held-out sets",
+        body: "Gate, lure and kit rules scored blind on four more sets, 137 kit references, 6,400 stored runs replayed per rule.",
+      },
+    ],
+    faq: [
+      {
+        q: "Is it safe to run?",
+        a: "It is designed to fail closed: each VM has no route to the host, the LAN or metadata addresses, live traffic leaves only through a WireGuard tunnel in another namespace, and the daemon refuses to serve until its isolation self-test passes. The README still says not to open live phishing until those tests pass on your machine.",
+      },
+      {
+        q: "Does it need root?",
+        a: "The daemon runs as root as a systemd service. Every VMM runs as its own unprivileged user in a chroot, the report builder is unprivileged, and the whole dashboard runs as you.",
+      },
+      {
+        q: "Which hardware and distribution?",
+        a: "Linux with KVM, cgroups v2 and BTF, on bare metal. It is developed on Fedora 44 with SELinux enforcing, on a four-core laptop with 7 GiB of memory running three VMs at once. It is built from source; there is no package yet.",
+      },
+      {
+        q: "Can a page tell it is being watched?",
+        a: "Measured rather than assumed. On 172 fresh candidates, only the HeadlessChrome User-Agent changed what a site showed, and the sites that reacted were infrastructure like Cloudflare, not phishing kits. One exit and one Chrome version are stated limits.",
+      },
+      {
+        q: "Does it decide whether a link is phishing?",
+        a: "No. It reports what the page did plus heuristic indicators with their blind-set scores. The verdict belongs to whoever reads the report.",
+      },
+    ],
+    related: ["osreflog", "drainscope", "jwt-toolkit", "patchgrid"],
   },
   {
     slug: "osreflog",
