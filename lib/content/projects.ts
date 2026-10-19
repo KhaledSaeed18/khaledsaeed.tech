@@ -887,11 +887,11 @@ export const projects: Project[] = [
   {
     slug: "sleep-track",
     name: "SleepTrack",
-    updatedAt: "2026-10-12",
+    updatedAt: "2026-10-19",
     tagline:
       "A sleep journal with an analytics engine: an async FastAPI service and a Next.js and daisyUI app.",
     summary:
-      "SleepTrack turns logged nights into a nightly score, trends, a chronotype estimate, the habits that help or hurt your sleep and a weekly report. Version 2 is a ground-up rewrite: an async FastAPI service on PostgreSQL and Redis with a background worker, and a Next.js 16 app typed from the API's OpenAPI schema.",
+      "SleepTrack turns logged nights into a nightly score, trends, a chronotype estimate, the habits that help or hurt your sleep and a weekly report. Version 2 is a ground-up rewrite: an async FastAPI service on PostgreSQL and Redis with a background worker, and a Next.js 16 app typed from the API's OpenAPI schema, with a one-click demo and a mock API so the whole interface runs offline.",
     year: 2025,
     group: "platforms",
     kind: "Full-stack app",
@@ -920,27 +920,35 @@ export const projects: Project[] = [
         label: "Architecture",
         href: `${gh("sleep-track-backend")}/blob/main/docs/architecture.md`,
       },
+      {
+        label: "Analytics formulas",
+        href: `${gh("sleep-track-backend")}/blob/main/docs/analytics.md`,
+      },
     ],
+    platform: "Python 3.13 and Node.js 24, with PostgreSQL 17 and Redis 8 in Docker",
+    audience: "anyone curious why some nights are better, and engineers reading a full-stack reference",
+    plain:
+      "SleepTrack is a diary for your nights. Tap a timer at bedtime or log a night in seconds, tag it with habits like caffeine or exercise, and it works out a score, your natural rhythm, how steady your schedule is and which habits help or hurt, then emails you a weekly report. Every night is kept in your own time zone, and you can try it with a click, no sign-up.",
     proof: [
       {
         value: "1,032",
         label: "backend tests",
-        note: "run against real postgresql and redis in ci",
+        note: "run against real postgresql and redis in ci, 37 seconds",
       },
       {
         value: "98%",
         label: "test coverage",
-        note: "measured on the api service",
+        note: "line and branch, measured on the api service; the floor is 85%",
       },
       {
-        value: "15 min",
-        label: "access token lifetime",
-        note: "with rotating, hashed refresh tokens",
+        value: "84",
+        label: "client unit tests",
+        note: "plus 16 playwright flows against the live api in ci",
       },
       {
         value: "90",
         label: "nights seeded by the demo",
-        note: "one click, no sign-up",
+        note: "one click, no sign-up; the account deletes itself after a day",
       },
     ],
     problem:
@@ -948,7 +956,7 @@ export const projects: Project[] = [
     approach: [
       {
         title: "Analytics that respect the clock",
-        body: "Bedtimes are averaged as angles, so 23:30 and 00:30 average to midnight instead of noon, and every night belongs to the date it began in the user's time zone. The API computes a weighted score from duration, quality, latency, awakenings and bedtime, plus consistency, sleep debt, streaks, chronotype and social jet lag, cached per user in Redis.",
+        body: "Bedtimes are averaged as angles, so 23:30 and 00:30 average to midnight instead of noon, and every night belongs to the date it began in the user's time zone. The API computes a weighted score from duration, quality, latency, awakenings and bedtime, plus consistency, sleep debt, streaks, chronotype and social jet lag, cached per user in Redis and invalidated by a version number.",
       },
       {
         title: "Insights in plain language",
@@ -964,11 +972,11 @@ export const projects: Project[] = [
       },
       {
         title: "A client typed from the schema",
-        body: "The Next.js app generates its types from the OpenAPI schema, keeps the access token in memory and refreshes it single-flight. A same-origin route handler streams /api to the service and forwards the client address, so rate limits see real users. It has two themes, a command menu, a mobile dock and charts with table views.",
+        body: "The Next.js app generates its types from the OpenAPI schema, keeps the access token in memory and refreshes it single-flight. A same-origin route handler streams /api to the service and forwards the client address, so rate limits see real users. It has two themes, a command menu with shortcuts for every page, a mobile dock, a year heatmap and charts with table views.",
       },
       {
         title: "Tested against the real thing",
-        body: "Over a thousand backend tests run on real PostgreSQL and Redis, and Playwright drives sign-up with email confirmation, the journal, the timer and settings against the live API in CI. Both repos ship Docker images, a Compose stack and GitHub Actions, and a one-click demo seeds 90 nights.",
+        body: "Over a thousand backend tests run on real PostgreSQL and Redis, and Playwright drives sign-up with email confirmation, the journal, the timer and settings against the live API in CI. A mock API lets every page run offline, and a screenshot script visits every page in both themes and fails on any console error.",
       },
     ],
     highlights: [
@@ -976,9 +984,89 @@ export const projects: Project[] = [
       "Rotating refresh tokens with reuse detection and CSRF protection",
       "Overlapping nights rejected by a Postgres exclusion constraint",
       "Weekly email reports and bedtime reminders from a background worker",
-      "Client types generated from the API's OpenAPI schema",
+      "Client types generated from the API's OpenAPI schema; mock API for offline work",
       "1,032 backend tests at 98% coverage plus Playwright end-to-end tests in CI",
     ],
+    decisions: [
+      {
+        chose: "SQLAlchemy 2 async with Alembic",
+        over: "the Tortoise ORM of version 1",
+        why: "Repositories own queries and services own transactions, every relationship load is explicit because async forbids lazy loading, and the whole thing types under strict mypy. More verbose, and CI pays for it by running every migration up, check and down.",
+      },
+      {
+        chose: "a session denylist in Redis that fails open",
+        over: "checking the database on every request",
+        why: "One Redis EXISTS per request keeps revocation immediate at almost no cost. If Redis is down, access tokens are honoured until they expire in fifteen minutes. The trade-off is written down in the decision record rather than hidden.",
+      },
+      {
+        chose: "a route handler proxy in the Next.js app",
+        over: "Next.js rewrites",
+        why: "Rewrites do not add the forwarded client address, so the API would see one IP for every user and rate limits would break. The handler also reads the API address at runtime, so one image serves every environment.",
+      },
+      {
+        chose: "the overlap rule enforced twice",
+        over: "a check in the service alone",
+        why: "The service gives a friendly error. The PostgreSQL exclusion constraint catches the race the service cannot see when two requests land at once.",
+      },
+      {
+        chose: "ARQ behind a queue protocol",
+        over: "Celery or a broker",
+        why: "ARQ runs on the Redis already there, and an eager implementation runs jobs in-process for tests and single-container deployments. ARQ is in maintenance mode, which is accepted with the migration path contained to one adapter.",
+      },
+    ],
+    install: [
+      {
+        label: "run the api, database, redis and mail catcher",
+        command:
+          "git clone https://github.com/KhaledSaeed18/sleep-track-backend.git && cd sleep-track-backend && docker compose up -d --build && make seed",
+        note: "api docs at localhost:8000/api/v1/docs, mailpit at localhost:8025",
+      },
+      {
+        label: "run the web app against it",
+        command:
+          "git clone https://github.com/KhaledSaeed18/sleep-track-frontend.git && cd sleep-track-frontend && pnpm install && cp .env.example .env.local && pnpm dev",
+        note: "node 24 and pnpm 12; or set next_public_api_mocking=true for no backend at all",
+      },
+      {
+        label: "run the backend suite",
+        command: "make infra && make test",
+      },
+    ],
+    timeline: [
+      {
+        date: "2025-06-15",
+        title: "First commits",
+        body: "A FastAPI service on Tortoise ORM and a Create Next App client, started the same day.",
+      },
+      {
+        date: "2026-10-12",
+        title: "v2.0.0",
+        body: "Both sides rewritten from the ground up: SQLAlchemy async, Alembic, Argon2id, rotating sessions, the analytics engine and worker on one side; Next.js 16, React 19, daisyUI 5, typed client, command menu and Playwright on the other.",
+      },
+    ],
+    faq: [
+      {
+        q: "Can I try it without signing up?",
+        a: "Yes. One click creates a throw-away account with about ninety nights of tagged history. A scheduled job deletes demo accounts after twenty-four hours.",
+      },
+      {
+        q: "How is the sleep score computed?",
+        a: "A weighted sum of duration against your goal, quality, latency, awakenings and bedtime adherence, each clamped between zero and one. Inputs you did not log drop out and the remaining weights renormalise. The full formulas are in the analytics document.",
+      },
+      {
+        q: "Why do 23:30 and 00:30 average to midnight?",
+        a: "Bedtimes are treated as angles on a 24-hour circle and averaged with circular statistics, so the wrap past midnight does not drag the average to noon.",
+      },
+      {
+        q: "What happens if two tabs refresh at once?",
+        a: "Within a ten-second grace window the second presentation of a rotated refresh token is simply rejected. Outside it, reuse is treated as theft: the device session is revoked and the account owner gets an email.",
+      },
+      {
+        q: "Can I run the interface without the backend?",
+        a: "Yes. One environment flag switches the app to a stateful mock API in the browser with seeded nights, so every page works offline.",
+      },
+    ],
+    related: ["node-authentication-template", "patchgrid"],
   },
   {
     slug: "deck-kit",
