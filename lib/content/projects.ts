@@ -156,10 +156,11 @@ export const projects: Project[] = [
   {
     slug: "patchgrid",
     name: "Patchgrid",
+    updatedAt: "2026-10-19",
     tagline:
       "Multi-tenant IT service management with isolation enforced by the database.",
     summary:
-      "Patchgrid is a ticketing and operations platform for IT and security teams. Each company gets its own subdomain, and its data is isolated at the database level through five independent layers, not by remembering a WHERE clause.",
+      "Patchgrid is a ticketing and operations platform for IT and security teams. Each company gets its own subdomain, and its data is isolated at the database level through five independent layers, not by remembering a WHERE clause. Twelve milestones in, it covers incidents, requests, problems and changes, SLA clocks, email intake, a knowledge base, assets, an operator back-office that never impersonates, signed webhooks and reports that answer in under 25 ms at 100,000 tickets.",
     year: 2026,
     group: "platforms",
     kind: "SaaS platform",
@@ -170,14 +171,29 @@ export const projects: Project[] = [
       "Next.js",
       "PostgreSQL",
       "Prisma",
+      "Redis",
+      "BullMQ",
       "Turborepo",
       "Zod",
+      "OpenTelemetry",
+      "Playwright",
       "Docker",
     ],
     repo: "patchgrid",
-    links: [{ label: "Source", href: gh("patchgrid") }],
+    links: [
+      { label: "Source", href: gh("patchgrid") },
+      { label: "Decisions", href: `${gh("patchgrid")}/tree/main/docs/decisions` },
+      {
+        label: "Threat model",
+        href: `${gh("patchgrid")}/blob/main/docs/THREAT-MODEL.md`,
+      },
+    ],
     status: "In active development",
     featured: true,
+    platform: "Node.js 24, PostgreSQL 17 and Docker; runs locally by decision",
+    audience: "IT and security teams, and engineers who want to see tenancy done at the database",
+    plain:
+      "Patchgrid is a help desk for company IT teams. Many companies share one system, but the database itself refuses to show one company another company's tickets, even if a programmer makes a mistake. Staff raise incidents and requests, agents work them against response-time clocks, and every change is approved by someone other than its author.",
     proof: [
       {
         value: "5",
@@ -185,14 +201,29 @@ export const projects: Project[] = [
         note: "keys, credential, repository, prisma, postgres rls",
       },
       {
-        value: "4",
-        label: "itil record types",
-        note: "incident, request, problem, change",
+        value: "1,323",
+        label: "api tests",
+        note: "1,083 unit and 240 integration, plus 400 authorization and 50 tenancy assertions",
       },
       {
-        value: "1",
-        label: "subdomain per tenant",
-        note: "marketing, workspace and api in one monorepo",
+        value: "52",
+        label: "architecture decision records",
+        note: "5,618 lines of specification written before the code",
+      },
+      {
+        value: "< 25 ms",
+        label: "every report at 100,000 tickets",
+        note: "from a dedicated read model, measured in the load check",
+      },
+      {
+        value: "16",
+        label: "security findings fixed",
+        note: "three independent reviews at milestone 9, all fixed with tests",
+      },
+      {
+        value: "660",
+        label: "commits in 25 days",
+        note: "22 sep to 17 oct 2026",
       },
     ],
     problem:
@@ -200,23 +231,132 @@ export const projects: Project[] = [
     approach: [
       {
         title: "Five layers of isolation",
-        body: "Composite (orgId, id) foreign keys make a cross-tenant reference unrepresentable. The tenant comes from the credential, never the host. Every repository method takes an explicit orgId. A Prisma client extension sets a transaction-local config and throws without context. Postgres enforces it all with FORCE ROW LEVEL SECURITY and an app role that holds no BYPASSRLS.",
+        body: "Composite (orgId, id) foreign keys make a cross-tenant reference unrepresentable, because Postgres checks foreign keys with row security off. The tenant comes from the credential, never the host. Every repository method takes an explicit orgId. A Prisma client extension sets a transaction-local config and throws without context. Postgres enforces it all with forced row level security and an app role that cannot bypass it.",
       },
       {
         title: "Four ITIL records, four lifecycles",
-        body: "Incidents, service requests, problems and changes are modeled as different things with their own states. Priority is computed from impact and urgency, never typed into a dropdown.",
+        body: "Incidents, service requests, problems and changes are modeled as different things with their own states and one transition endpoint. Priority is computed from impact and urgency, and a client that sends one gets a 400. SLA clocks run around the clock, pause while waiting on the requester, and are swept per tenant.",
+      },
+      {
+        title: "Everything a desk needs",
+        body: "Mail to the workspace becomes a ticket if it passes DMARC, and replies thread onto it. A versioned knowledge base suggests articles while a requester types. Assets link to tickets. Uploads go straight to object storage on a separate domain and are checked by their bytes, not their names.",
+      },
+      {
+        title: "A platform layer that cannot peek",
+        body: "Operators work at admin. with their own login and second factor, see metadata and never content, and read a workspace only in an owner-granted, read-only, time-boxed support session written to that workspace's audit log. API tokens are service accounts whose scopes intersect a role. Deleting a workspace leaves a nameless tombstone after 30 days.",
+      },
+      {
+        title: "Delivery you can replay",
+        body: "A transactional outbox is read per tenant in transaction-id order below the snapshot horizon, so nothing is lost, repeated or skipped. Notifications, signed webhooks with retries and a circuit breaker, and reporting are its consumers. Reports come from their own read model so they never compete with the queues.",
       },
       {
         title: "Invariants you can run",
-        body: "A db:doctor script asserts the isolation guarantees actually hold against a live database, so the architecture is tested, not just described.",
+        body: "A tenancy suite asserts 13 catalog and 37 isolation invariants against a live database on every merge, a doctor script checks the roles and privileges, and every integration fixture creates two organizations so a leak fails a test. A Playwright suite drives two tenants through the browser, with negative cases.",
+      },
+      {
+        title: "Reviewed before shipping",
+        body: "A threat model with eleven trust boundaries, three independent read-only security reviews at milestone 9 that found 16 issues, all fixed in the same change set, and further reviews at each milestone since. Traces and metrics are labelled by tenant, so a Grafana board answers which tenant is slow.",
       },
     ],
     highlights: [
-      "Subdomain per tenant across a Turborepo monorepo: marketing site, tenant workspace and API",
-      "Row level security forced on every tenant table",
-      "Priority derived from impact x urgency",
-      "CI with CodeQL analysis on every change",
+      "Subdomain per tenant across one monorepo: marketing, workspace, operator back-office and API",
+      "Row level security forced on every tenant table, composite keys across tenants",
+      "Priority derived from impact x urgency, four lifecycles behind one transition endpoint",
+      "Email intake gated by DMARC, knowledge base, assets, presigned uploads",
+      "No impersonation, ever: support sessions are granted, read-only, audited and time-boxed",
+      "Transactional outbox, Standard Webhooks, reports under 25 ms at 100,000 tickets",
+      "Member MFA with step-up, OpenTelemetry per tenant, CodeQL on every change",
     ],
+    decisions: [
+      {
+        chose: "a shared schema with row level security and composite foreign keys",
+        over: "a database or schema per tenant, or row level security alone",
+        why: "Per-tenant databases make migrations and reporting expensive. Row level security alone leaves one hole: Postgres checks foreign keys with row security off, so a reference across tenants is still writable. Composite (orgId, id) keys close it. The cost is a wider key on every table and an explicit orgId on every repository method.",
+      },
+      {
+        chose: "the tenant from the credential",
+        over: "the tenant from the hostname",
+        why: "A host header is attacker-controlled. The session or token names the tenant, and the origin is a cross-check that can refuse but never grant.",
+      },
+      {
+        chose: "computing priority from impact and urgency",
+        over: "a priority dropdown",
+        why: "A typed priority is an argument, not a fact. Deriving it keeps queues honest at the price of a 400 for any client that tries to set it.",
+      },
+      {
+        chose: "support sessions granted by the owner",
+        over: "operator impersonation",
+        why: "Impersonation is the feature every breach report mentions. A read-only, time-boxed session through the workspace's own routes gives operators what they need and leaves a line in the customer's audit log.",
+      },
+      {
+        chose: "integration tests against the Compose Postgres",
+        over: "Prisma mocks or Testcontainers",
+        why: "Mocks give false confidence about the one thing that matters here, the database's behaviour. Testcontainers were slow to start. Every fixture creates two organizations so a leak is a failing test, not a finding.",
+      },
+      {
+        chose: "not deploying publicly",
+        over: "a hosted demo",
+        why: "It is a learning and portfolio project, and what it teaches is the architecture. Everything can be read, run and tested locally. The trade-off is stated: certificate renewal, real mail authentication and proxy trust are designed but not proven in production.",
+      },
+    ],
+    install: [
+      {
+        label: "bring up the whole stack with a demo seed",
+        command: "pnpm install && pnpm local:up && pnpm dev",
+        note: "node 24, pnpm 10 and docker; postgres, redis, minio and mailpit in compose",
+      },
+      {
+        label: "assert the isolation invariants against the live database",
+        command: "pnpm test:tenancy",
+      },
+      {
+        label: "send a ticket in by email, or a forged one",
+        command:
+          "pnpm --filter @patchgrid/api run inbound:send -- --from rita@patchgrid.test --to acme",
+        note: "add --dmarc fail to watch it refused",
+      },
+    ],
+    timeline: [
+      {
+        date: "2026-09-22",
+        title: "First commit and twelve decisions",
+        body: "The foundation milestone: package scope, per-type state machines, SLA rules, cookie sessions, the error format and the testing strategy, decided before the code.",
+      },
+      {
+        date: "2026-10",
+        title: "Milestones 1 to 6",
+        body: "Tenancy and identity, the incident lifecycle, notifications and live updates, the other three record types, attachments, assets, the knowledge base and email intake.",
+      },
+      {
+        date: "2026-10-16",
+        title: "Milestone 9, hardening",
+        body: "Member MFA with step-up, the browser suite, OpenTelemetry per tenant, OpenAPI, a load check at 100,000 tickets and a security review with 16 findings fixed.",
+      },
+      {
+        date: "2026-10-17",
+        title: "Milestones 10 to 12",
+        body: "The demo seed, marketing site and production images, the decision not to deploy, the transactional outbox and webhooks, then reports, saved views and bulk actions. Next: passkeys and per-tenant OpenID Connect.",
+      },
+    ],
+    faq: [
+      {
+        q: "Is there a live demo?",
+        a: "No, by decision. It runs locally with Docker Compose and one command, with a seeded demo covering two companies and an operator. The deployment design and production images exist and CI builds them, but nothing is hosted.",
+      },
+      {
+        q: "How do you know one tenant cannot read another's data?",
+        a: "Five layers, and proof for each: a tenancy suite with 50 assertions against a live database, a doctor script that checks the app role cannot bypass row level security, a browser test across two tenants, and integration fixtures that always create two organizations.",
+      },
+      {
+        q: "Can a platform admin see customer tickets?",
+        a: "No. The back-office sees workspace metadata, never content. Reading a workspace requires a support session the owner grants, which is read-only, time-boxed and written to that workspace's audit log.",
+      },
+      {
+        q: "Why is the AI triage not built yet?",
+        a: "Local ticket triage and a phishing-URL model are the last milestone because they need local models. The interfaces are in place; the models are not.",
+      },
+    ],
+    related: ["team-flow", "node-authentication-template", "urljail"],
   },
   {
     slug: "node-express-boilerplate",
