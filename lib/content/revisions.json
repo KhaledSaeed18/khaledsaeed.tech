@@ -580,6 +580,50 @@
           "Showcased on a real TanStack Query scan: 3,602 files, 5,517 commits and 1,141 contributors"
         ]
       }
+    },
+    {
+      "sha": "393a0ba",
+      "date": "2026-10-19",
+      "subject": "Update the Repo Scout case study for v1.0.0",
+      "words": {
+        "tagline": "Explore a codebase through architecture maps, hotspots, ownership and Git history, all on your machine.",
+        "summary": "Repo Scout turns a local Git repository into a navigable atlas of its code and history. A single binary with the interface embedded connects activity calendars, file ownership and bus factor, searchable source, architecture graphs, change coupling and duplicate code, backed by a Go scanner and SQLite with live scan progress. Version 1.0.0 adds a scan command for CI with SARIF output and quality gates, and nothing ever leaves the machine.",
+        "problem": "Understanding an unfamiliar codebase means juggling five tools with five output formats, and some of them want your source uploaded.",
+        "approach": [
+          {
+            "title": "An interface built for exploration",
+            "body": "A survey-map visual identity, a repository switcher and grouped navigation connect seventeen views: overview, activity, commits, contributors, knowledge, branches, files, search, metrics, hotspots, duplicates, architecture, change coupling, dependencies, portfolio and more. Light, dark and system themes, keyboard operation and layouts down to 390 pixels carry the same interface across screens."
+          },
+          {
+            "title": "History with the right clock, and the right names",
+            "body": "Commit calendars, hour-of-week activity and streaks use each author's local time. Ownership is computed from the files each commit touched, following renames, with identities merged through .mailmap and bots never counted as owners. Knowledge pages show the bus factor and the largest files whose main author has gone quiet."
+          },
+          {
+            "title": "Findings you can trace",
+            "body": "Architecture graphs collapse imports to folders at a chosen depth and flag cycles, unused folders and possibly dead files. Hotspots rank files by complexity times change frequency. Change coupling finds file pairs that keep changing together and explains each pair by an import, a shared package or a test, or flags it as a hidden dependency. Graphs export as SVG."
+          },
+          {
+            "title": "A scan you can watch and control",
+            "body": "Eight ordered stages stream and batch-insert files, history, dependencies, imports, coupling and duplicate blocks, then build an FTS5 content index. Persisted jobs report progress over WebSocket, support pause, resume and cancel, and re-queue after a crash. Results are promoted in one transaction, so a failed rescan leaves the old ones, and only new commits are diffed on a rescan."
+          },
+          {
+            "title": "The same engine in CI",
+            "body": "repo-scout scan prints text, JSON or SARIF for GitHub code scanning, with gates on complexity, duplicates, cycles and hidden coupling. With a base ref it judges a pull request instead of the whole repository: files added, complexity moved, cycles introduced or resolved, gated on the increase. Exit codes say which."
+          },
+          {
+            "title": "Never leaves the machine",
+            "body": "No account, external APIs, telemetry or source uploads. The server binds to loopback, checks the Host header against DNS rebinding, accepts state changes as JSON only and holds the WebSocket to the same origin. Releases ship checksums, a software bill of materials and signed build provenance instead of a code signature."
+          }
+        ],
+        "highlights": [
+          "One binary for six platforms with the interface embedded, 70 days from first commit to v1.0.0",
+          "Folder-level architecture maps, hotspots, bus factor and hidden coupling",
+          "A scan command for CI with SARIF, quality gates and pull request comparison",
+          "Atomic, incremental rescans with pause, resume, cancel and crash recovery",
+          "Showcased on a real TanStack Query scan: 3,602 files, 5,524 commits and 1,141 contributors",
+          "OpenAPI spec with contract tests, 31 paths"
+        ]
+      }
     }
   ],
   "dir-analysis-tool": [
