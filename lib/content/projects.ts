@@ -1175,35 +1175,140 @@ export const projects: Project[] = [
   {
     slug: "gauge",
     name: "Gauge",
+    updatedAt: "2026-10-19",
     tagline:
-      "Pixel-precise rulers and alignment guides over the whole macOS desktop.",
+      "Pixel-precise rulers, guides, a measuring tape, a color sampler and a loupe over the whole macOS desktop.",
     summary:
-      "A native macOS overlay that gives every display physical-pixel rulers and persistent guides, while every click passes straight through to the app underneath.",
+      "A native macOS overlay that gives every display physical-pixel rulers and persistent guides, measures any region or any two points, reads the color under the pointer and magnifies it, while every click outside a tool passes straight through to the app underneath.",
     year: 2026,
     group: "macos",
     kind: "macOS app",
     object: "square",
     stock: "teal",
-    stack: ["Swift", "AppKit", "SwiftUI"],
+    stack: ["Swift", "AppKit", "SwiftUI", "ScreenCaptureKit"],
     repo: "gauge",
     links: [{ label: "Source", href: gh("gauge") }],
+    platform: "macOS 14 or later, Apple Silicon or Intel",
+    audience: "designers and front-end developers checking that things line up",
+    plain:
+      "When you build a screen, things need to line up and be the right size, but the ruler in one app cannot reach into another. Gauge draws see-through rulers and guide lines over the whole Mac screen, measures any distance, picks up the colour under the pointer and magnifies pixels, so you can check any app against any mockup.",
+    proof: [
+      {
+        value: "6",
+        label: "tools in one overlay",
+        note: "rulers, guides, measure, crosshair, color sampler and loupe",
+      },
+      {
+        value: "5",
+        label: "clipboard formats",
+        note: "dimensions, plain, with units, css and with position",
+      },
+      {
+        value: "1.1 MB",
+        label: "release binary",
+        note: "arm64, built on 19 oct 2026; no dependencies outside the system frameworks",
+      },
+      {
+        value: "0",
+        label: "permissions for the core tools",
+        note: "screen recording only for the sampler and loupe",
+      },
+    ],
     problem:
-      "Ruler tools live inside one browser tab or one design app, so you cannot line up a native window against a design mockup.",
+      "Ruler tools live inside one browser tab or one design app, so you cannot line up a native window against a design mockup, or measure the gap between two things that belong to different programs.",
     approach: [
       {
         title: "Real pixels",
-        body: "Tick labels respect each screen's backing scale factor, so 100 means 100 actual display pixels on any screen.",
+        body: "Tick labels respect each screen's backing scale factor, so 100 means 100 actual display pixels on any screen. Guides are stored in physical pixels per display, and a small core library owns every point-to-pixel conversion so the arithmetic is unit tested without a screen.",
       },
       {
         title: "Out of the way",
-        body: "The overlay ignores mouse events unless you are placing a guide, measuring or using the crosshair.",
+        body: "Transparent, non-activating panels sit over each display. They ignore mouse events except on the two ruler strips while guide placement is on, and while measure, crosshair, sampler or loupe owns the pointer. Everything else clicks through.",
+      },
+      {
+        title: "Measure, then take it with you",
+        body: "Drag a box for width by height, or Option-drag two points for distance and angle. Measurements stay held on screen, click one to remove it, and the size copies in any of five formats including CSS, with optional position and aspect-ratio badges.",
+      },
+      {
+        title: "Read the screen itself",
+        body: "The color sampler reads the pixel under the pointer as hex and RGB through ScreenCaptureKit, excluding Gauge's own windows from the capture. The loupe magnifies the same feed with a pixel grid, the exact coordinate and its color.",
+      },
+      {
+        title: "Guides that stay put",
+        body: "Guides survive a restart, get numbered V1, H1 from their sorted position rather than a stored name, can be placed at an exact pixel from the settings, and are listed with counts in a remove window with select all and remove selected.",
       },
     ],
     highlights: [
-      "Measure any region and copy the size",
-      "Global shortcuts for rulers, measure and crosshair",
-      "Works across every connected display",
+      "Rulers, guides, measure, crosshair, color sampler and loupe on every display",
+      "Five global shortcuts without Accessibility permission",
+      "Two-point measurement with distance and angle",
+      "Copy a size as dimensions, plain, units, CSS or with position",
+      "Pure Swift Package Manager project, Swift 6 language mode",
     ],
+    decisions: [
+      {
+        chose: "ScreenCaptureKit for the sampler and loupe",
+        over: "the older CoreGraphics capture calls",
+        why: "The legacy APIs only return the desktop on current macOS, so the colour under a window came back wrong. ScreenCaptureKit returns the real composite and can exclude Gauge's own overlays, at the cost of a Screen Recording prompt for those two tools only.",
+      },
+      {
+        chose: "Carbon hot keys for the global shortcuts",
+        over: "an event tap",
+        why: "RegisterEventHotKey works without Accessibility permission, which keeps the install to a single open command. The in-mode keys use a global monitor instead, which may need Input Monitoring; the menu bar is the fallback.",
+      },
+      {
+        chose: "guide numbers derived from position",
+        over: "stored names",
+        why: "Deleting or moving a guide would leave gaps or stale names. Sorting at render time keeps V1 the leftmost guide whatever happened before.",
+      },
+    ],
+    install: [
+      {
+        label: "build and run in xcode",
+        command: "git clone https://github.com/KhaledSaeed18/gauge && cd gauge && open Package.swift",
+        note: "xcode 16 or later, macos 14 or later",
+      },
+      {
+        label: "or assemble an app bundle from the terminal",
+        command: "./Scripts/make-app.sh && open Build/Gauge.app",
+      },
+    ],
+    timeline: [
+      {
+        date: "2026-08-05",
+        title: "First commit",
+        body: "The menu bar shell, the physical-pixel ruler overlay and a build workflow.",
+      },
+      {
+        date: "2026-08-08",
+        title: "Measure and crosshair",
+        body: "Guide numbering, selective removal, separate axis colours, multiple global hot keys and a settings sidebar.",
+      },
+      {
+        date: "2026-08-09",
+        title: "Color sampler and loupe",
+        body: "Two-point lines, copy formats, exact-pixel guides, a tested geometry core and the switch to ScreenCaptureKit.",
+      },
+    ],
+    faq: [
+      {
+        q: "Does Gauge need Screen Recording permission?",
+        a: "Only for the color sampler and the loupe, which read the screen through ScreenCaptureKit. Grant it once in Privacy and Security, then reopen Gauge. Rulers, guides, measure and crosshair work without it.",
+      },
+      {
+        q: "Does the overlay block my clicks?",
+        a: "No, except on the two ruler strips while guide placement is on, and while measure, crosshair, sampler or loupe is active. Toggle the tool off and the desktop is click-through again.",
+      },
+      {
+        q: "Do guides survive a restart?",
+        a: "Yes. They are saved per display in physical pixels. Measurements are kept for the session only.",
+      },
+      {
+        q: "Is there a signed download?",
+        a: "Not yet. Build it from the Swift package in Xcode, or run the bundled script that assembles an app from a release build. It runs on Apple Silicon and Intel Macs on macOS 14 or later.",
+      },
+    ],
+    related: ["wakehold", "sever", "baud"],
   },
   {
     slug: "sever",
