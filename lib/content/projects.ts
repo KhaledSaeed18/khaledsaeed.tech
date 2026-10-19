@@ -1237,42 +1237,147 @@ export const projects: Project[] = [
   {
     slug: "dotclaude",
     name: "dotclaude",
+    updatedAt: "2026-10-19",
     tagline:
       "A registry of Claude Code skills, agents, commands and hooks, installable in one line.",
     summary:
-      "My collection of Claude Code extensions for engineering, git, testing, security and research workflows. It is distributed as a shadcn GitHub registry and as installable plugins, with a searchable catalog site.",
+      "My collection of Claude Code extensions for engineering, git, testing, security and research workflows: 136 items in 17 plugins, generated from one source tree and validated in CI. It is distributed as a shadcn GitHub registry and as installable plugins, with a searchable static catalog site.",
     year: 2026,
     group: "tools",
     kind: "AI developer tooling",
     object: "toolbox",
     stock: "terracotta",
-    stack: ["TypeScript", "shadcn registry", "Claude Code", "Next.js"],
+    stack: ["TypeScript", "shadcn registry", "Claude Code", "Vitest", "GitHub Pages"],
     repo: "dotclaude",
     links: [
       { label: "Catalog", href: "https://dotclaude.khaledsaeed.tech/" },
       { label: "Source", href: gh("dotclaude") },
+    ],
+    platform: "Claude Code, or any project through the shadcn CLI",
+    audience: "developers who want their AI coding assistant to follow a procedure, not a vibe",
+    plain:
+      "An AI coding assistant is only as careful as the instructions you give it, and good instructions end up scattered across projects. dotclaude is a shelf of ready-made procedures, helpers and safety checks you can add to Claude Code with one command, so it reviews code, writes tests, handles git or checks citations the same careful way every time.",
+    proof: [
+      {
+        value: "136",
+        label: "items in the registry",
+        note: "86 skills, 17 agents, 18 commands and 15 hooks, counted from the source tree",
+      },
+      {
+        value: "17",
+        label: "installable plugins",
+        note: "validated and smoke-installed in ci with a pinned claude code cli",
+      },
+      {
+        value: "20",
+        label: "skills for academic work",
+        note: "the thesis plugin, from research question to latex",
+      },
+      {
+        value: "116",
+        label: "tests on the tooling",
+        note: "the validator rejects stubs and descriptions without a trigger",
+      },
     ],
     problem:
       "AI coding agents are only as good as the procedures you give them, and good procedures end up scattered across projects and dotfiles.",
     approach: [
       {
         title: "Four kinds of extension",
-        body: "Skills load themselves when a request matches, agents take whole side tasks in their own context, commands run on demand, and hooks fire on every event with no model judgment.",
+        body: "Skills load themselves when a request matches, agents take whole side tasks in their own context, commands run on demand, and hooks fire on every event with no model judgment: a command guard, a sensitive-file guard, a stop gate that runs the tests before Claude can stop, format on edit.",
       },
       {
         title: "Two ways to install",
-        body: "Whole plugins through Claude Code, or single items through the shadcn CLI straight into a project's .claude folder.",
+        body: "Whole plugins through the Claude Code marketplace, where hooks activate on install, or single items through the shadcn CLI straight into a project's .claude folder.",
+      },
+      {
+        title: "One source, everything else generated",
+        body: "Each item is a folder with a manifest. The registry files, the README catalog, the plugin tree, the site data, one crawlable page per item, the sitemap and llms.txt are generated from it, and CI fails if a generated file is stale.",
       },
       {
         title: "A thesis toolkit",
-        body: "One plugin covers a full research lifecycle: literature search, verified citations, synthesis, methodology, LaTeX and an examiner-style reviewer.",
+        body: "One plugin covers a full research lifecycle: literature search, verified BibTeX, citation checking, statistics, methodology, LaTeX and Word output, with an examiner-style reviewer and a paper critic as agents.",
       },
     ],
     highlights: [
       "Catalog with search and filters at dotclaude.khaledsaeed.tech",
-      "Skills, agents, commands and hooks across nine categories",
-      "Distributed as a shadcn GitHub registry",
+      "86 skills, 17 agents, 18 commands and 15 hooks across 15 categories",
+      "Distributed as 17 plugins and as a shadcn GitHub registry",
+      "Hooks are deterministic; advisory ones never block",
     ],
+    decisions: [
+      {
+        chose: "a static catalog with no build step",
+        over: "a site framework",
+        why: "Pages are generated with everything else, so the site never needs editing when an item changes, and it deploys to GitHub Pages with no dependencies.",
+      },
+      {
+        chose: "plugins and the shadcn registry both",
+        over: "one distribution channel",
+        why: "Plugins give namespaced commands and hooks that are live on install. shadcn copies one item into a project, but cannot edit settings, so a hook installed that way needs a block pasted by hand. The docs say which to pick.",
+      },
+      {
+        chose: "rejecting descriptions without a trigger clause",
+        over: "accepting any manifest",
+        why: "A skill with a vague description either never loads or loads for everything. The validator fails CI on stubs and on descriptions that do not say when the skill applies.",
+      },
+    ],
+    install: [
+      {
+        label: "add the marketplace in claude code",
+        command: "/plugin marketplace add KhaledSaeed18/dotclaude",
+      },
+      {
+        label: "install a plugin",
+        command: "/plugin install security@dotclaude",
+      },
+      {
+        label: "or copy one item with shadcn",
+        command: "npx shadcn@latest add KhaledSaeed18/dotclaude/handoff",
+        note: "lands in .claude/skills/handoff",
+      },
+    ],
+    timeline: [
+      {
+        date: "2026-06-06",
+        title: "First commit",
+        body: "The registry layout, the first skills and the shadcn distribution.",
+      },
+      {
+        date: "2026-07-04",
+        title: "Stricter validation",
+        body: "Stubs and descriptions without a trigger clause fail the build.",
+      },
+      {
+        date: "2026-09-21",
+        title: "The catalog site",
+        body: "A page per item and per plugin, and the academic items: research design, statistics, systematic review.",
+      },
+      {
+        date: "2026-10-14",
+        title: "Latest push",
+        body: "Plugins, hooks and site pages kept in step; 212 commits so far.",
+      },
+    ],
+    faq: [
+      {
+        q: "What is the difference between a skill, an agent, a command and a hook?",
+        a: "A skill loads itself when a request matches its description. An agent takes a side task in its own context. A command runs when you type its name. A hook runs on an event, with no model judgment at all.",
+      },
+      {
+        q: "Plugin or shadcn?",
+        a: "Plugins for bundles and for hooks, which activate on install. shadcn for one item you want to read and adapt in your own project.",
+      },
+      {
+        q: "Can I use an item in every project?",
+        a: "Items install into the project's .claude folder. Copy them to the one in your home directory to use them everywhere.",
+      },
+      {
+        q: "How do I add my own item?",
+        a: "A scaffold command creates the folder and manifest, a generate command rebuilds everything downstream, and CI validates it.",
+      },
+    ],
+    related: ["deck-kit", "node-express-boilerplate", "wakehold"],
   },
   {
     slug: "mcce",
