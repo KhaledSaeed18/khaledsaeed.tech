@@ -2853,11 +2853,11 @@ export const projects: Project[] = [
   {
     slug: "osreflog",
     name: "osreflog",
-    updatedAt: "2026-10-15",
+    updatedAt: "2026-10-19",
     tagline:
       "A reflog for a Linux system: what changed, who changed it, and which change broke it.",
     summary:
-      "osreflog records every change to a Fedora system together with its cause: the package transaction, service, command or app that made it. It rebuilds the system as it was at any point, bisects a regression down to a single cause by testing each step in a throwaway container or VM, and undoes that cause file by file. It is in active development on my Linux machine.",
+      "osreflog records every change to a Fedora system together with its cause: the package transaction, service, command or app that made it. It rebuilds the system as it was at any point, bisects a regression down to a single cause by testing each step in a throwaway container, a VM or a one-shot reboot on real hardware, and undoes that cause file by file. Version 0.2.0 ships from COPR with a GNOME app, and the 48-hour soak is running.",
     year: 2026,
     group: "systems",
     kind: "Change history for Linux",
@@ -2875,22 +2875,33 @@ export const projects: Project[] = [
       "QEMU",
       "KVM",
       "dnf5",
+      "GTK",
+      "libadwaita",
     ],
     repo: "osreflog",
     links: [
       { label: "Source", href: gh("osreflog") },
+      {
+        label: "Fedora COPR",
+        href: "https://copr.fedorainfracloud.org/coprs/khaledsaeed18/osreflog/",
+      },
+      { label: "v0.2.0 release", href: `${gh("osreflog")}/releases/tag/v0.2.0` },
       { label: "Roadmap", href: `${gh("osreflog")}/blob/main/docs/roadmap.md` },
       {
         label: "Architecture",
         href: `${gh("osreflog")}/blob/main/docs/architecture.md`,
       },
       {
-        label: "Bisect design",
-        href: `${gh("osreflog")}/blob/main/docs/bisect.md`,
+        label: "Validation",
+        href: `${gh("osreflog")}/blob/main/docs/validation.md`,
       },
     ],
-    status: "In active development",
+    status: "v0.2.0 on COPR, in active development",
     featured: true,
+    platform: "Fedora 44, 45 or rawhide on x86_64 with the root filesystem on btrfs",
+    audience: "Linux users and admins who know it worked last week, and want to know what changed",
+    plain:
+      "When a Linux computer breaks, you usually know one thing: it worked last week. osreflog keeps a running record of every change to the system and what caused it, so it can show the exact change responsible, test each suspect in a throwaway copy until it finds the one that broke things, and safely put that one back.",
     proof: [
       {
         value: "5 of 5",
@@ -2912,6 +2923,16 @@ export const projects: Project[] = [
         label: "parser crashes under fuzzing",
         note: "8 targets, an hour each, about 3.05 billion inputs",
       },
+      {
+        value: "3 probes",
+        label: "to find a real wi-fi regression on metal",
+        note: "6 reboots, default boot entry checksummed untouched after each",
+      },
+      {
+        value: "0.08%",
+        label: "of one cpu at rest",
+        note: "the daemon on 17 oct 2026; a checkpoint adds under a second to dnf",
+      },
     ],
     problem:
       "When a Linux desktop breaks, you know one thing: it worked last week. Package history covers packages only, the journal shows events but not state, and snapshot tools show the whole system at a moment but not what changed between two snapshots, who changed it, or which change broke things. There is no git bisect for an operating system.",
@@ -2926,37 +2947,127 @@ export const projects: Project[] = [
       },
       {
         title: "Git's vocabulary on purpose",
-        body: "log, show, diff, blame, bisect and undo work on causes, and references read like git's reflog: c42, @{1}, @{boot-1}, @{yesterday}. Diffs are computed after each checkpoint and cached, so the diff after a real dnf transaction comes back in 6 ms.",
+        body: "log, show, diff, why, bisect and undo work on causes, and references read like git's reflog: c42, @{1}, @{boot-1}, @{yesterday}. Diffs are computed after each checkpoint and cached, so the diff after a real dnf transaction comes back in 6 ms.",
       },
       {
-        title: "Bisect down to one cause",
-        body: "Snapshots are coarse, so osreflog rebuilds the states between them by replaying causes into a writable clone. Each step is tested in a throwaway systemd-nspawn container in under a second, or in a QEMU VM that boots the clone's own kernel over virtiofs in about 14 seconds. Every replay says whether it was exact or approximate.",
+        title: "Bisect down to one cause, in three tiers",
+        body: "Snapshots are coarse, so osreflog rebuilds the states between them by replaying causes into a writable clone. Each step is tested in a throwaway systemd-nspawn container in under a second, in a QEMU VM that boots the clone's own kernel over virtiofs in about 14 seconds, or, for regressions that only show on real hardware, by one reboot into a one-shot boot entry. Every replay says whether it was exact or approximate.",
       },
       {
         title: "Undo without rolling back",
-        body: "osreflog undo reverts one cause path by path as a 3-way merge, leaving alone anything that changed since and refusing on conflict. Package causes are handed to dnf. Dry run is the default, a checkpoint is taken before every apply, and an undo can itself be undone. GNOME settings get the same treatment through dconf.",
+        body: "osreflog undo reverts one cause path by path as a 3-way merge, leaving alone anything that changed since and refusing on conflict. Package causes are handed to dnf. Dry run is the default, a checkpoint is taken before every apply, replaced files go to an attic, and an undo can itself be undone. GNOME settings get the same treatment through dconf.",
       },
       {
         title: "Observe before touching",
-        body: "Nothing wrote to the live root until a write gate passed: the full undo matrix in a contained scratch root, with symlink-swap races and magic links refused by openat2 resolution. Config parsers run in a sandboxed worker and were each fuzzed for an hour. Secrets are never stored and command lines are redacted.",
+        body: "Nothing wrote to the live root until a write gate passed: the full undo matrix in a contained scratch root, with symlink-swap races and magic links refused by openat2 resolution, 3,541 race runs and no escape. Metal probes waited for a boot gate tested in a nested VM first, with a boot doctor checking the default entry at every boot. Config parsers run in a sandboxed worker and were each fuzzed for an hour. Secrets are never stored and command lines are redacted.",
+      },
+      {
+        title: "A desktop app, packaged and hardened",
+        body: "A GTK and libadwaita app browses history, shows what changed since, previews an undo and walks a bisect, with search, coloured diffs and toasts. Signed COPR packages cover Fedora 44, 45 and rawhide, and were installed on a fresh Fedora 44 VM with every check passing. Version 0.2.0 added system call filters, a sandboxed user agent and an SELinux module; systemd rates the user agent's exposure at 1.0, down from 8.0.",
       },
       {
         title: "Cheap enough to leave on",
-        body: "The idle daemon used 0.0% CPU and 26 MB of memory on the development laptop, and a checkpoint adds under a second to a dnf transaction. The ledger is local, root-only SQLite with a hash chain, so tampering is evident.",
-      },
-      {
-        title: "Metal bisect next",
-        body: "Some regressions only show on real hardware. The next phase reboots once into a disposable clone, with the default boot entry checked untouched after every probe, and it stays behind a boot gate tested in a nested VM first. A GTK and libadwaita app and COPR packaging, like drainscope's, come last.",
+        body: "The daemon uses 0.08% of one CPU at rest and a checkpoint adds under a second to a dnf transaction. Memory sits around 41 MB just started and grows with big diffs, capped by a 768 MB unit limit. The ledger is local, root-only SQLite with a hash chain, so tampering is evident. A 48-hour soak started on 17 October; its result is not published yet.",
       },
     ],
     highlights: [
       "Every change to /etc and system state recorded with its cause",
       "A live fanotify and eBPF witness reconciled with btrfs send-stream diffs",
-      "Cause-level bisect in nspawn containers or VMs that boot the snapshot's kernel",
-      "3-way undo that refuses on conflict, dry run by default",
-      "5 of 5 seeded regressions found within the probe bound",
-      "In active development on Fedora 44; metal bisect is next",
+      "Cause-level bisect in containers, in VMs that boot the snapshot's kernel, or on real hardware",
+      "3-way undo that refuses on conflict, dry run by default, undoable itself",
+      "5 of 5 seeded regressions found within the probe bound; a real regression found on metal in 3 probes",
+      "v0.2.0 installable from COPR on Fedora 44, 45 and rawhide, with a GNOME app",
     ],
+    decisions: [
+      {
+        chose: "two witnesses that can disagree",
+        over: "a live recorder alone, or snapshots alone",
+        why: "A live recorder has silent gaps whenever it is stopped. Snapshots know what changed but not who. The send-stream diff is the truth for what and the fanotify and eBPF trace is the truth for who, and a disagreement is reported as a gap rather than hidden.",
+      },
+      {
+        chose: "parsing the btrfs send stream in its own crate",
+        over: "btrfs subvolume find-new",
+        why: "find-new misses every deletion. The stream parser sees creates, deletes, renames and content, and diffs are computed eagerly after each checkpoint so a later query costs milliseconds.",
+      },
+      {
+        chose: "undo per cause as a 3-way merge",
+        over: "rolling the whole subvolume back",
+        why: "A rollback also reverts logs, VM images and every unrelated change since. Reverting one cause path by path leaves later work alone and refuses on conflict. Package causes go to dnf, which needs the old packages to still be downloadable.",
+      },
+      {
+        chose: "three bisect tiers, cheapest first",
+        over: "always rebooting",
+        why: "A container probe takes under a second and a VM probe about fourteen; a reboot takes minutes and touches the boot loader. The tool uses the cheapest tier that reproduces the problem, and every replay says whether it was exact.",
+      },
+      {
+        chose: "a tamper-evident ledger",
+        over: "a tamper-proof one",
+        why: "A root attacker can rewrite anything on the machine, including a hash chain. The chain makes rewriting visible, which is the honest claim; the threat model says so in those words.",
+      },
+    ],
+    install: [
+      {
+        label: "install from copr",
+        command:
+          "sudo dnf copr enable khaledsaeed18/osreflog && sudo dnf install osreflog osreflog-app",
+        note: "fedora 44, 45 or rawhide, root on btrfs",
+      },
+      {
+        label: "start the daemon and the boot doctor",
+        command:
+          "sudo systemctl enable --now osreflogd.service osreflog-boot-doctor.service && systemctl --user enable --now osreflog-user.service",
+      },
+      {
+        label: "check the setup, then ask what changed",
+        command: "osreflog doctor && osreflog log",
+        note: "reading needs no password; checkpoint, undo and bisect ask through polkit",
+      },
+    ],
+    timeline: [
+      {
+        date: "2026-10-14",
+        title: "Planning closed",
+        body: "Scope, the two-witness design and the gates written down before code.",
+      },
+      {
+        date: "2026-10-15",
+        title: "Witnesses, causes, undo and bisect",
+        body: "The state witness, the live witness with cause attribution, semantic diffs, the write gate, undo, and bisect in containers and VMs, one phase after another.",
+      },
+      {
+        date: "2026-10-16",
+        title: "v0.1.0 and the boot gate",
+        body: "Metal bisect behind a boot gate passed in a nested VM, then a real Wi-Fi power-save regression found on the laptop in three probes. First release on COPR for Fedora 44.",
+      },
+      {
+        date: "2026-10-17",
+        title: "v0.2.0",
+        body: "The GNOME app grows search, headers, toasts and coloured diffs; system call filters, a sandboxed user agent and an SELinux module; CI and a release workflow. A 48-hour soak begins.",
+      },
+    ],
+    faq: [
+      {
+        q: "Does it need root?",
+        a: "The daemon runs as root with a capability bounding set, system call filters, a memory cap and no network at all. Reading history needs no password for the person at the machine. Checkpoint, undo and bisect ask for the admin password through polkit every time.",
+      },
+      {
+        q: "Which systems does it support?",
+        a: "Fedora 44, 45 and rawhide on x86_64 with the root filesystem on a btrfs subvolume, which is the Workstation default. Immutable systems like Silverblue, and anything not on btrfs, are out of scope. It warns if Snapper or Timeshift manage the same root.",
+      },
+      {
+        q: "Can undo make things worse?",
+        a: "It is a dry run by default. An apply takes and verifies a checkpoint first, never overwrites a file that changed since, refuses on conflict, moves replaced files to an attic, and can itself be undone. The write gate ran the full undo matrix in a scratch root with 3,541 race attempts and no escape.",
+      },
+      {
+        q: "What happens to my secrets?",
+        a: "They are never stored. Shadow, Wi-Fi and VPN credentials and private keys are recorded as changed with a hash only, password-style keys and command-line secrets are redacted, and nothing leaves the machine.",
+      },
+      {
+        q: "What is not validated yet?",
+        a: "A real week of history in the app, the 48-hour soak result, replay soundness in edge cases, and hardware other than one Intel laptop. The validation document lists each of these.",
+      },
+    ],
+    related: ["drainscope", "urljail", "repo-scout"],
   },
   {
     slug: "drainscope",
