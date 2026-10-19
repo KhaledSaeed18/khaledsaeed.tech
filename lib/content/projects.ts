@@ -1437,35 +1437,146 @@ export const projects: Project[] = [
   {
     slug: "baud",
     name: "Baud",
+    updatedAt: "2026-10-19",
     tagline:
       "Break reminders delivered by a small desktop character that knows when to stay quiet.",
     summary:
-      "Instead of a notification you swipe away on reflex, a character slides in from a screen corner, says one short thing, and leaves. It holds reminders during calls and full screen video and delivers them once the moment clears.",
+      "Instead of a notification you swipe away on reflex, a character slides in from a screen corner, says one short thing, and leaves. It holds reminders during calls, full screen video, a locked screen or a calendar event and delivers them one at a time once the moment clears. Reminders are typed in plain words: water every 45 minutes, stretch at 3pm on weekdays.",
     year: 2026,
     group: "macos",
     kind: "macOS app",
     object: "bubble",
     stock: "bone",
-    stack: ["Swift", "SwiftUI"],
+    stack: ["Swift", "SwiftUI", "AppKit", "EventKit", "Swift Testing"],
     repo: "baud",
     links: [{ label: "Source", href: gh("baud") }],
+    platform: "macOS 14 or later, Apple Silicon or Intel",
+    audience: "anyone who sits at a Mac for too long and ignores banners",
+    plain:
+      "Most break reminders are banners you dismiss without reading, and they arrive in the middle of a call. Baud is a tiny animated character that slides in at the corner of the screen to remind you to stand up, drink water or rest your eyes, and waits if you are on a call, watching something full screen or in a meeting. No streaks, no guilt.",
+    proof: [
+      {
+        value: "85",
+        label: "automated tests",
+        note: "scheduler, preferences, the plain-words parser, suppression and presets",
+      },
+      {
+        value: "5",
+        label: "reasons to hold a reminder",
+        note: "locked screen, camera or mic in use, full screen, away, and optionally a calendar event",
+      },
+      {
+        value: "1",
+        label: "permission it can ask for",
+        note: "calendars, only if you turn on the meeting-aware hold",
+      },
+      {
+        value: "0",
+        label: "bytes sent anywhere",
+        note: "the plain-words parser is deterministic and local; no ai, no network",
+      },
+    ],
     problem:
-      "Break reminders are banners you dismiss without reading, and they interrupt at the worst moments.",
+      "Break reminders are banners you dismiss without reading, and they interrupt at the worst moments. The apps that solve this with a character are paid and closed.",
     approach: [
       {
         title: "Never at a bad moment",
-        body: "No reminders during a call, a presentation or full screen video, or while you are away. They wait, then arrive.",
+        body: "No reminders while the camera or microphone is in use, a window is full screen, the screen is locked or you are away, and optionally while a calendar event is on. Held reminders queue in order and drain one at a time; the queue is never flushed, because nobody wants four characters in a row after a meeting.",
+      },
+      {
+        title: "The moment after",
+        body: "When a long call or full-screen stretch ends, a reminder that was nearly due arrives right then. Coming back from a real break restarts every interval, so you are not told to move five minutes after you did.",
+      },
+      {
+        title: "Reminders in plain words",
+        body: "Press a global shortcut anywhere and type water every 45 minutes, call Tom at 3 or stretch at 3pm on weekdays. A deterministic on-device parser turns it into a repeating, one-time or weekday reminder with its own mood. Presets retune the four built-ins in one click.",
       },
       {
         title: "Never guilts you",
-        body: "No streaks, no sad faces. Ignore it and it leaves on its own.",
+        body: "No streaks, no sad faces. Ignore it and it leaves on its own after a few seconds. Quiet hours, per-reminder active hours, snooze and a minimum gap between appearances keep it from nagging.",
+      },
+      {
+        title: "Three layers, one seam",
+        body: "The scheduler decides when and never touches AppKit, the presenter decides how it looks and never decides timing, and reminders are plain data in a documented JSON file you can hand-edit. The character, the app icon and the menu bar mark are drawn from the same geometry in code.",
       },
     ],
     highlights: [
-      "Free and open source, unlike every comparable app",
-      "Native Swift, menu bar only",
-      "Custom reminders",
+      "Free and open source, unlike every comparable app with a character",
+      "Plain-words quick add with a global shortcut, no AI and no network",
+      "Holds for calls, full screen, lock, idle and optional calendar events",
+      "One-time, weekday and repeating reminders, presets and quiet hours",
+      "Native Swift, menu bar only, hand-editable reminders.json",
     ],
+    decisions: [
+      {
+        chose: "holding reminders and draining them one at a time",
+        over: "flushing the queue when a meeting ends",
+        why: "This is the single behaviour the app is built around. A flush delivers four characters in a row; a queue keyed by original due time delivers one, then the next after the gap.",
+      },
+      {
+        chose: "reading camera and microphone state",
+        over: "asking for camera or microphone permission",
+        why: "Baud never captures anything. It reads whether another app has a device running through CoreMediaIO and CoreAudio, so call detection works with no permission prompt.",
+      },
+      {
+        chose: "a deterministic parser for quick add",
+        over: "a language model",
+        why: "Water every 45 minutes has a small grammar. A local parser is instant, private, testable with fifteen fixed cases and never wrong in a creative way.",
+      },
+      {
+        chose: "a code-drawn character and icon",
+        over: "an asset pipeline",
+        why: "The character, the app icon and the menu bar template share one geometry, so there is nothing to keep in sync. Personality comes from motion: a 400 ms slide-in that becomes a fade under Reduce Motion.",
+      },
+    ],
+    install: [
+      {
+        label: "build and run in xcode",
+        command: "git clone https://github.com/KhaledSaeed18/baud.git && cd baud && open Baud.xcodeproj",
+        note: "xcode 16 or later, macos 14 or later",
+      },
+      {
+        label: "run the tests",
+        command:
+          "xcodebuild test -project Baud.xcodeproj -scheme Baud -destination 'platform=macOS'",
+      },
+    ],
+    timeline: [
+      {
+        date: "2026-07-23",
+        title: "First commit",
+        body: "The reminder model, the scheduler, the character presenter and the hold-not-drop queue.",
+      },
+      {
+        date: "2026-07-24",
+        title: "Quick add and holds",
+        body: "Settings, snooze, quiet hours, calendar hold, presets, one-time and weekday reminders, and the plain-words parser with its global shortcut.",
+      },
+      {
+        date: "2026-07-25",
+        title: "The moment after",
+        body: "A nearly due reminder delivered when a bad moment clears, and preferences with injectable defaults.",
+      },
+    ],
+    faq: [
+      {
+        q: "Does Baud need camera or microphone permission to detect calls?",
+        a: "No. It does not capture anything. It reads whether another app has the camera or microphone running, which needs no permission.",
+      },
+      {
+        q: "Does anything leave my Mac?",
+        a: "No. There is no network use. The calendar is read on the device only when you enable the meeting-aware hold, and nothing is stored from it.",
+      },
+      {
+        q: "Can I edit reminders by hand?",
+        a: "Yes. They live in a JSON file under Application Support with a documented, stable schema. Quit Baud first so the editor does not overwrite your changes; a malformed file falls back to the built-ins without being overwritten.",
+      },
+      {
+        q: "Is there a download?",
+        a: "Not yet. Clone the repository, open the Xcode project and run it. It runs on Apple Silicon and Intel Macs on macOS 14 or later.",
+      },
+    ],
+    related: ["wakehold", "sever", "gauge"],
   },
   {
     slug: "urljail",
