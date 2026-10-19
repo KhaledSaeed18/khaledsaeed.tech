@@ -1071,10 +1071,11 @@ export const projects: Project[] = [
   {
     slug: "deck-kit",
     name: "deck-kit",
+    updatedAt: "2026-10-19",
     tagline:
       "HTML slides, a synced presenter view and one file that runs with Wi-Fi off.",
     summary:
-      "A reusable presentation kit built with plain HTML, CSS and TypeScript. Write slides as small HTML files, present with step-aware notes and a pace timer, then ship a self-contained deck or PDF. Four portable agent skills guide research, writing, verification and design, with a review stop after each phase.",
+      "A reusable presentation kit built with plain HTML, CSS and TypeScript. Write slides as small HTML files, present with step-aware notes and a pace timer, then ship a self-contained deck or PDF. Four portable agent skills guide research, writing, verification and design, with a review stop after each phase; since v1.2.0 they work with Codex, Claude Code and any agent that reads AGENTS.md.",
     year: 2026,
     group: "tools",
     kind: "Presentation toolkit",
@@ -1097,8 +1098,13 @@ export const projects: Project[] = [
         href: `${gh("deck-kit")}/blob/main/docs/authoring.md`,
       },
       { label: "Example decks", href: `${gh("deck-kit")}/tree/main/examples` },
+      { label: "v1.2.0 release", href: `${gh("deck-kit")}/releases/tag/v1.2.0` },
     ],
-    status: "Open source, MIT licensed",
+    status: "v1.2.0 released, MIT licensed",
+    platform: "Node.js 22.12 or later to build; any browser to present",
+    audience: "people who give talks and want them in a repository, not a cloud",
+    plain:
+      "A talk needs slides, a script, a shorter version for when time runs out, and a plan for the moment the venue Wi-Fi fails. deck-kit keeps all of that in one folder: slides are small web pages, the presenter screen shows your notes and pace, and the whole talk builds into a single file that opens from a USB stick. AI helpers can draft and fact-check the talk, but you approve every step.",
     proof: [
       {
         value: "1",
@@ -1106,14 +1112,19 @@ export const projects: Project[] = [
         note: "deck.html includes the slides, assets and presenter view",
       },
       {
-        value: "4",
-        label: "portable agent skills",
-        note: "new-deck, add-slide, retheme and ship-deck",
+        value: "0",
+        label: "network requests at runtime",
+        note: "fonts, icons and images ship in the build; tests block external requests",
       },
       {
-        value: "2",
-        label: "complete example talks",
-        note: "wireless networks and introductory cryptography",
+        value: "77",
+        label: "browser tests, 77 unit tests",
+        note: "v1.2.0 release run, chromium and webkit; four expected skips",
+      },
+      {
+        value: "15 kB",
+        label: "gzipped javascript for the starter deck",
+        note: "no ui framework and no presentation library",
       },
     ],
     problem:
@@ -1121,7 +1132,7 @@ export const projects: Project[] = [
     approach: [
       {
         title: "Content, theme and engine stay separate",
-        body: "Each slide is an HTML partial with semantic markup, build steps and speaker notes. A deck manifest sets the order, timing and alternate profiles. CSS tokens and layouts own the design; the vanilla TypeScript engine handles navigation on a fixed 1920 by 1080 canvas, scaled to fit the screen.",
+        body: "Each slide is an HTML partial with semantic markup, build steps and speaker notes. A deck manifest sets the order, timing and alternate profiles. CSS tokens and layouts own the design; the vanilla TypeScript engine handles navigation on a fixed 1920 by 1080 canvas, scaled to fit the screen, and tests enforce that the engine holds no visual literals.",
       },
       {
         title: "A presenter view that keeps up",
@@ -1129,11 +1140,15 @@ export const projects: Project[] = [
       },
       {
         title: "A workflow with review built in",
-        body: "Four skills create a talk, add slides, retheme it or prepare delivery. The new-deck workflow moves through brief, research, content, verification and design, pausing for review at each phase. Shared instructions work with Codex, Claude Code and other compatible agents; slides can also be written by hand.",
+        body: "Four skills create a talk, add slides, retheme it or prepare delivery. The new-deck workflow moves through brief, research, content, verification and design, pausing for review at each phase. Nothing on screen changes without approval: unapproved text is marked and fails the lint until resolved.",
+      },
+      {
+        title: "Lint for slides",
+        body: "A dev overlay and a check command flag too much prose per slide, em dashes, exclamation marks, emoji, inline styles and tables without captions. A live region announces slides, hidden slides are inert, and axe runs on every slide.",
       },
       {
         title: "Ready for the room, with a fallback",
-        body: "Vite builds a static site or one deck.html that opens from a USB stick, including the presenter view. Export slides to PDF and notes to a printable script. Separate engine and deck browser suites check navigation, sync, slide fit, accessibility, print and offline behavior, with external requests blocked.",
+        body: "Vite builds a static site or one deck.html that opens from a USB stick, including the presenter view. Export slides to PDF and notes to a printable script. Separate engine and deck browser suites check navigation, sync, slide fit, accessibility, print and offline behavior.",
       },
     ],
     highlights: [
@@ -1141,9 +1156,83 @@ export const projects: Project[] = [
       "Two-way presenter sync with step-aware notes and a persistent timer",
       "Alternate talk profiles with their own slide order and target timings",
       "Keyboard and clicker controls, overview, blackout and touch navigation",
-      "Portable agent skills with explicit review stages",
+      "Portable agent skills with explicit review stages, AGENTS.md canonical",
       "Two complete talks with distinct themes on the same framework-free engine",
     ],
+    decisions: [
+      {
+        chose: "a fixed 1920 by 1080 canvas scaled to the screen",
+        over: "responsive slides that reflow",
+        why: "Layouts never reflow, so what you rehearsed is what the room sees. The cost is letterboxing on screens with another aspect ratio.",
+      },
+      {
+        chose: "no runtime network requests",
+        over: "web fonts and hosted icons",
+        why: "Fonts and icons are packages in the build and images live in the repository. The offline tests block every external request, so the day the venue Wi-Fi fails is a tested path.",
+      },
+      {
+        chose: "one AGENTS.md with CLAUDE.md as a symlink",
+        over: "per-agent instruction files",
+        why: "Codex, Claude Code and any agent that reads the file get the same workflow and the same review stops. Windows needs symlinks enabled, and the docs say to fall back to plain files if they break.",
+      },
+      {
+        chose: "shortcuts by physical key",
+        over: "by letter",
+        why: "The same keys work on AZERTY and Arabic layouts, and Ctrl, Cmd and Alt are left to the browser.",
+      },
+    ],
+    install: [
+      {
+        label: "start a talk from the template",
+        command: "pnpm install && pnpm dev",
+        note: "after use this template on github; presenter view at /presenter.html",
+      },
+      {
+        label: "build the one-file deck for a usb stick",
+        command: "pnpm build:single",
+        note: "dist-single/deck.html opens by double-click",
+      },
+      {
+        label: "export slides to pdf",
+        command: "pnpm pdf",
+      },
+    ],
+    timeline: [
+      {
+        date: "2026-10-14",
+        title: "v1.0.0",
+        body: "The engine, presenter sync, profiles, slide lint, the single-file build, the browser suites and four Claude Code skills, with the wireless networks talk as the example.",
+      },
+      {
+        date: "2026-10-14",
+        title: "v1.1.0",
+        body: "A second complete talk on introductory cryptography with its brief, plan, decisions and fact log published as a worked example.",
+      },
+      {
+        date: "2026-10-14",
+        title: "v1.2.0",
+        body: "Portable workflows: AGENTS.md canonical, skills moved to a shared folder, tool-neutral instructions that disclose separate passes when an agent has no subagents.",
+      },
+    ],
+    faq: [
+      {
+        q: "Does it work with Wi-Fi off?",
+        a: "Yes. There are no runtime requests, and the single-file build produces one deck.html that runs from a USB stick, presenter view included.",
+      },
+      {
+        q: "Do I need an AI agent to use it?",
+        a: "No. Slides are HTML partials you can write by hand. The skills are there for Codex, Claude Code or any agent that reads AGENTS.md, and they stop for your review after each phase.",
+      },
+      {
+        q: "Can one talk have a short version?",
+        a: "Yes. A profile has its own slide order and target timings, and the PDF export produces each profile.",
+      },
+      {
+        q: "What stops the AI from changing my facts?",
+        a: "On-screen content never changes without approval. Text an agent is unsure about is marked, and a marked slide fails the lint until you resolve it.",
+      },
+    ],
+    related: ["dotclaude", "mcce"],
   },
   {
     slug: "dotclaude",
