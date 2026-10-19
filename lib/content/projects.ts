@@ -1382,10 +1382,11 @@ export const projects: Project[] = [
   {
     slug: "mcce",
     name: "MCCE",
+    updatedAt: "2026-10-19",
     tagline:
       "The study hub for my master's program: every course file, past exam and planner in one index.",
     summary:
-      "An independent, student-built index for the LIU M.S. in Computer and Communication Engineering. It syncs shared Google Drive folders into one searchable site, and adds the plan of study, a prerequisite roadmap, a GPA calculator, a tuition planner and an in-browser PDF editor.",
+      "An independent, student-built index for the LIU M.S. in Computer and Communication Engineering. It syncs shared Google Drive folders into one searchable site every week, 895 files across 16 courses at the last crawl, and adds the plan of study, a prerequisite roadmap, a GPA calculator, a tuition planner, a directory of 400 tools and an in-browser PDF editor. No sign-in, no tracking, no backend.",
     year: 2026,
     group: "web",
     kind: "Web app",
@@ -1397,6 +1398,7 @@ export const projects: Project[] = [
       "TypeScript",
       "Cloudflare Workers",
       "Google Drive API",
+      "Vitest",
       "PWA",
     ],
     repo: "mcce",
@@ -1405,27 +1407,127 @@ export const projects: Project[] = [
       { label: "Source", href: gh("mcce") },
     ],
     featured: true,
+    platform: "Any browser; installable as a PWA; hosted on Cloudflare Workers",
+    audience: "students of the LIU MCCE program, and anyone who runs a course on scattered files",
+    plain:
+      "Course files for a degree end up spread across a classroom app, chat groups and someone's drive, and past exams are the first thing to go missing. MCCE gathers all of it for one master's program into a single searchable site that updates itself every week, and adds the tools students actually need: a GPA calculator, a tuition planner and a map of which course needs which.",
+    proof: [
+      {
+        value: "895",
+        label: "files indexed",
+        note: "28.8 gb across 276 folders, crawl of 12 oct 2026",
+      },
+      {
+        value: "16",
+        label: "courses over 4 semesters",
+        note: "514 pdfs and 215 videos among them",
+      },
+      {
+        value: "401",
+        label: "tools in the directory",
+        note: "plus 285 github repositories with licence and maintenance state",
+      },
+      {
+        value: "606",
+        label: "tests",
+        note: "110 test files, run with typecheck and dead-code checks on every push",
+      },
+    ],
     problem:
       "Course material lived in three channels that each lost something: official slides with no past exams, and chat groups that were hard to search and not open to everyone.",
     approach: [
       {
         title: "Drive as the source of truth",
-        body: "A scheduled sync indexes the shared Drive folders by semester, course and material type, so the site tracks what is actually shared without anyone maintaining it by hand.",
+        body: "A scheduled GitHub Action crawls three shared Drive folders through a service account every Monday, classifies every file by semester, course and material type, and commits the index back as JSON. The site has no backend: the index is the data, cached in the browser after the first visit.",
       },
       {
         title: "The program on one screen",
-        body: "Plan of study, prerequisite roadmap, admissions flow and tuition figures, with a planner that works a year of fees out from them.",
+        body: "Plan of study, a prerequisite roadmap drawn as a graph with credit totals, admissions tracks and tuition figures, with a planner that works a year of fees out in dollars and pounds, and a GPA calculator that projects the end of the program and shares a link.",
       },
       {
-        title: "Works offline",
-        body: "An installable PWA with saved files, RSS updates and exports to PDF, CSV and JSON.",
+        title: "Mark up a PDF without touching it",
+        body: "Any indexed file opens in an editor with drawing, text, shapes, page rotation and reordering. The markup stays in the browser and saves as a copy, so the shared file in Drive never changes.",
+      },
+      {
+        title: "Everything else a student searches for",
+        body: "A command palette with recents, past exams grouped by course and term, a feed of recent additions with RSS, and a directory of about 400 tools and 285 repositories by category, cost and licence, including a thesis toolkit by stage.",
       },
     ],
     highlights: [
-      "Weekly automatic sync from Google Drive",
+      "Weekly automatic sync from Google Drive, link check the hour after",
+      "Search with filters, command palette, course pages and past exams",
+      "GPA projection, tuition planner and a prerequisite roadmap",
       "In-browser PDF editor for any indexed file",
-      "Runs on Cloudflare Workers",
+      "Installable PWA that works offline, on Cloudflare Workers",
     ],
+    decisions: [
+      {
+        chose: "a committed JSON index",
+        over: "a database and an API",
+        why: "The data changes once a week, so a crawl that commits its result is enough. The site ships as static assets on a worker, works offline from the cached index, and has no server to keep running or secure.",
+      },
+      {
+        chose: "markup kept in the browser",
+        over: "writing back to Drive",
+        why: "A shared folder has one copy of every file. Editing locally and saving a marked-up copy keeps the shared file intact and needs no write permission on anyone's Drive.",
+      },
+      {
+        chose: "no accounts",
+        over: "sign-in and saved profiles",
+        why: "GPA entries and saved files stay in the browser. Nothing to leak, nothing to maintain, and the site stays open to every student, not only members of a chat group.",
+      },
+    ],
+    install: [
+      {
+        label: "use it",
+        command: "open https://mcce.khaledsaeed.tech/search",
+      },
+      {
+        label: "run it locally",
+        command: "pnpm install && pnpm dev",
+        note: "the committed index works without a drive key; syncing needs a service account",
+      },
+    ],
+    timeline: [
+      {
+        date: "2026-08-10",
+        title: "First commit",
+      },
+      {
+        date: "2026-08-17",
+        title: "First Drive crawl committed",
+        body: "The baseline index that every weekly sync has been diffed against since.",
+      },
+      {
+        date: "2026-09",
+        title: "Course pages, exams, planners and the editor",
+        body: "Then the resources hub with the tools directory and thesis toolkit.",
+      },
+      {
+        date: "2026-10-12",
+        title: "Latest index",
+        body: "895 files across 16 courses; 872 commits by 19 October.",
+      },
+    ],
+    faq: [
+      {
+        q: "Is this an official LIU site?",
+        a: "No. It is independent and student-built, and says so on every page.",
+      },
+      {
+        q: "Where do the files come from and how fresh are they?",
+        a: "From shared Google Drive folders, crawled by a scheduled job every Monday morning. The recently added feed and its RSS show what changed.",
+      },
+      {
+        q: "Does editing a PDF change the file in Drive?",
+        a: "No. Markup is kept in your browser and you save a marked-up copy. The shared file is never written.",
+      },
+      {
+        q: "Is my GPA data sent anywhere?",
+        a: "No. Entries stay in the browser. A share link encodes them in the address so you can send it to someone.",
+      },
+    ],
+    related: ["deck-kit", "freertos-riscv"],
   },
   {
     slug: "jwt-toolkit",
