@@ -1537,7 +1537,7 @@ export const projects: Project[] = [
     summary:
       "A Python security CLI for debugging token changes, checking signatures and testing your own verifier. Version 1.1.0 adds token diffs, EdDSA and practical key inputs while tightening parsing, claim validation and scriptable errors. The JWS logic stays readable on top of cryptography, without pyjwt or python-jose.",
     year: 2026,
-    updatedAt: "2026-10-17",
+    updatedAt: "2026-10-19",
     group: "tools",
     kind: "Security CLI",
     object: "key",
@@ -1553,6 +1553,10 @@ export const projects: Project[] = [
       { label: "Source", href: gh("jwt-toolkit") },
     ],
     status: "v1.1.0 released",
+    platform: "Python 3.13 or later, any operating system",
+    audience: "developers and security testers who need to know what a token really says",
+    plain:
+      "Websites recognise you with a small signed pass called a JWT. jwt-toolkit opens one up, shows what it claims and when it expires, checks whether it was signed safely, compares two of them, and shows a developer how an attacker would try to fake one, so they can make sure their own system refuses it. It runs on your machine and never sends tokens anywhere.",
     proof: [
       {
         value: "583",
@@ -1563,6 +1567,16 @@ export const projects: Project[] = [
         value: "93.94%",
         label: "test coverage",
         note: "same run, statements and branches; startup banner excluded",
+      },
+      {
+        value: "15",
+        label: "signing algorithms",
+        note: "hmac, rsa, rsa-pss, ecdsa and eddsa families; none is never accepted",
+      },
+      {
+        value: "6",
+        label: "pypi releases",
+        note: "25 may to 17 oct 2026, each attested through trusted publishing",
       },
     ],
     problem:
@@ -1601,6 +1615,81 @@ export const projects: Project[] = [
       "Bundled wordlist and bounded process-based cracking",
       "Stable JSON errors and a validated PyPI publishing workflow",
     ],
+    decisions: [
+      {
+        chose: "re-implementing JWS on top of cryptography",
+        over: "pyjwt or python-jose",
+        why: "Showing how signing works and where it breaks is the point of the tool, so the signature check has to be readable. The cost is owning every edge case, which is why the verifier's rules are written down and tested one by one.",
+      },
+      {
+        chose: "the algorithm family from the key you supply",
+        over: "the alg header in the token",
+        why: "Trusting the header is the classic confusion attack: an RSA public key accepted as an HMAC secret. The key decides the family, and alg none is never accepted.",
+      },
+      {
+        chose: "labelling header-only forge variants",
+        over: "reporting every rejection as a pass",
+        why: "If a verifier rejects a token with a tampered kid, that does not prove it is safe from kid injection; it may have failed for another reason. The report says which variants prove nothing by themselves.",
+      },
+      {
+        chose: "stable error codes and an additive JSON schema",
+        over: "free-form messages",
+        why: "A CI gate needs to match on a code that will still exist next year. Codes are frozen and the JSON shape only ever gains fields.",
+      },
+    ],
+    install: [
+      {
+        label: "install with pipx or uv",
+        command: "pipx install jwt-toolkit",
+        note: "python 3.13 or later; uv tool install jwt-toolkit also works",
+      },
+      {
+        label: "try it without installing",
+        command: "uvx jwt-toolkit audit \"$TOKEN\"",
+      },
+      {
+        label: "gate a pipeline on a token's shape",
+        command:
+          'jwt-toolkit --quiet audit "$SERVICE_TOKEN" --strict --require iss,aud,exp --json > audit.json',
+        note: "exit 0 clean, 1 findings, 2 unreadable",
+      },
+    ],
+    timeline: [
+      {
+        date: "2026-05-25",
+        title: "v0.1.0",
+        body: "Decode, sign, verify with JWKS, audit, forge, crack, generate-secret and download-wordlists, published to PyPI the day after the first commit.",
+      },
+      {
+        date: "2026-07-03",
+        title: "v1.0.0",
+        body: "First stable release with the public surface unchanged since 0.1.3 and the dependency advisories cleared.",
+      },
+      {
+        date: "2026-10-17",
+        title: "v1.1.0",
+        body: "The diff command, EdDSA, secret and payload files, certificates and encrypted keys, the bundled wordlist with worker processes, stricter verification and stable JSON errors.",
+      },
+    ],
+    faq: [
+      {
+        q: "Does decode verify the token?",
+        a: "No. Decode and diff show what a token says without checking the signature. Use verify with the right key before trusting the contents.",
+      },
+      {
+        q: "Is it safe to run crack?",
+        a: "Only on tokens you own. It exits 1 when the secret is found, and not finding one with a wordlist does not prove the secret is strong.",
+      },
+      {
+        q: "How do I keep secrets out of my shell history?",
+        a: "Pass them as files with --secret-file, and generate new ones with generate-secret --raw straight into a file.",
+      },
+      {
+        q: "Does it send tokens anywhere?",
+        a: "No. The only network calls are fetching a JWKS you point it at and downloading wordlists over verified TLS. Tests never touch the network.",
+      },
+    ],
+    related: ["node-authentication-template", "urljail", "dir-analysis-tool"],
   },
   {
     slug: "wakehold",
