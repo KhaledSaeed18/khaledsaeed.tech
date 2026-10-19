@@ -688,11 +688,11 @@ export const projects: Project[] = [
   {
     slug: "node-authentication-template",
     name: "Node auth template",
-    updatedAt: "2026-10-10",
+    updatedAt: "2026-10-19",
     tagline:
       "Passkeys, OpenID Connect and revocable sessions in an authentication backend ready to fork.",
     summary:
-      "An Express 5 and TypeScript authentication API on PostgreSQL and Prisma 7, with passwordless passkeys, TOTP recovery codes and a headless OpenID Connect provider. Rotating tokens, account self-service, reliable email delivery and tracing cover the work around sign-in too.",
+      "An Express 5 and TypeScript authentication API on PostgreSQL and Prisma 7, with passwordless passkeys, TOTP recovery codes and a headless OpenID Connect provider. Rotating tokens, account self-service, reliable email delivery and tracing cover the work around sign-in too. Version 3.2.0 is documented by nine decision records and a STRIDE threat model, and tested against a real PostgreSQL in CI.",
     year: 2025,
     group: "platforms",
     kind: "Authentication service",
@@ -721,8 +721,39 @@ export const projects: Project[] = [
         href: `${gh("node-authentication-template")}/blob/main/docs/architecture.md`,
       },
       {
+        label: "Decisions",
+        href: `${gh("node-authentication-template")}/tree/main/docs/adr`,
+      },
+      {
         label: "Changelog",
         href: `${gh("node-authentication-template")}/blob/main/CHANGELOG.md`,
+      },
+    ],
+    status: "v3.2.0 released",
+    platform: "Node.js 24, PostgreSQL 18; Redis optional",
+    audience: "teams that need sign-in done properly before the product exists",
+    plain:
+      "Every app needs a way to sign people in, and getting it wrong is how accounts get stolen. This is a ready-made sign-in service: passwords, fingerprint or face passkeys, two-factor codes, sign in with for other apps, and a page where people see and end their own sessions. Every risky step is logged and emailed to the account owner.",
+    proof: [
+      {
+        value: "171",
+        label: "tests against real postgresql",
+        note: "22 files, the ci run for v3.2.0 on 9 oct 2026",
+      },
+      {
+        value: "9",
+        label: "decision records",
+        note: "plus a stride threat model that lists its residual risks",
+      },
+      {
+        value: "350 MB",
+        label: "api image, down from 730",
+        note: "runtime and migrate images from one dockerfile, amd64",
+      },
+      {
+        value: "1",
+        label: "required dependency",
+        note: "postgresql; redis only for shared rate limits",
       },
     ],
     problem:
@@ -734,11 +765,11 @@ export const projects: Project[] = [
       },
       {
         title: "An identity other apps can use",
-        body: "A headless OpenID Connect provider supports authorization code flow with PKCE, discovery, userinfo and consent for third-party clients, plus token introspection and revocation endpoints. Access and ID tokens use rotating ES256 signing keys published through JWKS, so other services can verify them.",
+        body: "A headless OpenID Connect provider supports authorization code flow with PKCE, discovery, userinfo and consent for third-party clients, with token introspection and revocation on main. Access and ID tokens use rotating ES256 signing keys published through JWKS, so other services can verify them.",
       },
       {
         title: "Sessions you can actually end",
-        body: "Opaque refresh tokens rotate on every use; reuse revokes the session. Every authenticated API request checks that its server-side session is active. Users can list sessions, revoke one, log out everywhere and inspect a paginated login history.",
+        body: "Opaque refresh tokens rotate on every use; reuse revokes the session, with a ten-second grace for two tabs refreshing at once. Every authenticated request checks that its server-side session is active. Users can list sessions, revoke one, log out everywhere and inspect a paginated login history.",
       },
       {
         title: "The whole account lifecycle",
@@ -746,7 +777,7 @@ export const projects: Project[] = [
       },
       {
         title: "Security at each boundary",
-        body: "Argon2id replaces bcrypt, upgrading existing hashes on sign-in. Breached password screening uses k-anonymity, failed sign-ins trigger account lockout, and recovery endpoints avoid revealing whether an account exists. Rate limits can share a Redis store, with Helmet, strict CORS and validated configuration around the API.",
+        body: "Argon2id replaces bcrypt, upgrading existing hashes on sign-in. Breached passwords are screened against Have I Been Pwned by k-anonymity, failed sign-ins trigger account lockout, and recovery endpoints avoid revealing whether an account exists. Rate limits can share a Redis store, with Helmet, strict CORS and validated configuration around the API.",
       },
       {
         title: "Delivery and operations built in",
@@ -761,6 +792,97 @@ export const projects: Project[] = [
       "Transactional email outbox, security alerts and an account activity log",
       "OpenTelemetry, OpenAPI, database integration tests and container security scans",
     ],
+    decisions: [
+      {
+        chose: "server-side sessions with rotating opaque refresh tokens",
+        over: "stateless refresh tokens or a denylist",
+        why: "One indexed lookup per request buys immediate revocation, so logout means logout. Verifiers that only check the JWKS cannot see a revocation until the access token expires, which is why introspection exists for the cases that matter.",
+      },
+      {
+        chose: "a modular monolith with one composition root",
+        over: "a dependency injection container or NestJS",
+        why: "Plain constructors keep the wiring readable in a single function. The cost is that the composition root grows with every module, which is visible rather than hidden.",
+      },
+      {
+        chose: "PostgreSQL as the only required dependency",
+        over: "a message broker and a cache",
+        why: "The outbox uses row locks with skip-locked, concurrency uses conditional updates and advisory locks, and delivery is at least once so handlers are idempotent. Redis is optional and only shares rate-limit counters across instances. Delivery latency is up to a second.",
+      },
+      {
+        chose: "ES256 tokens with rotating keys in JWKS",
+        over: "HS256 shared secrets or RS256",
+        why: "A shared secret means every verifier can also forge. RS256 tokens are bigger and EdDSA has weaker gateway support. Keys rotate every thirty days and the service fails closed if a key cannot be decrypted, so a misconfigured instance cannot retire the others' keys.",
+      },
+      {
+        chose: "a headless OpenID Connect provider",
+        over: "hosted login pages or a provider library",
+        why: "The authorize endpoint hands an interaction id to your own front end, which signs the user in through the normal API. No implicit or hybrid flow, PKCE S256 is mandatory, and dynamic client registration and back-channel logout are deliberately not built.",
+      },
+    ],
+    install: [
+      {
+        label: "run the whole stack",
+        command:
+          "export ENCRYPTION_KEY=$(openssl rand -base64 32) && docker compose up --build",
+        note: "api at localhost:4000/api/v1, mailpit at localhost:8025",
+      },
+      {
+        label: "run the tests against a real database",
+        command:
+          "docker compose up -d db && TEST_DATABASE_URL=postgresql://postgres:postgres@localhost:5432/auth_test yarn test",
+      },
+      {
+        label: "bring up grafana with traces and metrics",
+        command:
+          "docker compose -f compose.yaml -f compose.observability.yaml up --build",
+        note: "grafana at localhost:3001",
+      },
+    ],
+    timeline: [
+      {
+        date: "2025-03-09",
+        title: "First commit",
+        body: "A JWT authentication API on Express, Prisma and PostgreSQL.",
+      },
+      {
+        date: "2026-10-09",
+        title: "v2.0.0",
+        body: "Reworked into modules: Argon2id, server-side sessions with rotating refresh tokens, 2FA recovery codes, lockout, HMAC codes, OpenAPI, Docker and CI.",
+      },
+      {
+        date: "2026-10-09",
+        title: "v3.0.0 and v3.1.0",
+        body: "Passkeys, the transactional outbox, ES256 tokens with JWKS, the activity log and security alerts, OpenTelemetry, scans, decision records and the threat model, then the headless OpenID Connect provider.",
+      },
+      {
+        date: "2026-10-09",
+        title: "v3.2.0",
+        body: "Confirmed email change, account deletion, data export, breached-password screening, and a separate migrate image that cut the API image from 730 MB to about 350 MB. Introspection and revocation followed on main.",
+      },
+    ],
+    faq: [
+      {
+        q: "Can I run it without Redis?",
+        a: "Yes. PostgreSQL is the only required service. Redis only shares rate-limit counters between instances when you scale out.",
+      },
+      {
+        q: "How do my other services verify its tokens?",
+        a: "Fetch the JWKS endpoint and verify the ES256 token by its key id. Offline verification cannot see a revocation until the token expires, at most fifteen minutes, so call the introspection endpoint when that matters.",
+      },
+      {
+        q: "Does it render login pages for OpenID Connect?",
+        a: "No. It is headless. The authorize endpoint redirects to your front end with an interaction id, your page signs the user in through the regular API, and completes the interaction.",
+      },
+      {
+        q: "What happens if a refresh token is stolen?",
+        a: "Tokens rotate on every use. Presenting an old one revokes the whole session and emails the owner, with a ten-second grace window so two tabs refreshing at once do not lock each other out.",
+      },
+      {
+        q: "How are emails sent reliably?",
+        a: "Each email is written to an outbox row in the same transaction as the change that caused it, then delivered by a worker with exponential backoff. The worker runs in-process or as a separate container.",
+      },
+    ],
+    related: ["node-express-boilerplate", "sleep-track", "jwt-toolkit", "patchgrid"],
   },
   {
     slug: "sleep-track",
