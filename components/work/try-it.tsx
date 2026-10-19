@@ -13,13 +13,13 @@ import { cn } from "@/lib/utils"
  */
 export function TryIt({ install }: { install: Install[] }) {
   return (
-    <ol className="grid gap-px overflow-hidden border border-border bg-border">
+    <ol className="grid grid-cols-[minmax(0,1fr)] gap-px overflow-hidden border border-border bg-border">
       {install.map((step, i) => (
         <li
           key={step.command}
           data-reveal
           style={{ "--reveal-delay": i } as React.CSSProperties}
-          className="bg-background p-5 sm:p-6"
+          className="min-w-0 bg-background p-5 sm:p-6"
         >
           <div className="flex items-baseline justify-between gap-4">
             <p className="font-mono text-xs text-muted-foreground">
@@ -55,7 +55,7 @@ function Command({ command }: { command: string }) {
 
   return (
     <div className="mt-3 flex items-stretch gap-px">
-      <pre className="min-w-0 flex-1 overflow-x-auto border border-border bg-card px-4 py-3 font-mono text-sm leading-relaxed text-foreground">
+      <pre className="min-w-0 flex-1 overflow-x-auto border border-border bg-card px-4 py-3 font-mono text-sm leading-relaxed text-foreground [font-variant-ligatures:none]">
         <code>
           <span aria-hidden="true" className="text-muted-foreground select-none">
             ${" "}
