@@ -752,39 +752,159 @@ export const projects: Project[] = [
   {
     slug: "wakehold",
     name: "Wakehold",
+    updatedAt: "2026-10-19",
     tagline:
       "Keeps a Mac awake exactly as long as the work is alive, then lets it sleep.",
     summary:
-      "A session-aware wake controller for macOS: a menu bar app, a CLI and a local control endpoint. A running process, a listening port, a wrapped command, an agent session or a timer each hold the machine open, and the hold releases itself when the last one ends.",
+      "A session-aware wake controller for macOS: a menu bar app, a CLI and a local control endpoint over a Unix socket. A running process, a listening port, a wrapped command, a coding agent's session, a chosen app or a timer each hold the machine open, and the hold releases itself when the last one ends. When it does, the Mac can notify you, sleep or shut down.",
     year: 2026,
     group: "macos",
     kind: "macOS app",
     object: "hourglass",
     stock: "stone",
-    stack: ["Swift", "SwiftUI", "IOKit"],
+    stack: ["Swift", "SwiftUI", "IOKit", "Swift Testing"],
     repo: "wakehold",
-    links: [{ label: "Source", href: gh("wakehold") }],
+    links: [
+      { label: "Source", href: gh("wakehold") },
+      { label: "Agent hooks", href: `${gh("wakehold")}#agent-hooks` },
+    ],
+    platform: "macOS 14 or later, Apple Silicon or Intel",
+    audience: "anyone who runs builds, servers or coding agents on a Mac",
+    plain:
+      "Macs go to sleep after a few idle minutes, which kills a long download, a build or an AI agent working overnight. The usual fix is a switch you flip on and forget. Wakehold instead watches the thing you care about and keeps the Mac awake only while it is running, then lets it sleep or shuts it down for you.",
+    proof: [
+      {
+        value: "6",
+        label: "kinds of session",
+        note: "timer, process, port, command, agent and app",
+      },
+      {
+        value: "97",
+        label: "automated tests",
+        note: "swift testing, 81 in the kit and 16 in the app",
+      },
+      {
+        value: "0",
+        label: "network ports opened",
+        note: "the control endpoint is a unix socket, mode 0600",
+      },
+      {
+        value: "602 KB",
+        label: "cli binary",
+        note: "release build, arm64, measured on 19 oct 2026",
+      },
+    ],
     problem:
-      "Keep-awake tools are a switch you flip on and forget to flip off. They model a timer, not the thing you actually care about.",
+      "Keep-awake tools are a switch you flip on and forget to flip off. They model a timer, not the thing you actually care about: the build, the dev server, the agent that will finish at some point in the night.",
     approach: [
       {
         title: "Sessions, not switches",
-        body: "Tell it what to watch: a build, a dev server on :3000, a Claude Code session, an app. It stays awake while that thing runs.",
+        body: "Tell it what to watch: a build, a dev server on :3000, a process id, an app, a Claude Code or Codex session, or just twenty minutes. Every session is one type conforming to one protocol, and the Mac is awake exactly while at least one is active. Nothing toggles the power assertion directly; one reconcile step derives it from the sessions.",
+      },
+      {
+        title: "Leases, not goodbyes",
+        body: "Agent hooks open a lease keyed by the session id and renew it on every event. A crash or a kill never sends an end hook, so the lease's expiry is the source of truth, not the goodbye. The hooks are no-ops when the app is not running, so they never block the agent.",
       },
       {
         title: "Cleans up after itself",
-        body: "When the last session ends it can sleep the display, sleep the Mac, shut down, restart or notify. Run the agent overnight, shut down when it finishes.",
+        body: "When the last session ends it can notify, sleep the display, sleep the Mac, shut down or restart. Each action is armed per occasion, shown in the menu and cancelable. Run the agent overnight, shut down when it finishes.",
+      },
+      {
+        title: "Guardrails for the battery",
+        body: "A hold can release itself on battery, below a chosen charge or in Low Power Mode. The display stays on by default, with one switch to let it sleep while the system stays awake. The system-level assertion that fights the lid is never used.",
       },
       {
         title: "Legible",
-        body: "The menu lists every reason the Mac is awake, including other apps' power assertions like a call or audio playing.",
+        body: "The menu lists every reason the Mac is awake, including other apps' power assertions like a call, audio or a stray caffeinate, named by their owning process. Wakehold's own holds show up in pmset like everyone else's.",
+      },
+      {
+        title: "A socket, not a port",
+        body: "The CLI and hooks talk to the app over HTTP on a Unix domain socket under Application Support, mode 0600 with a peer check. A localhost port would be reachable from a browser and any local process; a socket is scoped by the filesystem, and curl still works.",
       },
     ],
     highlights: [
-      "Menu bar app, CLI and local HTTP control endpoint",
-      "Watches processes, ports, commands, agents and timers",
-      "Native Swift with IOKit power assertions",
+      "Menu bar app, CLI and a control endpoint over a Unix socket",
+      "Watches processes, ports, commands, agents, apps and timers",
+      "Hooks for Claude Code, Codex, Gemini CLI and Cursor with crash-safe leases",
+      "Post-session sleep, shutdown, restart or notify; battery guardrails",
+      "Localised in English and Arabic, with mirrored layout",
+      "Native Swift with IOKit power assertions, no Electron",
     ],
+    decisions: [
+      {
+        chose: "a Unix domain socket for the control endpoint",
+        over: "an HTTP server on a localhost port",
+        why: "A port is reachable from any local process and, through DNS rebinding or a form POST, from a web page. A socket file with mode 0600 and a peer-uid check is scoped by the filesystem. It cost a hand-written HTTP/1.1 parser, since NWListener cannot bind a socket, but curl --unix-socket still works.",
+      },
+      {
+        chose: "expiring leases for agent sessions",
+        over: "trusting start and end hooks",
+        why: "End hooks never fire when an agent crashes or is killed, which would leave the Mac awake all night. A lease renewed on every event releases on its own when the agent goes quiet.",
+      },
+      {
+        chose: "preventing idle display sleep",
+        over: "the system-wide PreventSystemSleep assertion",
+        why: "The system assertion only applies on AC power and fights the user closing the lid. Keeping the lid-closed case out of scope avoids a root helper and keeps every action in user space.",
+      },
+      {
+        chose: "no App Sandbox",
+        over: "a sandboxed, store-ready build",
+        why: "Watching arbitrary processes and ports and wrapping commands needs access the sandbox forbids. The app is built from source instead of distributed through the App Store.",
+      },
+    ],
+    install: [
+      {
+        label: "build the menu bar app",
+        command: "git clone https://github.com/KhaledSaeed18/wakehold && cd wakehold && open Wakehold.xcodeproj",
+        note: "xcode 16 or later, macos 14 or later",
+      },
+      {
+        label: "build the cli",
+        command:
+          "swift build --package-path WakeholdKit -c release --product wakehold",
+      },
+      {
+        label: "hold while a command runs",
+        command: "wakehold -- pnpm build",
+        note: "the app must be running",
+      },
+    ],
+    timeline: [
+      {
+        date: "2026-07-21",
+        title: "First commit",
+        body: "The kit, the IOKit assertion, the socket endpoint, the CLI, agent leases, post-session actions and guardrails, most of it in one day.",
+      },
+      {
+        date: "2026-07-22",
+        title: "Arabic localisation",
+        body: "Menu, settings and duration plurals in a second language, with a mirrored layout.",
+      },
+      {
+        date: "2026-07-23",
+        title: "Other holds in the menu",
+        body: "Every process's sleep assertion read from IOKit and listed with its reason.",
+      },
+    ],
+    faq: [
+      {
+        q: "Does Wakehold need Accessibility or Screen Recording permission?",
+        a: "No. The only system prompt is Automation for System Events, and only if you arm shut down or restart as a post-session action. The notify action asks for notification permission.",
+      },
+      {
+        q: "Does the CLI work without the app running?",
+        a: "No. The CLI and the agent hooks talk to the running app over its socket. The hooks do nothing when the app is absent, so an agent is never blocked by them.",
+      },
+      {
+        q: "Does it keep the Mac awake with the lid closed?",
+        a: "Not without an external display. That needs the system-level assertion or a root helper, which Wakehold deliberately avoids.",
+      },
+      {
+        q: "Is there a download or a Homebrew formula?",
+        a: "Not yet. Build the app from the Xcode project and the CLI with Swift Package Manager; both are a single command. It runs on Apple Silicon and Intel Macs on macOS 14 or later.",
+      },
+    ],
+    related: ["sever", "baud", "gauge", "dotclaude"],
   },
   {
     slug: "repo-scout",
