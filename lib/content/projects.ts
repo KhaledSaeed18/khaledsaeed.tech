@@ -3072,7 +3072,7 @@ export const projects: Project[] = [
   {
     slug: "drainscope",
     name: "drainscope",
-    updatedAt: "2026-10-14",
+    updatedAt: "2026-10-19",
     tagline:
       "See where your Linux laptop's battery goes, by app, terminal command and service.",
     summary:
@@ -3117,9 +3117,17 @@ export const projects: Project[] = [
         label: "Install and setup",
         href: `${gh("drainscope")}/blob/v1.0.0/docs/install.md`,
       },
+      {
+        label: "Attribution model",
+        href: `${gh("drainscope")}/blob/v1.0.0/docs/attribution-model.md`,
+      },
     ],
     status: "v1.0.0 stable, packaged for Fedora",
     featured: true,
+    platform: "Fedora 44, 45 or rawhide with GNOME 50 or 51; Intel laptops validated",
+    audience: "Linux laptop users who want the per-app battery view phones have had for years",
+    plain:
+      "A phone tells you which apps drained the battery. A Linux laptop only shows a percentage. drainscope measures the energy the hardware actually used and works out each app's share, including what it burned while you were not looking at it, then shows it in a tile in the top bar, a desktop app and the terminal. Everything stays on your machine, and nothing runs as root.",
     proof: [
       {
         value: "0.18%",
@@ -3141,13 +3149,113 @@ export const projects: Project[] = [
         label: "components running as root",
         note: "one capability on the sampler, three on the optional probe",
       },
+      {
+        value: "0.6 pt",
+        label: "in-use share error",
+        note: "against focused time, two equal loads; the criterion was five points",
+      },
+      {
+        value: "9",
+        label: "releases in 10 days",
+        note: "v0.1.0 on 5 oct to v1.0.0 on 14 oct 2026, model v1 to v4",
+      },
     ],
+    decisions: [
+      {
+        chose: "proportional sharing above a learned idle floor",
+        over: "a machine-learned power model",
+        why: "Every share is derived from counters the kernel exposes and the shares always sum to the measured energy, which is property tested. The known cost is that light, bursty work is undercharged, and the model document says by how much.",
+      },
+      {
+        chose: "recording the battery shortfall",
+        over: "a conversion factor between RAPL and the battery",
+        why: "Measured, the battery drew 0.77 to 0.90 times what the package counters said, and the ratio moved. Display and devices are reported as battery minus package rather than scaled into the apps.",
+      },
+      {
+        chose: "a separate optional eBPF probe",
+        over: "eBPF inside the daemon",
+        why: "Wakeups and network bytes need three capabilities. Keeping them in their own service with its own user and an empty network namespace means the daemon and the sampler keep one or none, and the probe can be left uninstalled.",
+      },
+      {
+        chose: "reporting the focused app id only",
+        over: "window titles",
+        why: "The in-use and background split needs to know which app has focus, not what you are reading. The extension sends the app id, the daemon accepts it only from the Shell's own process, and titles never leave the compositor.",
+      },
+      {
+        chose: "coarsened, rate-limited counter readings",
+        over: "raw RAPL to any caller",
+        why: "Fine-grained energy counters are a known side channel for reading secrets. polkit limits reads to the active local session and the values are rounded and throttled, which is enough for attribution and not enough for an attack.",
+      },
+    ],
+    install: [
+      {
+        label: "install from copr",
+        command:
+          "sudo dnf copr enable khaledsaeed18/drainscope && sudo dnf install drainscope drainscope-sampler drainscope-probe drainscope-app gnome-shell-extension-drainscope",
+        note: "fedora 44, 45 or rawhide; gnome 50 or 51 for the tile",
+      },
+      {
+        label: "start it and check what your hardware supports",
+        command:
+          "systemctl --user enable --now drainscope.service && drainscope doctor",
+        note: "log out and in once for the extension",
+      },
+      {
+        label: "see where the battery went since unplugging",
+        command: "drainscope summary",
+      },
+    ],
+    timeline: [
+      {
+        date: "2026-10-05",
+        title: "v0.1.0",
+        body: "Daemon, sampler, CLI, the GNOME extension and the app, with source, SRPM and Fedora 44 RPMs. COPR went live the next day.",
+      },
+      {
+        date: "2026-10-10",
+        title: "v0.1.3 and v0.1.4",
+        body: "Model v3 with network interrupt threads, CSV and JSON export, the slower idle tick that cut self-cost from about 0.9% to 0.28%, then the in-use and background split per app.",
+      },
+      {
+        date: "2026-10-12",
+        title: "v0.1.6 and v0.1.7",
+        body: "Model v4, stable lists, the once-a-minute 7-day view, and the failure checklist run end to end: measuring without writable history, clearer polkit messages.",
+      },
+      {
+        date: "2026-10-14",
+        title: "v1.0.0",
+        body: "The 0.1.7 code declared stable after the 48-hour soak, with the performance, architecture and installation documents. Next: the extension listing review, model v5 for wake cost, and AMD and Intel xe GPU parts.",
+      },
+    ],
+    faq: [
+      {
+        q: "Does any of it run as root?",
+        a: "No. The daemon is a user service. The sampler runs as its own user with one capability to read counters, and the optional probe with three for eBPF, both in systemd sandboxes with SELinux modules enforcing.",
+      },
+      {
+        q: "Which hardware does it support?",
+        a: "Intel laptops with RAPL and i915 graphics are developed and validated. AMD Zen is expected to work from fixtures but untested on real hardware. Intel xe works without per-app GPU energy. Machines without RAPL, including virtual machines, fall back to battery readings split by CPU time. The doctor command says which applies.",
+      },
+      {
+        q: "Is it private?",
+        a: "No component opens a network socket. History lives in a SQLite file only your user can read, focus is reported by app id and never by window title, and counter readings are limited to the active local session, rate-limited and coarsened.",
+      },
+      {
+        q: "What happens when a part fails?",
+        a: "The daemon keeps measuring in memory when history is not writable, degrades the available readings without the sampler or probe, recovers when they return without a restart, and exits cleanly rather than touch a database from a newer version. Nine failure cases were run and documented.",
+      },
+      {
+        q: "How accurate is the per-app split?",
+        a: "The total is measured. The split is an estimate from CPU, GPU and network activity, and the model document states where it is weak: light bursty work is undercharged, and about half a percent of energy lands in processes that exited before the tick.",
+      },
+    ],
+    related: ["osreflog", "urljail", "wakehold"],
     problem:
       "A battery percentage says how much charge is left, but not which app spent it or whether it was working in the background. Linux exposes energy and activity counters across the kernel and desktop, with different permissions and gaps in hardware support. I wanted to turn those readings into a useful account of where the battery went, without running a monitor as root.",
     approach: [
       {
         title: "Measure the total, explain each share",
-        body: "RAPL counters and battery readings provide the measured energy. A user service combines cgroup v2 CPU time and GPU time from DRM fdinfo to estimate each consumer's share above a learned idle floor. Model v4 also shares energy by CPU time when RAPL is unavailable. Network softirq and threaded interrupt work follow the apps' measured traffic, while Idle and Display & devices remain visible parts of the total.",
+        body: "RAPL counters and battery readings provide the measured energy. A user service combines cgroup v2 CPU time and GPU time from DRM fdinfo to estimate each consumer's share above a learned idle floor. Without RAPL, battery energy is shared by CPU time above a learned idle floor, and model v4 keeps attributing when RAPL drops out partway through a window. Network softirq and threaded interrupt work follow the apps' measured traffic, while Idle and Display & devices remain visible parts of the total.",
       },
       {
         title: "In use or in the background",
