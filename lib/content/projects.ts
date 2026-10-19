@@ -26,6 +26,7 @@ export type ObjectKind =
   | "presentation"
   | "cage"
   | "bisect"
+  | "wave"
 
 /** Card stock a project is printed on. Ink is always a near-black of the same hue. */
 export type Stock = "terracotta" | "teal" | "bone" | "stone"
@@ -142,7 +143,7 @@ export const groups: Record<ProjectGroup, { title: string; blurb: string }> = {
   systems: {
     title: "Systems",
     blurb:
-      "Close to the kernel: a microVM sandbox for links you don't trust, a change history with bisect for the whole system, a least-privilege energy monitor for the Linux desktop, and a real-time OS brought up on RISC-V.",
+      "Close to the kernel and the signal: a microVM sandbox for links you don't trust, a change history with bisect for the whole system, a least-privilege energy monitor for the Linux desktop, a real-time OS brought up on RISC-V, and a filter designed by hand.",
   },
   web: {
     title: "Web",
@@ -3308,10 +3309,11 @@ export const projects: Project[] = [
   {
     slug: "freertos-riscv",
     name: "FreeRTOS on RISC-V",
+    updatedAt: "2026-10-19",
     tagline:
-      "FreeRTOS ported to 64-bit RISC-V and booted on QEMU, from the startup code and linker script up.",
+      "FreeRTOS brought up on 64-bit RISC-V and booted on QEMU with no firmware, from the startup code and linker script up.",
     summary:
-      "A port of the FreeRTOS kernel to RV64 on QEMU's virt machine: bare-metal startup in assembly, a linker script that lays out RAM from 0x80000000, machine-mode timer interrupts driving a 1 kHz tick, and two preemptive tasks that prove the scheduler. Built for the CENG507 embedded systems course.",
+      "A bare-metal bring-up of the FreeRTOS kernel on QEMU's RV64 virt machine: startup in assembly, a linker script that lays out RAM from 0x80000000, the CLINT machine timer driving a 1 kHz tick through the stock RISC-V port, and two preemptive tasks that prove the scheduler. The whole image is 30 KB. Built for the CENG507 embedded systems course.",
     year: 2026,
     group: "systems",
     kind: "Embedded systems project",
@@ -3327,45 +3329,120 @@ export const projects: Project[] = [
     ],
     repo: "CENG507-Project",
     links: [{ label: "Source", href: gh("CENG507-Project") }],
+    platform: "QEMU on Linux, macOS or Windows with a bare-metal RISC-V GCC",
+    audience: "students meeting an RTOS for the first time, and anyone curious what runs before the kernel",
+    plain:
+      "A real-time operating system is the small program that lets a microcontroller juggle several timed jobs at once. This project starts one up on a simulated open-standard processor with no manufacturer firmware helping it: the first instruction that runs is ours, memory is laid out by hand, and a hardware timer ticks a thousand times a second so two jobs can take turns.",
     proof: [
       {
         value: "1 kHz",
         label: "scheduler tick",
-        note: "machine-mode timer via mtime and mtimecmp",
+        note: "clint machine timer at 10 mhz, 10,000 counts per tick",
       },
       {
-        value: "64 KB",
-        label: "stack laid out by the linker script",
-        note: "ram from 0x80000000 on qemu virt",
+        value: "30 KB",
+        label: "whole image",
+        note: "13,014 bytes of code; most of the rest is the 16 kb heap",
       },
       {
         value: "0",
         label: "lines of bios",
-        note: "assembly startup jumps straight to c",
+        note: "qemu starts with -bios none; _start is the first code to run",
+      },
+      {
+        value: "303",
+        label: "lines written for the bring-up",
+        note: "startup, linker script, config, makefile, run script and the demo; the port is upstream",
       },
     ],
     problem:
-      "A real-time OS hides the hardware from applications, but first someone has to tame the hardware: start the core with no firmware, lay out memory, take the timer interrupt and save every register on a context switch. The goal was to do that by hand on an open instruction set.",
+      "A real-time OS hides the hardware from applications, but first someone has to tame the hardware: start the core with no firmware, lay out memory, take the timer interrupt and hand the kernel a context to switch. The goal was to do that by hand on an open instruction set.",
     approach: [
       {
         title: "Bare metal, from the reset vector",
-        body: "An assembly startup file sets up the stack and jumps to C with no BIOS at all. A linker script places code, data and a 64 KB stack in RAM from 0x80000000 on QEMU's virt machine.",
+        body: "An assembly startup file sets up a 4 KB boot stack, zeroes .bss, points mtvec at the FreeRTOS trap handler, enables machine interrupts and jumps to C with no BIOS at all. A linker script places code, data and a 64 KB interrupt stack in RAM from 0x80000000 on QEMU's virt machine.",
       },
       {
         title: "The timer drives the scheduler",
-        body: "The machine-mode timer, through MTIME and MTIMECMP, raises a 1 kHz tick. mtvec points at the FreeRTOS trap handler, which saves the context in assembly and lets the kernel preempt.",
+        body: "The CLINT machine timer, through mtime and mtimecmp, raises a 1 kHz tick: 10,000 counts at 10 MHz. Every trap, timer or ecall, enters the upstream RISC-V port's handler, which saves the context in assembly, lets the kernel pick a task, and returns with mret to whichever one it chose.",
       },
       {
         title: "Proven by tasks, checked in the disassembly",
-        body: "Two tasks with different periods interleave under preemption. The build emits an ELF with symbols, a raw binary and a full disassembly listing, targeting rv64imac_zicsr with the lp64 ABI.",
+        body: "Two tasks with 500 ms and 1000 ms periods interleave under preemption, using vTaskDelayUntil so they never drift, with stack overflow checking on. The build emits an ELF with symbols, a raw binary and a full disassembly listing, targeting rv64imac_zicsr with the lp64 ABI and the medany code model.",
+      },
+      {
+        title: "Small-data sections, found the hard way",
+        body: "RISC-V compilers put small globals in .sbss, which the first startup code did not zero. The linker script now folds the small-data sections into .rodata, .data and .bss so one loop clears everything, and the interrupt stack is aligned to 16 bytes because the port asserts it.",
       },
     ],
     highlights: [
       "Boots with no firmware on QEMU's virt machine",
       "Preemptive scheduling on a 1 kHz tick, stack overflow checks on",
-      "RV64IMAC with Zicsr, medany code model",
+      "RV64IMAC with Zicsr, medany code model, 30 KB image",
+      "Setup documented for Linux, macOS and Windows, with GDB over QEMU",
       "Course project for CENG507, Embedded Systems",
     ],
+    decisions: [
+      {
+        chose: "starting with -bios none",
+        over: "booting through OpenSBI",
+        why: "With no firmware, the ELF's first instruction runs in machine mode at the reset address, which is the point of the exercise. The cost is owning the stack, .bss and the trap vector yourself.",
+      },
+      {
+        chose: "the upstream RISC-V port unmodified",
+        over: "writing the context switch",
+        why: "The port's trap handler and context save are the kernel's own, kept byte-identical for reference. The work of the project is everything around it: startup, memory map, configuration and the timer.",
+      },
+      {
+        chose: "vTaskDelayUntil for both tasks",
+        over: "vTaskDelay",
+        why: "A delay from now drifts by the task's own run time every period. Delaying until the next absolute tick keeps the 500 ms and 1000 ms schedules exact, which makes the interleaving in the output predictable.",
+      },
+    ],
+    install: [
+      {
+        label: "install qemu and a bare-metal toolchain on macos",
+        command:
+          "brew install qemu && brew tap riscv-software-src/riscv && brew install riscv-tools",
+        note: "linux and windows setup in the readme; distro linux-targeting compilers will not link",
+      },
+      {
+        label: "build and run",
+        command: "make && ./run.sh",
+        note: "quit qemu with ctrl+a then x",
+      },
+    ],
+    timeline: [
+      {
+        date: "2026-01-08",
+        title: "First commit",
+        body: "Trap vector setup and machine-mode interrupt enable, the two tasks and the first README.",
+      },
+      {
+        date: "2026-10-09",
+        title: "Fixes and a full README",
+        body: "Small-data sections zeroed at boot, the interrupt stack aligned, and diagrams of the boot, memory map, trap path and scheduling.",
+      },
+    ],
+    faq: [
+      {
+        q: "Why does task 2 print twice as often, and first when both wake?",
+        a: "Its period is 500 ms against 1000 ms, and its priority is higher, so on a tick where both are due it preempts.",
+      },
+      {
+        q: "How does a context switch happen?",
+        a: "Every trap enters the port's handler, which saves all registers to the current task's stack. A switch is a change of the current task pointer, and mret restores whichever task it points to.",
+      },
+      {
+        q: "Which toolchain do I need?",
+        a: "A bare-metal RISC-V GCC with newlib: the Homebrew riscv-tools or the xPack toolchain, passed as the PREFIX. Linux-targeting cross compilers from distribution packages fail at link time.",
+      },
+      {
+        q: "Can I debug it?",
+        a: "Yes. Start QEMU with -s -S, connect GDB on port 1234 and break on main, a task or the trap handler.",
+      },
+    ],
+    related: ["eeng527-dsp", "mcce"],
   },
   {
     slug: "multilingual-translation",
