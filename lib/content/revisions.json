@@ -3,21 +3,232 @@
     {
       "sha": "acc8590",
       "date": "2026-09-30",
-      "subject": "Add projects, profile and uses content"
+      "subject": "Add projects, profile and uses content",
+      "words": {
+        "tagline": "Multi-tenant IT service management with isolation enforced by the database.",
+        "summary": "Patchgrid is a ticketing and operations platform for IT and security teams. Each company gets its own subdomain, and its data is isolated at the database level through five independent layers, not by remembering a WHERE clause.",
+        "problem": "Multi-tenant apps usually trust every query to filter by tenant. One forgotten filter leaks another customer's tickets. I wanted a platform where a cross-tenant read is not a bug you can write.",
+        "approach": [
+          {
+            "title": "Five layers of isolation",
+            "body": "Composite (orgId, id) foreign keys make a cross-tenant reference unrepresentable. The tenant comes from the credential, never the host. Every repository method takes an explicit orgId. A Prisma client extension sets a transaction-local config and throws without context. Postgres enforces it all with FORCE ROW LEVEL SECURITY and an app role that holds no BYPASSRLS."
+          },
+          {
+            "title": "Four ITIL records, four lifecycles",
+            "body": "Incidents, service requests, problems and changes are modeled as different things with their own states. Priority is computed from impact and urgency, never typed into a dropdown."
+          },
+          {
+            "title": "Invariants you can run",
+            "body": "A db:doctor script asserts the isolation guarantees actually hold against a live database, so the architecture is tested, not just described."
+          }
+        ],
+        "highlights": [
+          "Subdomain per tenant across a Turborepo monorepo: marketing site, tenant workspace and API",
+          "Row level security forced on every tenant table",
+          "Priority derived from impact x urgency",
+          "CI with CodeQL analysis on every change"
+        ]
+      }
+    },
+    {
+      "sha": "5827a30",
+      "date": "2026-10-19",
+      "subject": "Update the Patchgrid case study through milestone 12",
+      "words": {
+        "tagline": "Multi-tenant IT service management with isolation enforced by the database.",
+        "summary": "Patchgrid is a ticketing and operations platform for IT and security teams. Each company gets its own subdomain, and its data is isolated at the database level through five independent layers, not by remembering a WHERE clause. Twelve milestones in, it covers incidents, requests, problems and changes, SLA clocks, email intake, a knowledge base, assets, an operator back-office that never impersonates, signed webhooks and reports that answer in under 25 ms at 100,000 tickets.",
+        "problem": "Multi-tenant apps usually trust every query to filter by tenant. One forgotten filter leaks another customer's tickets. I wanted a platform where a cross-tenant read is not a bug you can write.",
+        "approach": [
+          {
+            "title": "Five layers of isolation",
+            "body": "Composite (orgId, id) foreign keys make a cross-tenant reference unrepresentable, because Postgres checks foreign keys with row security off. The tenant comes from the credential, never the host. Every repository method takes an explicit orgId. A Prisma client extension sets a transaction-local config and throws without context. Postgres enforces it all with forced row level security and an app role that cannot bypass it."
+          },
+          {
+            "title": "Four ITIL records, four lifecycles",
+            "body": "Incidents, service requests, problems and changes are modeled as different things with their own states and one transition endpoint. Priority is computed from impact and urgency, and a client that sends one gets a 400. SLA clocks run around the clock, pause while waiting on the requester, and are swept per tenant."
+          },
+          {
+            "title": "Everything a desk needs",
+            "body": "Mail to the workspace becomes a ticket if it passes DMARC, and replies thread onto it. A versioned knowledge base suggests articles while a requester types. Assets link to tickets. Uploads go straight to object storage on a separate domain and are checked by their bytes, not their names."
+          },
+          {
+            "title": "A platform layer that cannot peek",
+            "body": "Operators work at admin. with their own login and second factor, see metadata and never content, and read a workspace only in an owner-granted, read-only, time-boxed support session written to that workspace's audit log. API tokens are service accounts whose scopes intersect a role. Deleting a workspace leaves a nameless tombstone after 30 days."
+          },
+          {
+            "title": "Delivery you can replay",
+            "body": "A transactional outbox is read per tenant in transaction-id order below the snapshot horizon, so nothing is lost, repeated or skipped. Notifications, signed webhooks with retries and a circuit breaker, and reporting are its consumers. Reports come from their own read model so they never compete with the queues."
+          },
+          {
+            "title": "Invariants you can run",
+            "body": "A tenancy suite asserts 13 catalog and 37 isolation invariants against a live database on every merge, a doctor script checks the roles and privileges, and every integration fixture creates two organizations so a leak fails a test. A Playwright suite drives two tenants through the browser, with negative cases."
+          },
+          {
+            "title": "Reviewed before shipping",
+            "body": "A threat model with eleven trust boundaries, three independent read-only security reviews at milestone 9 that found 16 issues, all fixed in the same change set, and further reviews at each milestone since. Traces and metrics are labelled by tenant, so a Grafana board answers which tenant is slow."
+          }
+        ],
+        "highlights": [
+          "Subdomain per tenant across one monorepo: marketing, workspace, operator back-office and API",
+          "Row level security forced on every tenant table, composite keys across tenants",
+          "Priority derived from impact x urgency, four lifecycles behind one transition endpoint",
+          "Email intake gated by DMARC, knowledge base, assets, presigned uploads",
+          "No impersonation, ever: support sessions are granted, read-only, audited and time-boxed",
+          "Transactional outbox, Standard Webhooks, reports under 25 ms at 100,000 tickets",
+          "Member MFA with step-up, OpenTelemetry per tenant, CodeQL on every change"
+        ]
+      }
     }
   ],
   "node-express-boilerplate": [
     {
       "sha": "acc8590",
       "date": "2026-09-30",
-      "subject": "Add projects, profile and uses content"
+      "subject": "Add projects, profile and uses content",
+      "words": {
+        "tagline": "A production-grade Express and TypeScript starter that other developers actually fork.",
+        "summary": "A fully wired Express, TypeScript and Prisma backend with layered clean architecture, dependency injection, JWT and CSRF security, structured logging, automated security scanning and CI/CD. It also ships AI agent instructions so coding tools understand the codebase from day one.",
+        "problem": "Most Express starters stop at hello world. Teams then spend weeks wiring auth, errors, logging and pipelines, and every project does it slightly differently.",
+        "approach": [
+          {
+            "title": "Layered by responsibility",
+            "body": "Routes, controllers, services and repositories each own one job, wired through a small DI container so any layer can be swapped or tested in isolation."
+          },
+          {
+            "title": "Security as defaults",
+            "body": "Access and refresh tokens in hardened cookies, a CSRF double-submit pattern, security headers and rate limiting are on from the first request."
+          },
+          {
+            "title": "Errors with a shape",
+            "body": "A typed error hierarchy and Prisma error mapping mean every failure leaves the API in the same predictable response format."
+          },
+          {
+            "title": "Automation around the code",
+            "body": "Pre-commit hooks, conventional commits, CodeQL static analysis, TruffleHog secret scanning and dependency review run on every change."
+          }
+        ],
+        "highlights": [
+          "30+ stars and 8 forks from developers starting new services",
+          "Clean architecture with a DI container",
+          "JWT with refresh rotation plus CSRF protection",
+          "Agent instructions so AI coding tools follow the conventions"
+        ]
+      }
+    },
+    {
+      "sha": "4b24936",
+      "date": "2026-10-19",
+      "subject": "Update the Express boilerplate case study",
+      "words": {
+        "tagline": "A production-grade Express and TypeScript starter that other developers actually fork.",
+        "summary": "A fully wired Express 5, TypeScript 6 and Prisma 7 backend with layered clean architecture, a single dependency injection container, JWT and CSRF security, structured logging, OpenAPI docs, two test layers with enforced coverage, and security scanning on every change. It ships one AGENTS.md that six AI coding tools read through symlinks, plus slash commands that scaffold a new resource across all eight layers.",
+        "problem": "Most Express starters stop at hello world. Teams then spend weeks wiring auth, errors, logging and pipelines, and every project does it slightly differently.",
+        "approach": [
+          {
+            "title": "Layered by responsibility",
+            "body": "Routes, controllers, services and repositories each own one job and talk only to the layer below. A singleton container is the only place in the codebase where a repository, service or controller is constructed, so any layer can be swapped or tested alone."
+          },
+          {
+            "title": "Security as defaults",
+            "body": "A 15-minute access token and a 7-day refresh token live in signed HttpOnly cookies and never appear in a response body. A double-submit CSRF token guards every mutating route, with Helmet headers and per-route rate limits on from the first request."
+          },
+          {
+            "title": "Errors with a shape",
+            "body": "A typed error hierarchy and Prisma error mapping mean every failure leaves the API in the same predictable response format, with a correlation id in the structured log line that matches it."
+          },
+          {
+            "title": "Two test layers with a floor",
+            "body": "Unit tests mock the repositories and finish in milliseconds. Integration tests drive the real app against a RAM-disk Postgres, and every one checks the valid case, bad input, no session, no CSRF token and not found. Coverage thresholds fail the build when they drop."
+          },
+          {
+            "title": "Automation around the code",
+            "body": "Pre-commit hooks on staged files, conventional commits, CodeQL, TruffleHog on verified secrets only, dependency review and Dependabot run on every change. Swagger UI is generated at /api-docs."
+          },
+          {
+            "title": "Agents that follow the rules",
+            "body": "One AGENTS.md teaches the hard rules, such as no process.env outside config and no raw error responses, and the files for Claude Code, Gemini, Codex, Cursor, Copilot and Windsurf are symlinks to it. Six slash commands scaffold a resource, a middleware, a test or an OpenAPI block the same way every time."
+          }
+        ],
+        "highlights": [
+          "36 stars and 8 forks from developers starting new services",
+          "Clean architecture with one DI container and interfaces at every boundary",
+          "Signed HttpOnly cookies for both tokens plus CSRF double-submit",
+          "Unit and integration suites with coverage thresholds enforced in CI",
+          "One AGENTS.md read by six AI coding tools, six scaffolding slash commands",
+          "Revived in April 2026 onto Express 5, Prisma 7 and TypeScript 6"
+        ]
+      }
     }
   ],
   "team-flow": [
     {
       "sha": "acc8590",
       "date": "2026-09-30",
-      "subject": "Add projects, profile and uses content"
+      "subject": "Add projects, profile and uses content",
+      "words": {
+        "tagline": "A multi-tenant agile workspace API with sprints, RBAC and a full audit trail.",
+        "summary": "TeamFlow is a SaaS-style backend for organizations, projects, sprints and tasks. Organizations are fully isolated, roles are enforced by guards, and every change lands in an immutable audit log. Built during a 96-hour backend program where I ranked first in the cohort.",
+        "problem": "Agile tooling needs more than CRUD: tenant isolation, a real permission model, notifications that arrive on time, and a history nobody can quietly edit.",
+        "approach": [
+          {
+            "title": "Organization as the boundary",
+            "body": "Every query is scoped through membership, and a four-tier role hierarchy (owner, admin, member, viewer) is enforced with NestJS guards."
+          },
+          {
+            "title": "Work modeled properly",
+            "body": "Tasks carry priorities, story points, subtasks, dependencies, labels, attachments and threaded comments, with an automatic activity timeline per task."
+          },
+          {
+            "title": "Events that reach people",
+            "body": "Notifications stream over Server-Sent Events and email, and scheduled jobs expire stale invitations on their own."
+          }
+        ],
+        "highlights": [
+          "Ranked 1st in the MAPS backend cohort with this project",
+          "JWT access and refresh rotation with OTP email verification",
+          "Immutable audit log of all platform activity",
+          "Live, documented REST API"
+        ]
+      }
+    },
+    {
+      "sha": "437a0ed",
+      "date": "2026-10-19",
+      "subject": "Update the TeamFlow case study",
+      "words": {
+        "tagline": "A multi-tenant agile workspace API with sprints, RBAC and a full audit trail.",
+        "summary": "TeamFlow is a SaaS-style backend for organizations, projects, sprints and tasks. Organizations are isolated through membership, roles are enforced by guards, and every change lands in an immutable audit log. Started in a 96-hour backend program where I ranked first in the cohort, then grown over five months into 78 documented endpoints with notifications over Server-Sent Events and email.",
+        "problem": "Agile tooling needs more than CRUD: tenant isolation, a real permission model, notifications that arrive on time, and a history nobody can quietly edit.",
+        "approach": [
+          {
+            "title": "Organization as the boundary",
+            "body": "Every query is scoped through membership, a composite unique keeps one membership per person per organization, and a four-tier role hierarchy of owner, admin, member and viewer is enforced with guards. A global super admin role exists for operations."
+          },
+          {
+            "title": "Work modeled properly",
+            "body": "Tasks carry priorities, story points, subtasks, dependencies, labels, attachments, watchers and threaded comments, get human-readable keys like PROJ-42, and keep an automatic activity timeline of every field change."
+          },
+          {
+            "title": "Sessions that end",
+            "body": "Fifteen-minute access tokens and seven-day refresh tokens stored hashed; a refresh revokes the old token and issues a new pair, logout revokes, and a password reset revokes them all. Email verification by one-time code is required before the first login."
+          },
+          {
+            "title": "Events that reach people",
+            "body": "One service persists each notification, pushes it over Server-Sent Events and emails it through eight branded templates. Four scheduled jobs expire invitations, warn about due and overdue tasks and purge old refresh tokens."
+          },
+          {
+            "title": "Shipped as a container",
+            "body": "A multi-stage Alpine image runs the migrations on start and exposes a health check. Swagger is generated from the decorators and served live, and the pipeline type-checks, lints and builds on every push."
+          }
+        ],
+        "highlights": [
+          "Ranked 1st in the MAPS backend cohort with this project",
+          "JWT access and refresh rotation with OTP email verification",
+          "Immutable audit log with before and after snapshots",
+          "Notifications over SSE and email, four scheduled jobs",
+          "Live, documented REST API"
+        ]
+      }
     }
   ],
   "dotclaude": [
