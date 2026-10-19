@@ -3700,10 +3700,11 @@ export const projects: Project[] = [
   {
     slug: "yalla-learn",
     name: "Yalla Learn",
+    updatedAt: "2026-10-19",
     tagline:
       "My final year project: an AI learning platform across web, mobile, desktop and API.",
     summary:
-      "The senior project for my B.S. in Computer Engineering. A learning and productivity platform with AI chat over PDFs and images, mind maps, flashcards, study plans and quizzes, delivered as a web app, a mobile app, a desktop app and a shared backend.",
+      "The senior project for my B.S. in Computer Engineering. A learning and productivity platform with AI chat over PDFs and images, mind maps, flashcards, study plans, quizzes and a voice assistant, plus a Pomodoro timer, kanban boards, a resume builder and a community with Q&A, a blog and a job board. Delivered as a Next.js web app, an Expo mobile app, an Electron desktop app and an Express backend, then archived.",
     year: 2025,
     group: "web",
     kind: "Final year project",
@@ -3712,31 +3713,112 @@ export const projects: Project[] = [
     stack: [
       "Next.js",
       "React Native",
+      "Expo",
       "Electron",
-      "Node.js",
+      "Express",
+      "Prisma",
+      "PostgreSQL",
       "AI SDK",
       "TypeScript",
     ],
     repo: "yalla-learn",
-    links: [{ label: "Source", href: gh("yalla-learn") }],
+    links: [
+      { label: "Web source", href: gh("yalla-learn") },
+      { label: "Backend", href: gh("yalla-learn-backend") },
+      { label: "Mobile app", href: gh("yalla-learn-app") },
+      { label: "Desktop app", href: gh("yalla-learn-desktop") },
+    ],
     status: "Archived",
+    platform: "Web, iOS and Android through Expo, and Windows, macOS and Linux through Electron",
+    audience: "students, and anyone reviewing what a four-client senior project looks like",
+    plain:
+      "Students juggle a dozen apps to study one subject. Yalla Learn put them in one place: upload a PDF and ask it questions, turn a topic into flashcards, a quiz, a mind map or a study plan, keep a focus timer and a task board, write a resume, and ask the community. It was built as my graduation project and is kept online as a record, not maintained.",
+    proof: [
+      {
+        value: "4",
+        label: "clients and services",
+        note: "web, mobile, desktop and the api, each its own repository",
+      },
+      {
+        value: "9",
+        label: "ai study tools",
+        note: "pdf and image chat, mind maps, flashcards, study plans, quizzes, concept explainer, web search and a voice assistant",
+      },
+      {
+        value: "12",
+        label: "github stars across the four repositories",
+        note: "counted on 19 oct 2026, with four forks",
+      },
+    ],
     problem:
-      "Students juggle a dozen tools to study one subject. The goal was one place that turns material into practice.",
+      "Students juggle a dozen tools to study one subject. The goal was one place that turns material into practice, on whatever device the student has in hand.",
     approach: [
       {
         title: "Four clients, one backend",
-        body: "Web, mobile and desktop apps share a single TypeScript API, so every feature ships everywhere at once.",
+        body: "A Next.js web app, an Expo mobile app and an Electron desktop app share an Express and Prisma API on PostgreSQL, with JWT sessions, two-factor codes and email through OAuth2, so every account and every feature behaves the same across devices.",
       },
       {
         title: "AI where it helps",
-        body: "Chat with PDFs and images, generate mind maps, flashcards, quizzes and study plans from any topic.",
+        body: "Chat with PDFs and images, generate mind maps, flashcards, quizzes with scoring and explanations, concept explanations and study plans from any topic, with an AI web search and a voice assistant, built on the AI SDK with Gemini and OpenAI models behind it.",
+      },
+      {
+        title: "The rest of a student's day",
+        body: "A Pomodoro timer and focus mode, kanban boards with drag and drop, an expense tracker, a resume builder with templates, and a community with questions and answers, a blog and a job portal.",
       },
     ],
     highlights: [
       "Web, mobile, desktop and API in TypeScript",
-      "AI-powered study tools",
-      "Delivered as my B.S. senior project",
+      "Nine AI-powered study tools and five productivity tools",
+      "Delivered as my B.S. senior project, then archived with an honest notice",
     ],
+    decisions: [
+      {
+        chose: "one backend for four clients",
+        over: "a backend per client",
+        why: "Every feature shipped everywhere at once and the account model stayed consistent. The cost was that every client waited on the same API, which a senior project's timeline could absorb.",
+      },
+      {
+        chose: "hosted AI models through one SDK",
+        over: "self-hosted models",
+        why: "A student project needs the tools to work on launch day. One SDK made swapping models a configuration change; the price is that the archived version needs API keys to run.",
+      },
+      {
+        chose: "archiving with a notice",
+        over: "quietly letting it rot",
+        why: "The repository says plainly that it is not maintained and that some functions may be broken. That is more useful to a reader than a project that looks alive and is not.",
+      },
+    ],
+    install: [
+      {
+        label: "run the web app",
+        command:
+          "git clone https://github.com/KhaledSaeed18/yalla-learn.git && cd yalla-learn && pnpm install && pnpm dev",
+        note: "needs api keys in .env.local; see the readme for the list",
+      },
+    ],
+    timeline: [
+      {
+        date: "2025-05",
+        title: "Mobile and desktop apps",
+        body: "The Expo app and the Electron app, with a 1.0.0 desktop release for Windows and macOS.",
+      },
+      {
+        date: "2025-06",
+        title: "Backend and web app delivered",
+        body: "The senior project submitted for the B.S. in Computer Engineering, then the repositories archived.",
+      },
+    ],
+    faq: [
+      {
+        q: "Is it still running?",
+        a: "No. It was a final year project and is no longer maintained. The code is public as a record, and some functions may be broken.",
+      },
+      {
+        q: "Which AI models did it use?",
+        a: "Google Gemini and OpenAI models through the AI SDK, with a voice assistant through Vapi. Running it today needs your own API keys.",
+      },
+    ],
+    related: ["multilingual-translation", "mcce"],
   },
 ]
 
