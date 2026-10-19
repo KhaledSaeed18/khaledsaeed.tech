@@ -537,10 +537,11 @@ export const projects: Project[] = [
   {
     slug: "team-flow",
     name: "TeamFlow",
+    updatedAt: "2026-10-19",
     tagline:
       "A multi-tenant agile workspace API with sprints, RBAC and a full audit trail.",
     summary:
-      "TeamFlow is a SaaS-style backend for organizations, projects, sprints and tasks. Organizations are fully isolated, roles are enforced by guards, and every change lands in an immutable audit log. Built during a 96-hour backend program where I ranked first in the cohort.",
+      "TeamFlow is a SaaS-style backend for organizations, projects, sprints and tasks. Organizations are isolated through membership, roles are enforced by guards, and every change lands in an immutable audit log. Started in a 96-hour backend program where I ranked first in the cohort, then grown over five months into 78 documented endpoints with notifications over Server-Sent Events and email.",
     year: 2026,
     group: "platforms",
     kind: "Backend API",
@@ -553,7 +554,9 @@ export const projects: Project[] = [
       "JWT",
       "SSE",
       "Resend",
+      "UploadThing",
       "Swagger",
+      "Docker",
     ],
     repo: "team-flow",
     links: [
@@ -563,28 +566,124 @@ export const projects: Project[] = [
         href: "https://team-flow-tmtz.onrender.com/api/docs",
       },
     ],
+    platform: "Node.js 22, PostgreSQL 16; hosted on Render's free tier",
+    audience: "teams that want a Jira-like backend to put their own front end on",
+    plain:
+      "TeamFlow is the engine behind a team planning tool, like a simplified Jira. It keeps each company's projects, sprints and tasks separate, decides who may do what, tells people when their work changes, and keeps a permanent record of every change. It has no screens of its own; any web or mobile app can sit on top of it.",
+    proof: [
+      {
+        value: "78",
+        label: "documented endpoints",
+        note: "13 modules, swagger generated from the decorators",
+      },
+      {
+        value: "18",
+        label: "database models",
+        note: "with 12 enums and soft deletes on the five that matter",
+      },
+      {
+        value: "37",
+        label: "audited actions",
+        note: "before and after snapshots, ip and user agent, secrets redacted",
+      },
+      {
+        value: "13",
+        label: "github stars",
+        note: "counted on the repository on 19 oct 2026",
+      },
+    ],
     problem:
       "Agile tooling needs more than CRUD: tenant isolation, a real permission model, notifications that arrive on time, and a history nobody can quietly edit.",
     approach: [
       {
         title: "Organization as the boundary",
-        body: "Every query is scoped through membership, and a four-tier role hierarchy (owner, admin, member, viewer) is enforced with NestJS guards.",
+        body: "Every query is scoped through membership, a composite unique keeps one membership per person per organization, and a four-tier role hierarchy of owner, admin, member and viewer is enforced with guards. A global super admin role exists for operations.",
       },
       {
         title: "Work modeled properly",
-        body: "Tasks carry priorities, story points, subtasks, dependencies, labels, attachments and threaded comments, with an automatic activity timeline per task.",
+        body: "Tasks carry priorities, story points, subtasks, dependencies, labels, attachments, watchers and threaded comments, get human-readable keys like PROJ-42, and keep an automatic activity timeline of every field change.",
+      },
+      {
+        title: "Sessions that end",
+        body: "Fifteen-minute access tokens and seven-day refresh tokens stored hashed; a refresh revokes the old token and issues a new pair, logout revokes, and a password reset revokes them all. Email verification by one-time code is required before the first login.",
       },
       {
         title: "Events that reach people",
-        body: "Notifications stream over Server-Sent Events and email, and scheduled jobs expire stale invitations on their own.",
+        body: "One service persists each notification, pushes it over Server-Sent Events and emails it through eight branded templates. Four scheduled jobs expire invitations, warn about due and overdue tasks and purge old refresh tokens.",
+      },
+      {
+        title: "Shipped as a container",
+        body: "A multi-stage Alpine image runs the migrations on start and exposes a health check. Swagger is generated from the decorators and served live, and the pipeline type-checks, lints and builds on every push.",
       },
     ],
     highlights: [
       "Ranked 1st in the MAPS backend cohort with this project",
       "JWT access and refresh rotation with OTP email verification",
-      "Immutable audit log of all platform activity",
+      "Immutable audit log with before and after snapshots",
+      "Notifications over SSE and email, four scheduled jobs",
       "Live, documented REST API",
     ],
+    decisions: [
+      {
+        chose: "isolation by membership scoping in the application",
+        over: "row level security in the database",
+        why: "Guards and a composite unique on membership were enough for the program's scope and kept the schema simple. Patchgrid, built after it, moves the same boundary into Postgres so a forgotten filter cannot leak.",
+      },
+      {
+        chose: "rotating refresh tokens stored hashed",
+        over: "a long-lived stateless refresh token",
+        why: "A stored hash can be revoked, so logout and password reset actually end sessions. The price is a table to clean, which a nightly job handles.",
+      },
+      {
+        chose: "soft deletes on users, organizations, projects, tasks and comments",
+        over: "hard deletes",
+        why: "Recovery without permanent loss, and the audit log keeps pointing at rows that still exist. Every query has to remember the deletedAt filter, which the services centralise.",
+      },
+    ],
+    install: [
+      {
+        label: "clone it and start postgres",
+        command:
+          "git clone https://github.com/KhaledSaeed18/team-flow.git && cd team-flow && pnpm install && cp .env.example .env && docker compose up -d",
+        note: "node 22, pnpm, docker; resend and uploadthing keys in .env",
+      },
+      {
+        label: "migrate and run",
+        command: "pnpm prisma:migrate && pnpm start:dev",
+        note: "swagger at localhost:3000/api/docs",
+      },
+    ],
+    timeline: [
+      {
+        date: "2026-02-21",
+        title: "First commit",
+        body: "The NestJS scaffold at the start of the backend program.",
+      },
+      {
+        date: "2026-07-13",
+        title: "Latest merge",
+        body: "119 commits through pull requests from dev into main, deployed to Render after each green pipeline.",
+      },
+    ],
+    faq: [
+      {
+        q: "How are tenants kept apart?",
+        a: "Every resource is reached through an organization. A membership guard checks you belong, a roles guard checks your minimum role, and a composite unique keeps one membership per user per organization. It is application-level scoping, not database row security.",
+      },
+      {
+        q: "Can I try it without deploying?",
+        a: "Yes. The Swagger UI is live on a free tier, so the first request after a quiet period can take close to a minute. Locally it is Docker for Postgres, one migrate command and one start command.",
+      },
+      {
+        q: "Is there a front end?",
+        a: "No. It is a documented REST API meant to sit under any web, mobile or third-party client.",
+      },
+      {
+        q: "Are there automated tests?",
+        a: "Not yet. Jest is configured, and the pipeline type-checks, lints and builds on every push. Patchgrid, the successor, is where the testing discipline landed.",
+      },
+    ],
+    related: ["patchgrid", "node-authentication-template", "node-express-boilerplate"],
   },
   {
     slug: "node-authentication-template",
