@@ -3572,10 +3572,11 @@ export const projects: Project[] = [
   {
     slug: "multilingual-translation",
     name: "Multilingual translation",
+    updatedAt: "2026-10-19",
     tagline:
-      "Translation between 200 languages that runs entirely in the browser, with no server and no API key.",
+      "Translation across a 200-language model that runs entirely in the browser, with no server and no API key.",
     summary:
-      "A React app that runs Meta's NLLB-200 model, distilled to 600M parameters, in the browser through Transformers.js and WebAssembly. The model loads in a Web Worker, is cached after the first download, and streams translations back as they are generated.",
+      "A React app that runs Meta's NLLB-200 model, distilled to 600M parameters, in the browser through Transformers.js and WebAssembly. The model loads in a Web Worker, is cached after the first download, and streams translations back as they are generated. Built in one evening in February 2025 and still live on Hugging Face Spaces.",
     year: 2025,
     group: "web",
     kind: "Browser ML app",
@@ -3597,11 +3598,15 @@ export const projects: Project[] = [
       },
       { label: "Source", href: gh("multilingual-translation-Transformers.js") },
     ],
+    platform: "Any modern browser; about 300 MB downloaded once",
+    audience: "anyone who wants a private translator, and developers curious how far browser ML goes",
+    plain:
+      "Online translators send your words to a company's servers. This page does the opposite: it downloads the translation model into your browser once, about the size of a short video, and from then on translates between 194 languages on your own machine. Nothing you type leaves the page.",
     proof: [
       {
-        value: "200",
-        label: "languages",
-        note: "nllb-200, including low-resource ones",
+        value: "194",
+        label: "languages to pick from",
+        note: "of the 200 the nllb-200 model was trained on, including low-resource ones",
       },
       {
         value: "600M",
@@ -3611,7 +3616,12 @@ export const projects: Project[] = [
       {
         value: "0",
         label: "servers and api keys",
-        note: "model cached after the first visit, runs offline",
+        note: "inference in a web worker; the model is cached after the first visit",
+      },
+      {
+        value: "2 h",
+        label: "from first to last commit",
+        note: "ten commits on 8 feb 2025",
       },
     ],
     problem:
@@ -3619,22 +3629,73 @@ export const projects: Project[] = [
     approach: [
       {
         title: "The model comes to you",
-        body: "NLLB-200 distilled to 600M parameters runs through Transformers.js on WebAssembly. The first visit downloads it once and the browser caches it, so later translations run fully offline from the page.",
+        body: "NLLB-200 distilled to 600M parameters runs through Transformers.js on WebAssembly. The first visit downloads about 300 MB once and the browser caches it, so later translations need no network for the model.",
       },
       {
         title: "Never block the page",
-        body: "Inference runs in a Web Worker and talks to the interface by messages, so typing and scrolling stay smooth while the model loads and works.",
+        body: "Inference runs in a Web Worker and talks to the interface by messages, so typing and scrolling stay smooth while the model loads and works. Per-file progress bars show the download.",
       },
       {
         title: "Stream as it translates",
-        body: "Output streams back progressively instead of arriving all at once, so long passages start reading immediately.",
+        body: "Output streams back token by token instead of arriving all at once, so long passages start reading immediately. A searchable dropdown picks source and target among the 194 languages.",
       },
     ],
     highlights: [
-      "200+ languages, including low-resource ones",
-      "No backend: inference runs in a Web Worker",
-      "Live on Hugging Face Spaces",
+      "194 languages, including low-resource ones, from a 200-language model",
+      "No backend: inference runs in a Web Worker on WebAssembly",
+      "Live on Hugging Face Spaces as a static site",
     ],
+    decisions: [
+      {
+        chose: "the distilled 600M model",
+        over: "the full 1.3B or 3.3B NLLB-200",
+        why: "A browser has to download the weights and hold them in memory. The distilled model is the smallest that keeps all 200 languages, at the cost of some quality on the hardest pairs and a 300 MB first load.",
+      },
+      {
+        chose: "a Web Worker",
+        over: "running the pipeline on the main thread",
+        why: "Loading and running a model of this size freezes a page for seconds at a time. In a worker, the interface stays responsive and the only coupling is a message channel.",
+      },
+      {
+        chose: "WebAssembly",
+        over: "WebGPU",
+        why: "WebGPU was not broadly available in February 2025. The WebAssembly backend runs everywhere at the cost of speed.",
+      },
+    ],
+    install: [
+      {
+        label: "try it",
+        command:
+          "open https://huggingface.co/spaces/KhaledSaeed18/multilingual-translation",
+      },
+      {
+        label: "run it locally",
+        command:
+          "git clone https://github.com/KhaledSaeed18/multilingual-translation-Transformers.js.git && cd multilingual-translation-Transformers.js && npm install && npm run dev",
+      },
+    ],
+    timeline: [
+      {
+        date: "2025-02-08",
+        title: "Built and published in one evening",
+        body: "Vite and React, the Transformers.js pipeline in a worker, Tailwind, the searchable language picker and the Space, in ten commits.",
+      },
+    ],
+    faq: [
+      {
+        q: "Does my text leave the browser?",
+        a: "No. The model runs in a Web Worker on your machine. There is no server code in the repository.",
+      },
+      {
+        q: "Why is the first load slow?",
+        a: "The model is about 300 MB and is downloaded once. The browser caches it, so later visits load it from disk.",
+      },
+      {
+        q: "Does it use the GPU?",
+        a: "No. It runs on the WebAssembly backend, which works in every modern browser.",
+      },
+    ],
+    related: ["yalla-learn", "mcce"],
   },
   {
     slug: "yalla-learn",
