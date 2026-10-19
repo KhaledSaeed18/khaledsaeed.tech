@@ -361,10 +361,11 @@ export const projects: Project[] = [
   {
     slug: "node-express-boilerplate",
     name: "Express boilerplate",
+    updatedAt: "2026-10-19",
     tagline:
       "A production-grade Express and TypeScript starter that other developers actually fork.",
     summary:
-      "A fully wired Express, TypeScript and Prisma backend with layered clean architecture, dependency injection, JWT and CSRF security, structured logging, automated security scanning and CI/CD. It also ships AI agent instructions so coding tools understand the codebase from day one.",
+      "A fully wired Express 5, TypeScript 6 and Prisma 7 backend with layered clean architecture, a single dependency injection container, JWT and CSRF security, structured logging, OpenAPI docs, two test layers with enforced coverage, and security scanning on every change. It ships one AGENTS.md that six AI coding tools read through symlinks, plus slash commands that scaffold a new resource across all eight layers.",
     year: 2025,
     group: "platforms",
     kind: "Open source template",
@@ -376,17 +377,29 @@ export const projects: Project[] = [
       "Prisma",
       "PostgreSQL",
       "Zod",
+      "Pino",
+      "OpenAPI",
       "Vitest",
       "Docker",
     ],
     repo: "node-express-boilerplate",
-    links: [{ label: "Source", href: gh("node-express-boilerplate") }],
+    links: [
+      { label: "Source", href: gh("node-express-boilerplate") },
+      {
+        label: "Changelog",
+        href: `${gh("node-express-boilerplate")}/blob/main/CHANGELOG.md`,
+      },
+    ],
     featured: true,
+    platform: "Node.js 22 or later, PostgreSQL 16, Docker for the database",
+    audience: "developers starting a new API who do not want to wire auth, errors and CI again",
+    plain:
+      "Every web app needs a server behind it, and every new one starts with the same week of plumbing: logins, security checks, error handling, logging and automated tests. This is that week, done once and published so a developer can fork it and start on the actual product on day one.",
     proof: [
       {
-        value: "30+",
+        value: "36",
         label: "github stars",
-        note: "counted on the repository",
+        note: "counted on the repository on 19 oct 2026",
       },
       {
         value: "8",
@@ -394,9 +407,14 @@ export const projects: Project[] = [
         note: "developers starting new services from it",
       },
       {
-        value: "5",
-        label: "checks on every change",
-        note: "pre-commit, conventional commits, codeql, trufflehog, dependency review",
+        value: "12",
+        label: "checks on every push",
+        note: "format, lint, three type-checks, knip, audit, build, unit and integration tests, codeql, trufflehog",
+      },
+      {
+        value: "6",
+        label: "ai coding tools briefed",
+        note: "one agents.md, every tool file a symlink to it",
       },
     ],
     problem:
@@ -404,27 +422,117 @@ export const projects: Project[] = [
     approach: [
       {
         title: "Layered by responsibility",
-        body: "Routes, controllers, services and repositories each own one job, wired through a small DI container so any layer can be swapped or tested in isolation.",
+        body: "Routes, controllers, services and repositories each own one job and talk only to the layer below. A singleton container is the only place in the codebase where a repository, service or controller is constructed, so any layer can be swapped or tested alone.",
       },
       {
         title: "Security as defaults",
-        body: "Access and refresh tokens in hardened cookies, a CSRF double-submit pattern, security headers and rate limiting are on from the first request.",
+        body: "A 15-minute access token and a 7-day refresh token live in signed HttpOnly cookies and never appear in a response body. A double-submit CSRF token guards every mutating route, with Helmet headers and per-route rate limits on from the first request.",
       },
       {
         title: "Errors with a shape",
-        body: "A typed error hierarchy and Prisma error mapping mean every failure leaves the API in the same predictable response format.",
+        body: "A typed error hierarchy and Prisma error mapping mean every failure leaves the API in the same predictable response format, with a correlation id in the structured log line that matches it.",
+      },
+      {
+        title: "Two test layers with a floor",
+        body: "Unit tests mock the repositories and finish in milliseconds. Integration tests drive the real app against a RAM-disk Postgres, and every one checks the valid case, bad input, no session, no CSRF token and not found. Coverage thresholds fail the build when they drop.",
       },
       {
         title: "Automation around the code",
-        body: "Pre-commit hooks, conventional commits, CodeQL static analysis, TruffleHog secret scanning and dependency review run on every change.",
+        body: "Pre-commit hooks on staged files, conventional commits, CodeQL, TruffleHog on verified secrets only, dependency review and Dependabot run on every change. Swagger UI is generated at /api-docs.",
+      },
+      {
+        title: "Agents that follow the rules",
+        body: "One AGENTS.md teaches the hard rules, such as no process.env outside config and no raw error responses, and the files for Claude Code, Gemini, Codex, Cursor, Copilot and Windsurf are symlinks to it. Six slash commands scaffold a resource, a middleware, a test or an OpenAPI block the same way every time.",
       },
     ],
     highlights: [
-      "30+ stars and 8 forks from developers starting new services",
-      "Clean architecture with a DI container",
-      "JWT with refresh rotation plus CSRF protection",
-      "Agent instructions so AI coding tools follow the conventions",
+      "36 stars and 8 forks from developers starting new services",
+      "Clean architecture with one DI container and interfaces at every boundary",
+      "Signed HttpOnly cookies for both tokens plus CSRF double-submit",
+      "Unit and integration suites with coverage thresholds enforced in CI",
+      "One AGENTS.md read by six AI coding tools, six scaffolding slash commands",
+      "Revived in April 2026 onto Express 5, Prisma 7 and TypeScript 6",
     ],
+    decisions: [
+      {
+        chose: "tokens in signed HttpOnly cookies",
+        over: "a bearer token in the response body",
+        why: "Script on the page cannot read a cookie, which removes the most common way a token leaks. The cost is CSRF, so a double-submit token is wired in from the start instead of being left for later.",
+      },
+      {
+        chose: "a single construction site for every object",
+        over: "importing singletons wherever they are needed",
+        why: "When only the container calls new, the dependency graph is one file long and a test can hand any layer a fake. It takes a getter per object, which the scaffolding command writes for you.",
+      },
+      {
+        chose: "integration tests against a RAM-disk Postgres",
+        over: "an in-memory database or mocked Prisma",
+        why: "Prisma's error codes and the constraints the app relies on only exist in Postgres. A tmpfs container is wiped on every restart and fast enough to run on every push.",
+      },
+      {
+        chose: "one AGENTS.md with symlinks",
+        over: "a file per AI tool",
+        why: "Six copies of the same rules drift. Symlinks mean a rule changed once is changed everywhere, and the repository stays readable to every tool.",
+      },
+    ],
+    install: [
+      {
+        label: "clone it and start the database",
+        command:
+          "git clone https://github.com/KhaledSaeed18/node-express-boilerplate.git && cd node-express-boilerplate && pnpm install && cp .env.example .env && docker compose up -d",
+        note: "node 22 or later, pnpm, docker",
+      },
+      {
+        label: "migrate, then run it",
+        command: "pnpm prisma:migrate && pnpm prisma:generate && pnpm dev",
+        note: "api at localhost:3000/api/v1, docs at /api-docs",
+      },
+      {
+        label: "run both test layers",
+        command: "pnpm test:all",
+      },
+    ],
+    timeline: [
+      {
+        date: "2025-01-03",
+        title: "First commit",
+        body: "An Express, Prisma and TypeScript notes API with authentication, express-validator and morgan.",
+      },
+      {
+        date: "2026-04-27",
+        title: "Revival",
+        body: "Resumed after a year: Zod replaces express-validator, Pino replaces morgan, CSRF, typed config, typed errors, Swagger, Docker, integration tests with thresholds, CI with CodeQL and the first agent instructions. Prisma 6 to 7, Express 4 to 5, TypeScript 5 to 6.",
+      },
+      {
+        date: "2026-07",
+        title: "Secrets and dead code",
+        body: "TruffleHog on every push, knip for unused code and dependencies, and the openapi and security-audit slash commands.",
+      },
+      {
+        date: "2026-09-28",
+        title: "Latest merge",
+        body: "Maintenance through the dev branch; Dependabot keeps npm and actions current without major bumps.",
+      },
+    ],
+    faq: [
+      {
+        q: "Is this a framework or a starting point?",
+        a: "A template to fork. Two example models, User and Note, show the full path through every layer, and the new-resource slash command scaffolds the next one across routes, controller, service, repository, schema, OpenAPI and tests.",
+      },
+      {
+        q: "Does it rotate refresh tokens?",
+        a: "No. The refresh endpoint verifies the refresh cookie and issues a new access token. For rotation with reuse detection, passkeys and OpenID Connect, see the Node auth template on this site.",
+      },
+      {
+        q: "How do I run the tests without a development database?",
+        a: "Unit tests need no database. Integration tests start a RAM-disk Postgres in Docker with one command, migrate it and run against the real app; CI does the same with a Postgres service.",
+      },
+      {
+        q: "Which AI coding tools understand it?",
+        a: "Claude Code, Gemini CLI, Codex, Cursor, GitHub Copilot and Windsurf, all reading the same AGENTS.md through symlinks, so the rules cannot drift between tools.",
+      },
+    ],
+    related: ["node-authentication-template", "team-flow", "dotclaude"],
   },
   {
     slug: "team-flow",
