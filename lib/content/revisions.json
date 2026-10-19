@@ -333,21 +333,194 @@
     {
       "sha": "acc8590",
       "date": "2026-09-30",
-      "subject": "Add projects, profile and uses content"
+      "subject": "Add projects, profile and uses content",
+      "words": {
+        "tagline": "Pixel-precise rulers and alignment guides over the whole macOS desktop.",
+        "summary": "A native macOS overlay that gives every display physical-pixel rulers and persistent guides, while every click passes straight through to the app underneath.",
+        "problem": "Ruler tools live inside one browser tab or one design app, so you cannot line up a native window against a design mockup.",
+        "approach": [
+          {
+            "title": "Real pixels",
+            "body": "Tick labels respect each screen's backing scale factor, so 100 means 100 actual display pixels on any screen."
+          },
+          {
+            "title": "Out of the way",
+            "body": "The overlay ignores mouse events unless you are placing a guide, measuring or using the crosshair."
+          }
+        ],
+        "highlights": [
+          "Measure any region and copy the size",
+          "Global shortcuts for rulers, measure and crosshair",
+          "Works across every connected display"
+        ]
+      }
+    },
+    {
+      "sha": "ca50da3",
+      "date": "2026-10-19",
+      "subject": "Update the Gauge case study",
+      "words": {
+        "tagline": "Pixel-precise rulers, guides, a measuring tape, a color sampler and a loupe over the whole macOS desktop.",
+        "summary": "A native macOS overlay that gives every display physical-pixel rulers and persistent guides, measures any region or any two points, reads the color under the pointer and magnifies it, while every click outside a tool passes straight through to the app underneath.",
+        "problem": "Ruler tools live inside one browser tab or one design app, so you cannot line up a native window against a design mockup, or measure the gap between two things that belong to different programs.",
+        "approach": [
+          {
+            "title": "Real pixels",
+            "body": "Tick labels respect each screen's backing scale factor, so 100 means 100 actual display pixels on any screen. Guides are stored in physical pixels per display, and a small core library owns every point-to-pixel conversion so the arithmetic is unit tested without a screen."
+          },
+          {
+            "title": "Out of the way",
+            "body": "Transparent, non-activating panels sit over each display. They ignore mouse events except on the two ruler strips while guide placement is on, and while measure, crosshair, sampler or loupe owns the pointer. Everything else clicks through."
+          },
+          {
+            "title": "Measure, then take it with you",
+            "body": "Drag a box for width by height, or Option-drag two points for distance and angle. Measurements stay held on screen, click one to remove it, and the size copies in any of five formats including CSS, with optional position and aspect-ratio badges."
+          },
+          {
+            "title": "Read the screen itself",
+            "body": "The color sampler reads the pixel under the pointer as hex and RGB through ScreenCaptureKit, excluding Gauge's own windows from the capture. The loupe magnifies the same feed with a pixel grid, the exact coordinate and its color."
+          },
+          {
+            "title": "Guides that stay put",
+            "body": "Guides survive a restart, get numbered V1, H1 from their sorted position rather than a stored name, can be placed at an exact pixel from the settings, and are listed with counts in a remove window with select all and remove selected."
+          }
+        ],
+        "highlights": [
+          "Rulers, guides, measure, crosshair, color sampler and loupe on every display",
+          "Five global shortcuts without Accessibility permission",
+          "Two-point measurement with distance and angle",
+          "Copy a size as dimensions, plain, units, CSS or with position",
+          "Pure Swift Package Manager project, Swift 6 language mode"
+        ]
+      }
     }
   ],
   "sever": [
     {
       "sha": "acc8590",
       "date": "2026-09-30",
-      "subject": "Add projects, profile and uses content"
+      "subject": "Add projects, profile and uses content",
+      "words": {
+        "tagline": "Every running process and open port on your Mac, one click from the menu bar.",
+        "summary": "A menu bar app that lists processes and open network ports side by side and lets you end either by PID, gracefully by default and forcefully one right-click away. It always tells you why something would not die.",
+        "problem": "Killing a stray dev server means kill -9 $(lsof -ti:3000) or three windows of Activity Monitor.",
+        "approach": [
+          {
+            "title": "Two lists, one action",
+            "body": "Processes and ports share one control. SIGTERM by default, SIGKILL when you mean it."
+          },
+          {
+            "title": "Never fails silently",
+            "body": "Every attempt reports what happened: severed, denied because the process is protected, already gone, or a readable error."
+          }
+        ],
+        "highlights": [
+          "No Dock icon, tiny footprint",
+          "Monospaced, dense and scannable",
+          "Honest error reporting"
+        ]
+      }
+    },
+    {
+      "sha": "156057e",
+      "date": "2026-10-19",
+      "subject": "Update the Sever case study",
+      "words": {
+        "tagline": "Every running process and open port on your Mac, one click from the menu bar.",
+        "summary": "A menu bar app that lists processes and open network ports side by side, refreshed every few seconds, filtered as you type, and lets you end either by PID: gracefully by default and forcefully one right-click away. It always tells you why something would not die.",
+        "problem": "Killing a stray dev server means kill -9 $(lsof -ti:3000) or three windows of Activity Monitor, and neither tells you why a process survived.",
+        "approach": [
+          {
+            "title": "Two lists, one action",
+            "body": "Processes with CPU, memory and user, and ports with their process, protocol and bind address, share one control. SIGTERM by default; SIGKILL is a separate affordance behind a right-click or a hover, never the default button, so a slip of the mouse cannot force-kill anything."
+          },
+          {
+            "title": "Never fails silently",
+            "body": "Every attempt reports what happened: severed, denied because the process is root-owned or protected, already gone, or a readable error. Already gone is treated as success, since the goal was for it to stop."
+          },
+          {
+            "title": "Fresh enough, and pausable",
+            "body": "Both lists poll every three seconds off the main thread, pause on request, refresh on demand and stop when the panel closes. One search field matches name, PID, address, port or protocol, and processes sort by CPU, memory, name or PID."
+          },
+          {
+            "title": "Honest about its sources",
+            "body": "Today the lists come from ps and lsof, parsed by pure functions that are tested against captured output. Both listers sit behind protocols so a libproc implementation can drop in later without touching the interface. Killing calls kill(2) directly."
+          }
+        ],
+        "highlights": [
+          "No Dock icon, no permissions requested, no App Sandbox",
+          "Live refresh every three seconds, search as you type, sortable",
+          "SIGTERM by default, SIGKILL one right-click away",
+          "Honest error reporting, including processes it is not allowed to kill",
+          "Monospaced, dense and scannable"
+        ]
+      }
     }
   ],
   "baud": [
     {
       "sha": "acc8590",
       "date": "2026-09-30",
-      "subject": "Add projects, profile and uses content"
+      "subject": "Add projects, profile and uses content",
+      "words": {
+        "tagline": "Break reminders delivered by a small desktop character that knows when to stay quiet.",
+        "summary": "Instead of a notification you swipe away on reflex, a character slides in from a screen corner, says one short thing, and leaves. It holds reminders during calls and full screen video and delivers them once the moment clears.",
+        "problem": "Break reminders are banners you dismiss without reading, and they interrupt at the worst moments.",
+        "approach": [
+          {
+            "title": "Never at a bad moment",
+            "body": "No reminders during a call, a presentation or full screen video, or while you are away. They wait, then arrive."
+          },
+          {
+            "title": "Never guilts you",
+            "body": "No streaks, no sad faces. Ignore it and it leaves on its own."
+          }
+        ],
+        "highlights": [
+          "Free and open source, unlike every comparable app",
+          "Native Swift, menu bar only",
+          "Custom reminders"
+        ]
+      }
+    },
+    {
+      "sha": "1862136",
+      "date": "2026-10-19",
+      "subject": "Update the Baud case study",
+      "words": {
+        "tagline": "Break reminders delivered by a small desktop character that knows when to stay quiet.",
+        "summary": "Instead of a notification you swipe away on reflex, a character slides in from a screen corner, says one short thing, and leaves. It holds reminders during calls, full screen video, a locked screen or a calendar event and delivers them one at a time once the moment clears. Reminders are typed in plain words: water every 45 minutes, stretch at 3pm on weekdays.",
+        "problem": "Break reminders are banners you dismiss without reading, and they interrupt at the worst moments. The apps that solve this with a character are paid and closed.",
+        "approach": [
+          {
+            "title": "Never at a bad moment",
+            "body": "No reminders while the camera or microphone is in use, a window is full screen, the screen is locked or you are away, and optionally while a calendar event is on. Held reminders queue in order and drain one at a time; the queue is never flushed, because nobody wants four characters in a row after a meeting."
+          },
+          {
+            "title": "The moment after",
+            "body": "When a long call or full-screen stretch ends, a reminder that was nearly due arrives right then. Coming back from a real break restarts every interval, so you are not told to move five minutes after you did."
+          },
+          {
+            "title": "Reminders in plain words",
+            "body": "Press a global shortcut anywhere and type water every 45 minutes, call Tom at 3 or stretch at 3pm on weekdays. A deterministic on-device parser turns it into a repeating, one-time or weekday reminder with its own mood. Presets retune the four built-ins in one click."
+          },
+          {
+            "title": "Never guilts you",
+            "body": "No streaks, no sad faces. Ignore it and it leaves on its own after a few seconds. Quiet hours, per-reminder active hours, snooze and a minimum gap between appearances keep it from nagging."
+          },
+          {
+            "title": "Three layers, one seam",
+            "body": "The scheduler decides when and never touches AppKit, the presenter decides how it looks and never decides timing, and reminders are plain data in a documented JSON file you can hand-edit. The character, the app icon and the menu bar mark are drawn from the same geometry in code."
+          }
+        ],
+        "highlights": [
+          "Free and open source, unlike every comparable app with a character",
+          "Plain-words quick add with a global shortcut, no AI and no network",
+          "Holds for calls, full screen, lock, idle and optional calendar events",
+          "One-time, weekday and repeating reminders, presets and quiet hours",
+          "Native Swift, menu bar only, hand-editable reminders.json"
+        ]
+      }
     }
   ],
   "yalla-learn": [
