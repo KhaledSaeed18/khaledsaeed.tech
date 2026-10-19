@@ -1313,35 +1313,126 @@ export const projects: Project[] = [
   {
     slug: "sever",
     name: "Sever",
+    updatedAt: "2026-10-19",
     tagline:
       "Every running process and open port on your Mac, one click from the menu bar.",
     summary:
-      "A menu bar app that lists processes and open network ports side by side and lets you end either by PID, gracefully by default and forcefully one right-click away. It always tells you why something would not die.",
+      "A menu bar app that lists processes and open network ports side by side, refreshed every few seconds, filtered as you type, and lets you end either by PID: gracefully by default and forcefully one right-click away. It always tells you why something would not die.",
     year: 2026,
     group: "macos",
     kind: "macOS app",
     object: "scissors",
     stock: "terracotta",
-    stack: ["Swift", "SwiftUI"],
+    stack: ["Swift", "SwiftUI", "Swift Testing"],
     repo: "sever",
     links: [{ label: "Source", href: gh("sever") }],
+    platform: "macOS 14 or later, Apple Silicon or Intel",
+    audience: "developers with a dev server that will not let go of its port",
+    plain:
+      "Sometimes a program on your Mac keeps running when you want it gone, or holds on to a network port your new program needs. Sever shows everything that is running and every port in use in a small menu bar panel, and stops any of them with one click, politely first and forcefully if you insist, always saying whether it worked.",
+    proof: [
+      {
+        value: "825",
+        label: "lines of swift",
+        note: "the app and its kit, tests excluded; the smallest app on this site",
+      },
+      {
+        value: "23",
+        label: "automated tests",
+        note: "parsers checked against captured ps and lsof output, no process spawned",
+      },
+      {
+        value: "4",
+        label: "outcomes every attempt reports",
+        note: "severed, denied, already gone, or the errno by name",
+      },
+      {
+        value: "27 min",
+        label: "from repository creation to last push",
+        note: "29 commits on 21 aug 2026",
+      },
+    ],
     problem:
-      "Killing a stray dev server means kill -9 $(lsof -ti:3000) or three windows of Activity Monitor.",
+      "Killing a stray dev server means kill -9 $(lsof -ti:3000) or three windows of Activity Monitor, and neither tells you why a process survived.",
     approach: [
       {
         title: "Two lists, one action",
-        body: "Processes and ports share one control. SIGTERM by default, SIGKILL when you mean it.",
+        body: "Processes with CPU, memory and user, and ports with their process, protocol and bind address, share one control. SIGTERM by default; SIGKILL is a separate affordance behind a right-click or a hover, never the default button, so a slip of the mouse cannot force-kill anything.",
       },
       {
         title: "Never fails silently",
-        body: "Every attempt reports what happened: severed, denied because the process is protected, already gone, or a readable error.",
+        body: "Every attempt reports what happened: severed, denied because the process is root-owned or protected, already gone, or a readable error. Already gone is treated as success, since the goal was for it to stop.",
+      },
+      {
+        title: "Fresh enough, and pausable",
+        body: "Both lists poll every three seconds off the main thread, pause on request, refresh on demand and stop when the panel closes. One search field matches name, PID, address, port or protocol, and processes sort by CPU, memory, name or PID.",
+      },
+      {
+        title: "Honest about its sources",
+        body: "Today the lists come from ps and lsof, parsed by pure functions that are tested against captured output. Both listers sit behind protocols so a libproc implementation can drop in later without touching the interface. Killing calls kill(2) directly.",
       },
     ],
     highlights: [
-      "No Dock icon, tiny footprint",
+      "No Dock icon, no permissions requested, no App Sandbox",
+      "Live refresh every three seconds, search as you type, sortable",
+      "SIGTERM by default, SIGKILL one right-click away",
+      "Honest error reporting, including processes it is not allowed to kill",
       "Monospaced, dense and scannable",
-      "Honest error reporting",
     ],
+    decisions: [
+      {
+        chose: "shelling out to ps and lsof",
+        over: "libproc and the socket APIs",
+        why: "Simple, observable and fast enough at a refresh interval of a few seconds. The parsers are pure functions behind protocols, so a native implementation is a drop-in later without changing the interface.",
+      },
+      {
+        chose: "a timer-driven poll",
+        over: "an event source",
+        why: "macOS has no cheap system-wide notification for a process starting or a port opening. A three-second poll that pauses and stops with the panel is bounded and predictable, which matters more here than sub-second freshness.",
+      },
+      {
+        chose: "reporting permission denied",
+        over: "a privileged helper",
+        why: "Root-owned processes reject the signal and show blank fields from an unprivileged lsof. Sever says so instead of pretending. A launchd helper is a later step with its own security surface.",
+      },
+    ],
+    install: [
+      {
+        label: "build and run in xcode",
+        command: "git clone https://github.com/KhaledSaeed18/sever && cd sever && open Sever.xcodeproj",
+        note: "xcode 16 or later, macos 14 or later",
+      },
+      {
+        label: "run the kit tests",
+        command: "swift test --package-path SeverKit",
+      },
+    ],
+    timeline: [
+      {
+        date: "2026-08-21",
+        title: "Built and published in one sitting",
+        body: "Kit, parsers, kill controller with typed results, the panel, tests, CI and docs, in 29 commits over 27 minutes of pushes.",
+      },
+    ],
+    faq: [
+      {
+        q: "Does Sever need Accessibility or any other permission?",
+        a: "No. It runs ps and lsof and calls kill as your user. Its Info.plist declares no usage strings.",
+      },
+      {
+        q: "Can it kill root or system processes?",
+        a: "No. Those return permission denied, and Sever shows that instead of failing silently. It ships no privileged helper on purpose.",
+      },
+      {
+        q: "Does it use CPU in the background?",
+        a: "It polls every three seconds while the panel is open and stops when it closes. You can pause the poll from the header.",
+      },
+      {
+        q: "Which ports does it show?",
+        a: "Listening TCP sockets and active UDP sockets, with the process name, protocol and bind address.",
+      },
+    ],
+    related: ["wakehold", "gauge", "baud"],
   },
   {
     slug: "baud",
