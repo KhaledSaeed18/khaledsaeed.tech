@@ -1851,11 +1851,11 @@ export const projects: Project[] = [
   {
     slug: "repo-scout",
     name: "Repo Scout",
-    updatedAt: "2026-10-10",
+    updatedAt: "2026-10-19",
     tagline:
-      "Explore a codebase through architecture maps, searchable files and Git history, all on your machine.",
+      "Explore a codebase through architecture maps, hotspots, ownership and Git history, all on your machine.",
     summary:
-      "Repo Scout turns a local Git repository into a navigable atlas of its code and history. A redesigned React interface connects activity calendars, file ownership, searchable source, architecture graphs and duplicate code, backed by a Go scanner and SQLite with live scan progress.",
+      "Repo Scout turns a local Git repository into a navigable atlas of its code and history. A single binary with the interface embedded connects activity calendars, file ownership and bus factor, searchable source, architecture graphs, change coupling and duplicate code, backed by a Go scanner and SQLite with live scan progress. Version 1.0.0 adds a scan command for CI with SARIF output and quality gates, and nothing ever leaves the machine.",
     year: 2026,
     group: "tools",
     kind: "Analytics platform",
@@ -1870,24 +1870,42 @@ export const projects: Project[] = [
       "TanStack Query",
       "React Flow",
       "WebSocket",
+      "Playwright",
+      "GoReleaser",
     ],
     repo: "repo-scout",
     links: [
       { label: "Source", href: gh("repo-scout") },
+      { label: "v1.0.0 release", href: `${gh("repo-scout")}/releases/tag/v1.0.0` },
       { label: "UI showcase", href: `${gh("repo-scout")}#see-it-in-action` },
     ],
+    status: "v1.0.0 released",
+    platform: "macOS, Linux and Windows, one binary per platform; git on the path",
+    audience: "engineers joining an unfamiliar codebase, and teams that want a quality gate in CI",
+    plain:
+      "Point Repo Scout at a software project on your own computer and it reads the code and its change history, then shows in your browser how the project is built, which parts are complicated and keep changing, who knows which parts, and where the hidden connections are. It sends nothing to the internet, and the same tool can fail a build when a change makes things worse.",
     proof: [
       {
         value: "3,602",
         label: "files scanned",
         note: "tanstack query repository, the showcase scan",
       },
-      { value: "5,517", label: "commits indexed", note: "same scan" },
+      { value: "5,524", label: "commits indexed", note: "same scan" },
       { value: "1,141", label: "contributors mapped", note: "same scan" },
       {
         value: "0",
         label: "bytes sent off the machine",
         note: "loopback only, no telemetry",
+      },
+      {
+        value: "140",
+        label: "go tests, 49 unit and 7 browser tests",
+        note: "race detector on, run on linux, macos and windows in ci",
+      },
+      {
+        value: "12",
+        label: "languages counted, 11 with import graphs",
+        note: "plus six dependency manifest formats",
       },
     ],
     problem:
@@ -1895,32 +1913,122 @@ export const projects: Project[] = [
     approach: [
       {
         title: "An interface built for exploration",
-        body: "A survey-map visual identity, a repository switcher and grouped navigation connect dedicated views for overview, activity, commits, contributors, branches, files, search, metrics, dependencies and duplicates. Light, dark and system themes, keyboard-accessible repository picking and a mobile menu carry the same interface across screens.",
+        body: "A survey-map visual identity, a repository switcher and grouped navigation connect seventeen views: overview, activity, commits, contributors, knowledge, branches, files, search, metrics, hotspots, duplicates, architecture, change coupling, dependencies, portfolio and more. Light, dark and system themes, keyboard operation and layouts down to 390 pixels carry the same interface across screens.",
       },
       {
-        title: "History with the right clock",
-        body: "Commit calendars, hour-of-week activity and streaks use each author's local time. A paginated commit log links to contributors and file ownership, while a lazy file tree and sortable table expose per-file size, complexity and history.",
+        title: "History with the right clock, and the right names",
+        body: "Commit calendars, hour-of-week activity and streaks use each author's local time. Ownership is computed from the files each commit touched, following renames, with identities merged through .mailmap and bots never counted as owners. Knowledge pages show the bus factor and the largest files whose main author has gone quiet.",
       },
       {
         title: "Findings you can trace",
-        body: "Architecture graphs collapse imports to folders at a chosen depth, lay out importers beside their dependencies and let you select a node to trace its connections. Cycle and potentially dead-file findings, duplicate code samples with linked locations, and highlighted search matches lead back to the source. Graphs export as SVG.",
+        body: "Architecture graphs collapse imports to folders at a chosen depth and flag cycles, unused folders and possibly dead files. Hotspots rank files by complexity times change frequency. Change coupling finds file pairs that keep changing together and explains each pair by an import, a shared package or a test, or flags it as a hidden dependency. Graphs export as SVG.",
       },
       {
         title: "A scan you can watch and control",
-        body: "The Go pipeline streams and batch-inserts files, history, dependencies, imports and duplicate blocks, then builds a SQLite FTS5 content index. Persisted background jobs report progress over WebSocket, support pause, resume and cancel, and re-queue interrupted scans after a crash. Completing a scan refreshes the open views.",
+        body: "Eight ordered stages stream and batch-insert files, history, dependencies, imports, coupling and duplicate blocks, then build an FTS5 content index. Persisted jobs report progress over WebSocket, support pause, resume and cancel, and re-queue after a crash. Results are promoted in one transaction, so a failed rescan leaves the old ones, and only new commits are diffed on a rescan.",
+      },
+      {
+        title: "The same engine in CI",
+        body: "repo-scout scan prints text, JSON or SARIF for GitHub code scanning, with gates on complexity, duplicates, cycles and hidden coupling. With a base ref it judges a pull request instead of the whole repository: files added, complexity moved, cycles introduced or resolved, gated on the increase. Exit codes say which.",
       },
       {
         title: "Never leaves the machine",
-        body: "No account, external APIs, telemetry or source uploads. The API binds to loopback by default, the frontend talks to localhost, and WebSocket connections are limited to the same origin. Files, commits and contributors export as CSV or JSON.",
+        body: "No account, external APIs, telemetry or source uploads. The server binds to loopback, checks the Host header against DNS rebinding, accepts state changes as JSON only and holds the WebSocket to the same origin. Releases ship checksums, a software bill of materials and signed build provenance instead of a code signature.",
       },
     ],
     highlights: [
-      "Redesigned interface with dedicated code and history views, light and dark themes and mobile navigation",
-      "Folder-level architecture maps with traceable imports and SVG export",
-      "Indexed source search, linked duplicate samples and per-file ownership",
-      "Live scan progress with pause, resume, cancel and crash recovery",
-      "Showcased on a real TanStack Query scan: 3,602 files, 5,517 commits and 1,141 contributors",
+      "One binary for six platforms with the interface embedded, 70 days from first commit to v1.0.0",
+      "Folder-level architecture maps, hotspots, bus factor and hidden coupling",
+      "A scan command for CI with SARIF, quality gates and pull request comparison",
+      "Atomic, incremental rescans with pause, resume, cancel and crash recovery",
+      "Showcased on a real TanStack Query scan: 3,602 files, 5,524 commits and 1,141 contributors",
+      "OpenAPI spec with contract tests, 31 paths",
     ],
+    decisions: [
+      {
+        chose: "the git command line through os/exec",
+        over: "a Go git library",
+        why: "git already knows every edge case of its own history and is on every developer's machine. Output is streamed line by line into SQLite and cached, so the cost is a process boundary, not a second implementation of git.",
+      },
+      {
+        chose: "pure-Go SQLite with CGO off",
+        over: "the C SQLite binding",
+        why: "No C toolchain means one build cross-compiles for six targets and the FTS5 content index still works. The price is some raw speed on huge repositories.",
+      },
+      {
+        chose: "loopback only, with no authentication",
+        over: "a login screen",
+        why: "It is a single-user tool, and the database holds a full-text index of your source. Binding to localhost, checking the Host header and refusing cross-site form posts protect it better than a password would. The docs say what exposing the address would expose.",
+      },
+      {
+        chose: "promoting scan results in one transaction",
+        over: "updating rows in place",
+        why: "A scan that fails halfway must not leave a half-truth. Results are written under a staging id and swapped in only when every stage succeeds.",
+      },
+      {
+        chose: "unsigned binaries with signed provenance",
+        over: "paying for code-signing certificates",
+        why: "Checksums, a software bill of materials and GitHub build attestations let anyone verify what built the archive and from which commit. macOS asks you to clear the quarantine flag once.",
+      },
+    ],
+    install: [
+      {
+        label: "download a release",
+        command:
+          "gh release download --repo KhaledSaeed18/repo-scout --pattern '*_darwin_arm64.tar.gz' && tar -xzf repo-scout_*_darwin_arm64.tar.gz && ./repo-scout",
+        note: "serves localhost:8080; linux and windows archives on the release page",
+      },
+      {
+        label: "verify what built it",
+        command:
+          "gh attestation verify repo-scout_*_darwin_arm64.tar.gz --repo KhaledSaeed18/repo-scout",
+      },
+      {
+        label: "gate a pipeline",
+        command:
+          "repo-scout scan . --max-complexity 150 --max-duplicates 20 --fail-on cycles,hidden-coupling",
+        note: "go install github.com/KhaledSaeed18/repo-scout/cmd/repo-scout@latest for ci",
+      },
+    ],
+    timeline: [
+      {
+        date: "2026-08-01",
+        title: "First commit",
+      },
+      {
+        date: "2026-10-09",
+        title: "The redesign",
+        body: "New pages, a brand kit, loopback by default, contributing and security docs, and the TanStack Query showcase.",
+      },
+      {
+        date: "2026-10-10",
+        title: "v1.0.0",
+        body: "The single binary for six targets, the scan command with SARIF and gates, pull request comparison, hotspots, knowledge, change coupling, portfolio, trends, atomic rescans, migrations, OpenAPI contract tests and signed provenance.",
+      },
+    ],
+    faq: [
+      {
+        q: "Does any code or data leave my machine?",
+        a: "No. There is no telemetry and no outbound access. Results live in a local SQLite file, and the server answers only on loopback. Treat that file as being as sensitive as the repositories you scan, because it holds a content index of them.",
+      },
+      {
+        q: "Can I run it in CI without the web interface?",
+        a: "Yes. Install the binary with go install and run the scan command with SARIF output, which uploads to GitHub code scanning. A failed gate exits with code 1.",
+      },
+      {
+        q: "How does it judge a pull request rather than the whole repository?",
+        a: "Pass the base ref. It extracts the base read-only with git archive and reports files added and removed, complexity that moved, cycles introduced or resolved and dependency changes, with gates on the increase.",
+      },
+      {
+        q: "What happens if a rescan is interrupted?",
+        a: "Nothing is lost. Results are promoted only when every stage succeeds, and a crash re-queues the job on the next launch.",
+      },
+      {
+        q: "Can I go back to an older version?",
+        a: "The database is migrated forward and an older version refuses to open it, so copy the database file before upgrading.",
+      },
+    ],
+    related: ["dir-analysis-tool", "osreflog"],
   },
   {
     slug: "dir-analysis-tool",
