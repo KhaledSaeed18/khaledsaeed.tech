@@ -334,3 +334,52 @@
     transition: none;
   }
 }
+
+/*
+ * The stack's chip, X-rayed: signals running along the bond wires from the
+ * leads into the die. Content, like the portrait and the objects, so it may
+ * move more than the page does. Each wire carries one square pulse, then
+ * rests, on a staggered clock (--t, --d), so only a few are in flight at
+ * once. They run only while the chip is on screen ([data-live] on the
+ * figure) and are left out entirely under reduced motion.
+ */
+@keyframes qfp-signal {
+  0% {
+    stroke-dashoffset: 8;
+  }
+  16%,
+  100% {
+    stroke-dashoffset: -100;
+  }
+}
+/* the wire is drawn pin to die with pathLength="100": an 8 unit pulse, then nothing */
+.qfp-signal {
+  stroke-dasharray: 8 200;
+  stroke-dashoffset: 8;
+  animation: qfp-signal var(--t, 7s) linear var(--d, 0s) infinite;
+  animation-play-state: paused;
+}
+/* the phone package: the same pulse, moved by transform along a straight wire */
+@keyframes dip-signal {
+  0% {
+    transform: translateX(-100%);
+  }
+  16%,
+  100% {
+    transform: translateX(100%);
+  }
+}
+.dip-signal {
+  animation: dip-signal var(--t, 7s) linear var(--d, 0s) infinite;
+  animation-play-state: paused;
+}
+[data-live] .qfp-signal,
+[data-live] .dip-signal {
+  animation-play-state: running;
+}
+@media (prefers-reduced-motion: reduce) {
+  .qfp-signal,
+  .dip-signal {
+    display: none;
+  }
+}

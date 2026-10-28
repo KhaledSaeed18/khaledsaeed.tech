@@ -13,6 +13,8 @@ type Part = ReturnType<typeof partOf>
 type View = {
   part: Part
   rev: string
+  /** The layer that is lit, if any. */
+  hot: number | null
   dim: (group: number | undefined) => boolean
   enter: (group: number) => void
 }
@@ -60,6 +62,20 @@ function toneStyle(group: number) {
 }
 
 /**
+ * Each bond wire's clock: one pulse a cycle, a cycle of 5.5 to 8.5 seconds,
+ * started at a scattered point so the wires never fire together.
+ */
+function clock(i: number) {
+  const t = 5.5 + (i % 7) * 0.5
+  const d = -(((i * 53) % 97) / 97) * t
+  return { "--t": `${t}s`, "--d": `${d.toFixed(2)}s` } as React.CSSProperties
+}
+
+/** The ink a layer's wires light up in. */
+const wireInk = (group: number) =>
+  toneOf(group).ink === "brand" ? "stroke-brand" : "stroke-teal"
+
+/**
  * The part: one pin per item in stack order, so each layer is a contiguous
  * run, padded at the end with nc pins to a multiple of four so the quad
  * package has four equal sides. Both packages carry the same pin count.
@@ -99,12 +115,31 @@ export function Pinout({ layers, rev }: { layers: Layer[]; rev: string }) {
   const view: View = {
     part,
     rev,
+    hot,
     dim: (g) => hot !== null && g !== hot,
     enter: setHover,
   }
 
+  // the signals only run while the chip is on screen
+  const fig = useRef<HTMLElement>(null)
+  const [live, setLive] = useState(false)
+  useEffect(() => {
+    const el = fig.current
+    if (!el) return
+    const io = new IntersectionObserver(([e]) => setLive(e.isIntersecting), {
+      rootMargin: "120px",
+    })
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
+
   return (
-    <figure className="m-0" onMouseLeave={() => setHover(null)}>
+    <figure
+      ref={fig}
+      data-live={live ? "" : undefined}
+      className="m-0"
+      onMouseLeave={() => setHover(null)}
+    >
       <div
         role="img"
         aria-label={`Pin diagram of the stack, part KS-${part.total}: ${layers
@@ -116,7 +151,7 @@ export function Pinout({ layers, rev }: { layers: Layer[]; rev: string }) {
       </div>
 
       <figcaption className="mt-8">
-        <ul className="grid gap-x-12 gap-y-1 font-mono text-xs sm:grid-cols-[repeat(2,max-content)] lg:grid-cols-[repeat(4,max-content)] lg:gap-x-10 xl:grid-cols-[repeat(2,max-content)] xl:gap-x-16">
+        <ul className="grid gap-x-12 gap-y-1 font-mono text-xs sm:grid-cols-[repeat(2,max-content)] md:justify-center lg:grid-cols-[repeat(4,max-content)] lg:gap-x-10 xl:grid-cols-[repeat(2,max-content)] xl:gap-x-16">
           {layers.map((l, g) => {
             const { from, to } = part.runs[g]
             const swatch = toneStyle(g)
@@ -151,7 +186,7 @@ export function Pinout({ layers, rev }: { layers: Layer[]; rev: string }) {
             )
           })}
         </ul>
-        <p className="mt-5 font-mono text-xs text-muted-foreground">
+        <p className="mt-5 font-mono text-xs text-muted-foreground md:text-center">
           figure 1. pin configuration, <span className="md:hidden">dip</span>
           <span className="hidden md:inline">qfp</span>-{part.total}, top view
         </p>
@@ -255,6 +290,7 @@ function fit(room: number, perSide: number, longest: number[]) {
 function Qfp({
   part,
   rev,
+  hot,
   dim,
   enter,
   className,
@@ -302,13 +338,47 @@ function Qfp({
   const [x0, y0, x1, y1] = [X + 0.5, Y + 0.5, X + B - 0.5, Y + B - 0.5]
   const reach = 16
 
+  // the die, X-rayed: a square of silicon under the markings, with a bond
+  // pad on its edge for every pin, in the same order as the pins
+  const D = 2 * Math.round((B * 0.4) / 2)
+  const [dx, dy] = [X + (B - D) / 2, Y + (B - D) / 2]
+  const margin = Math.round(D * 0.06)
+  const padAt = (k: number) => margin + (k + 0.5) * ((D - 2 * margin) / N)
+  // wires leave the lead frame just inside the pin numbers
+  const inset = 22
+  const wire = (i: number) => {
+    const side = Math.floor(i / N)
+    const k = i % N
+    const t = C + k * P + P / 2
+    const pad = padAt(k)
+    const [a, b] = [
+      [
+        [X + inset, Y + t],
+        [dx, dy + pad],
+      ],
+      [
+        [X + t, Y + B - inset],
+        [dx + pad, dy + D],
+      ],
+      [
+        [X + B - inset, Y + B - t],
+        [dx + D, dy + D - pad],
+      ],
+      [
+        [X + B - t, Y + inset],
+        [dx + D - pad, dy],
+      ],
+    ][side]
+    return { d: `M${a[0]} ${a[1]}L${b[0]} ${b[1]}`, end: b, side }
+  }
+
   return (
     <div ref={box} className={className}>
       <svg
         width={g.w}
         height={g.h}
         viewBox={`0 0 ${g.w} ${g.h}`}
-        className="block h-auto max-w-full overflow-visible"
+        className="mx-auto block h-auto max-w-full overflow-visible"
         aria-hidden="true"
         data-qfp=""
       >
@@ -346,12 +416,23 @@ function Qfp({
           className="fill-card stroke-muted-foreground/50"
           strokeWidth={1}
         />
+        {/* the die and its seal ring */}
         <rect
-          x={X + C}
-          y={Y + C}
-          width={6}
-          height={6}
-          className="fill-brand"
+          x={dx + 0.5}
+          y={dy + 0.5}
+          width={D - 1}
+          height={D - 1}
+          className="fill-background stroke-muted-foreground/40"
+          strokeWidth={1}
+          shapeRendering="crispEdges"
+        />
+        <rect
+          x={dx + 6.5}
+          y={dy + 6.5}
+          width={D - 13}
+          height={D - 13}
+          className="fill-none stroke-muted-foreground/15"
+          strokeWidth={1}
           shapeRendering="crispEdges"
         />
         <KMark x={mid - kSize / 2} y={top} width={kSize} height={kSize} />
@@ -433,6 +514,54 @@ function Qfp({
               )}
             >
               <rect {...hit} fill="transparent" />
+              {(() => {
+                const w = wire(i)
+                const lit = pin !== null && hot === pin.group
+                const [ex, ey] = w.end
+                // the pad sits just inside the die edge
+                const [px, py] = [
+                  [ex + 1, ey - 1.5],
+                  [ex - 1.5, ey - 4],
+                  [ex - 4, ey - 1.5],
+                  [ex - 1.5, ey + 1],
+                ][w.side]
+                return (
+                  <>
+                    <path
+                      d={w.d}
+                      strokeWidth={1}
+                      className={cn(
+                        "fill-none transition-[stroke-opacity] motion-reduce:transition-none",
+                        pin ? wireInk(pin.group) : "stroke-muted-foreground",
+                        lit ? "[stroke-opacity:0.75]" : "[stroke-opacity:0.18]"
+                      )}
+                    />
+                    {pin && (
+                      <path
+                        d={w.d}
+                        pathLength={100}
+                        strokeWidth={2}
+                        className={cn("qfp-signal fill-none", wireInk(pin.group))}
+                        style={clock(i)}
+                      />
+                    )}
+                    <rect
+                      x={px}
+                      y={py}
+                      width={3}
+                      height={3}
+                      className={
+                        lit
+                          ? pin && toneOf(pin.group).ink === "teal"
+                            ? "fill-teal"
+                            : "fill-brand"
+                          : "fill-muted-foreground/45"
+                      }
+                      shapeRendering="crispEdges"
+                    />
+                  </>
+                )
+              })()}
               {/* each lead carries its own tile origin, like a CSS mask */}
               <g transform={`translate(${lead.x} ${lead.y})`}>
                 <rect
@@ -480,6 +609,14 @@ function Qfp({
             </g>
           )
         })}
+        <rect
+          x={X + C}
+          y={Y + C}
+          width={6}
+          height={6}
+          className="fill-brand"
+          shapeRendering="crispEdges"
+        />
       </svg>
     </div>
   )
@@ -496,6 +633,7 @@ function Qfp({
 function Dip({
   part,
   rev,
+  hot,
   dim,
   enter,
   className,
@@ -575,18 +713,44 @@ function Dip({
         className="relative col-start-3 flex flex-col items-center justify-center self-stretch border border-muted-foreground/50 bg-card"
         style={{ gridRow: `1 / span ${half}` }}
       >
+        {/* the die, X-rayed, and a bond wire from every row into it */}
+        <span className="absolute inset-y-7 left-1/2 w-[36%] -translate-x-1/2 border border-muted-foreground/40 bg-background sm:inset-y-10" />
+        <div className="absolute inset-x-0 inset-y-0 grid" style={rows}>
+          {left.map((p, r) => (
+            <div key={r} className="grid grid-cols-[1fr_36%_1fr] items-center">
+              <DipWire
+                pin={p}
+                i={r}
+                hot={hot}
+                dim={dim}
+                className="ml-5 sm:ml-7"
+              />
+              <span />
+              <DipWire
+                pin={right[r]}
+                i={part.total - 1 - r}
+                hot={hot}
+                dim={dim}
+                className="mr-5 -scale-x-100 sm:mr-7"
+              />
+            </div>
+          ))}
+        </div>
         {/* pin 1 notch and dot */}
         <span className="absolute -top-px left-1/2 size-3 -translate-x-1/2 border-x border-b border-muted-foreground/50 bg-background sm:size-4" />
         <span className="absolute top-1.5 left-4 size-1.5 bg-brand sm:top-2.5 sm:left-7" />
-        <KMark className="mb-1.5 size-5 sm:mb-2 sm:size-7" />
-        <span className="font-heading text-base font-medium tracking-tight max-[379px]:text-sm sm:text-3xl">
-          KS-{part.total}
-        </span>
-        <span className="mt-2 hidden font-mono text-xs text-muted-foreground sm:block">
-          full-stack
-        </span>
-        <span className="hidden font-mono text-xs text-muted-foreground sm:block">
-          rev {rev}
+        {/* the markings, on a knockout of the body so no wire runs through them */}
+        <span className="relative flex flex-col items-center bg-card px-1.5 py-2 sm:px-2 sm:py-3">
+          <KMark className="mb-1.5 size-5 sm:mb-2 sm:size-7" />
+          <span className="font-heading text-base font-medium tracking-tight max-[379px]:text-sm sm:text-3xl">
+            KS-{part.total}
+          </span>
+          <span className="mt-2 hidden font-mono text-xs text-muted-foreground sm:block">
+            full-stack
+          </span>
+          <span className="hidden font-mono text-xs text-muted-foreground sm:block">
+            rev {rev}
+          </span>
         </span>
         {numbers(left, "l")}
         {numbers(right, "r")}
@@ -617,6 +781,59 @@ function Dip({
         </DipRow>
       ))}
     </div>
+  )
+}
+
+/**
+ * A DIP bond wire: a hairline from the lead frame to the die, carrying the
+ * same pulse as the quad package, moved by transform. Drawn left to right;
+ * the right side is mirrored, so both run inward.
+ */
+function DipWire({
+  pin,
+  i,
+  hot,
+  dim,
+  className,
+}: {
+  pin: Pin
+  i: number
+  hot: number | null
+  dim: (group: number | undefined) => boolean
+  className?: string
+}) {
+  const teal = pin !== null && toneOf(pin.group).ink === "teal"
+  const lit = pin !== null && hot === pin.group
+  return (
+    <span
+      className={cn(
+        "relative block h-0.5 overflow-hidden",
+        fade,
+        dim(pin?.group) ? "opacity-30" : "opacity-100",
+        className
+      )}
+    >
+      <span
+        className={cn(
+          "absolute inset-x-0 top-1/2 h-px -translate-y-1/2 transition-opacity motion-reduce:transition-none",
+          pin ? (teal ? "bg-teal" : "bg-brand") : "bg-muted-foreground",
+          lit ? "opacity-75" : "opacity-20"
+        )}
+      />
+      {pin && (
+        <span
+          className={cn(
+            "dip-signal absolute inset-0",
+            teal ? "text-teal" : "text-brand"
+          )}
+          style={{
+            ...clock(i),
+            backgroundImage:
+              "linear-gradient(to right, transparent calc(100% - 6px), currentColor calc(100% - 6px))",
+          }}
+        />
+      )}
+    </span>
   )
 }
 
