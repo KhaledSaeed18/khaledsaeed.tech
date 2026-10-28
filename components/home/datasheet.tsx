@@ -3,10 +3,13 @@ import type * as React from "react"
 import { Pinout } from "@/components/home/pinout"
 import { Sheet } from "@/components/print/sheet"
 import { principles, stack } from "@/lib/content/profile"
+import { siteConfig } from "@/lib/site"
 
 /**
  * A component datasheet for a person: the operating principles as the
- * features list, and the stack drawn as the part's pin configuration.
+ * features list, and the stack drawn as the part's pin configuration. The
+ * quad package needs the room, so the features sit above it until the
+ * screen is wide enough to set them beside it.
  */
 export function Datasheet({ index }: { index: number }) {
   return (
@@ -17,15 +20,15 @@ export function Datasheet({ index }: { index: number }) {
       title="The stack, pin by pin."
       lede="TypeScript end to end, Swift when it belongs on the Mac, and whatever the problem actually needs underneath."
     >
-      <div className="grid gap-16 lg:grid-cols-12 lg:gap-10">
-        <section aria-labelledby="features" className="lg:col-span-5">
+      <div className="grid gap-16 xl:grid-cols-12 xl:gap-10">
+        <section aria-labelledby="features" className="xl:col-span-4">
           <h3
             id="features"
             className="font-mono text-xs font-normal text-muted-foreground"
           >
             features
           </h3>
-          <ol className="mt-6 border-t border-dashed border-border">
+          <ol className="mt-6 grid border-t border-dashed border-border md:grid-cols-2 md:gap-x-10 xl:grid-cols-1">
             {principles.map((p, i) => (
               <li
                 key={p.title}
@@ -47,7 +50,7 @@ export function Datasheet({ index }: { index: number }) {
           </ol>
         </section>
 
-        <section aria-labelledby="pins" data-reveal className="lg:col-span-7">
+        <section aria-labelledby="pins" data-reveal className="xl:col-span-8">
           <h3
             id="pins"
             className="font-mono text-xs font-normal text-muted-foreground"
@@ -55,7 +58,10 @@ export function Datasheet({ index }: { index: number }) {
             pin configuration
           </h3>
           <div className="mt-6">
-            <Pinout layers={stack} />
+            <Pinout
+              layers={stack}
+              rev={siteConfig.profileUpdatedAt.slice(0, 4)}
+            />
           </div>
         </section>
       </div>

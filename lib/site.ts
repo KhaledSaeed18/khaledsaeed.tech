@@ -13,7 +13,7 @@ export const siteConfig = {
   /** Primary public handle, also used as the person's alternate name. */
   username: "KhaledSaeed18",
   /** Recorded date of a meaningful update to the home and about profile. */
-  profileUpdatedAt: "2026-10-10",
+  profileUpdatedAt: "2026-10-28",
   /** Short role used in the title tag and OG. */
   role: "Full-Stack Engineer",
   url: "https://khaledsaeed.tech",

@@ -198,15 +198,15 @@ export function PrintResume() {
 
             <section className="mt-[5.5mm]">
               <Head>stack</Head>
-              <dl className="space-y-[1.4mm]">
+              {/* every item, so the layer names run in and the type steps
+                  down half a point to keep the sheet to one page */}
+              <dl className="space-y-[1.2mm]">
                 {stack.map((l) => (
-                  <div key={l.layer}>
-                    <dt className="font-mono text-[7pt] text-[#6b635c] lowercase">
-                      {l.layer}
+                  <div key={l.layer} className="text-[7.5pt] leading-[1.35]">
+                    <dt className="inline font-mono text-[6.5pt] text-[#6b635c] lowercase">
+                      {l.layer}{" "}
                     </dt>
-                    <dd className="text-[8pt] leading-snug">
-                      {l.items.join(", ")}
-                    </dd>
+                    <dd className="inline">{l.items.join(", ")}</dd>
                   </div>
                 ))}
               </dl>

@@ -18,34 +18,149 @@ export const about = {
 
 /**
  * The datasheet on the home page: what sits at each layer of what I ship, in
- * pin order: the datasheet draws it as a DIP part,
- * so the first half of the items runs down the left side and the second
- * half back up the right.
+ * pin order. The datasheet draws it as one part, KS-<pins>, one pin per item,
+ * in two packages: a quad flat pack where there is room (pin 1 at the top of
+ * the left side, counter-clockwise round all four sides) and a DIP on phones
+ * (down the left side, back up the right). Each layer is a contiguous run of
+ * pins, so it can wrap round a corner; spare pins up to a multiple of four
+ * are drawn as nc. Items are ordered by importance within a layer.
  */
 export const stack: { layer: string; items: string[] }[] = [
   {
     layer: "Interface",
-    items: ["React", "Next.js", "TanStack", "Tailwind CSS", "shadcn/ui"],
+    items: [
+      "React",
+      "Next.js",
+      "TanStack",
+      "Tailwind CSS",
+      "shadcn/ui",
+      "Vite",
+      "Redux",
+      "Zustand",
+      "Jotai",
+      "React Hook Form",
+      "Motion",
+    ],
   },
   {
     layer: "Services",
-    items: ["Node.js", "NestJS", "Express", "Hono", "FastAPI"],
+    items: [
+      "Node.js",
+      "NestJS",
+      "Express",
+      "Hono",
+      "FastAPI",
+      "Bun",
+      "Django",
+      "GraphQL",
+      "Apollo",
+      "WebSockets",
+      "BullMQ",
+      "Zod",
+      "Pydantic",
+      "OpenAPI",
+      "JWT",
+      "Clerk",
+      "Resend",
+    ],
   },
   {
     layer: "Native",
-    items: ["Swift", "SwiftUI", "Rust", "React Native", "Electron"],
+    items: [
+      "Swift",
+      "SwiftUI",
+      "Rust",
+      "React Native",
+      "Electron",
+      "Expo",
+      "Flutter",
+      "Riverpod",
+      "GNOME",
+    ],
   },
   {
     layer: "Data",
-    items: ["PostgreSQL", "Prisma", "MongoDB", "SQLite", "MySQL"],
+    items: [
+      "PostgreSQL",
+      "Prisma",
+      "MongoDB",
+      "SQLite",
+      "MySQL",
+      "Redis",
+      "Mongoose",
+      "TypeORM",
+      "SQLAlchemy",
+      "Neon",
+      "Supabase",
+      "Payload CMS",
+    ],
   },
   {
     layer: "Tooling",
-    items: ["TypeScript", "Go", "Python", "Docker", "GitHub Actions"],
+    items: [
+      "TypeScript",
+      "Go",
+      "Python",
+      "Docker",
+      "GitHub Actions",
+      "JavaScript",
+      "Dart",
+      "C",
+      "Git",
+      "pnpm",
+      "Turborepo",
+    ],
   },
   {
     layer: "Intelligence",
-    items: ["AI SDK", "Claude Code", "Transformers.js", "Hugging Face"],
+    items: [
+      "AI SDK",
+      "Claude Code",
+      "Transformers.js",
+      "Hugging Face",
+      "Claude",
+      "OpenAI",
+      "Gemini",
+      "Mistral",
+      "Qwen",
+      "Ollama",
+      "LangChain",
+      "n8n",
+      "GitHub Copilot",
+      "Codex",
+      "Cursor",
+    ],
+  },
+  {
+    layer: "Platform",
+    items: [
+      "Linux",
+      "Vercel",
+      "Cloudflare",
+      "AWS",
+      "Google Cloud",
+      "Coolify",
+      "Traefik",
+      "Nginx",
+      "Render",
+      "Sentry",
+      "PostHog",
+      "Grafana",
+      "Datadog",
+    ],
+  },
+  {
+    layer: "Quality",
+    items: [
+      "Vitest",
+      "Playwright",
+      "Jest",
+      "MSW",
+      "ESLint",
+      "Prettier",
+      "Biome",
+      "Husky",
+    ],
   },
 ]
 
