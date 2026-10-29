@@ -73,6 +73,8 @@ export type Project = {
   install?: Install[]
   /** Engineering decisions worth defending: what was chosen, what it cost. */
   decisions?: Decision[]
+  /** Captured screens of the running product, under public/work/<slug>/. */
+  screens?: Screen[]
   /** The project's printings: releases and milestones, oldest first. */
   timeline?: Milestone[]
   /** Questions a reader is likely to ask, answered from the docs. */
@@ -100,6 +102,15 @@ export type Decision = {
   over: string
   /** Why, and what it cost. One or two sentences. */
   why: string
+}
+
+export type Screen = {
+  /** File name under public/work/<slug>/, without ".png": "queue". */
+  src: string
+  /** What the screen is, sentence case: "An agent's queue". */
+  title: string
+  /** What to look at in it, one sentence. */
+  caption: string
 }
 
 export type Milestone = {

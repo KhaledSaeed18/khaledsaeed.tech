@@ -20,6 +20,7 @@ import { Faq } from "@/components/work/faq"
 import { PlainWords } from "@/components/work/plain-words"
 import { ProjectRows } from "@/components/work/project-rows"
 import { RepoFacts } from "@/components/work/repo-facts"
+import { Screens } from "@/components/work/screens"
 import { Timeline } from "@/components/work/timeline"
 import { TryIt } from "@/components/work/try-it"
 import {
@@ -260,6 +261,16 @@ export default async function ProjectPage({
             <RevCuts section="approach" />
           </Block>
 
+          {p.screens && (
+            <Block
+              index={index()}
+              label="screens"
+              meta={`${p.screens.length} captured from the running product`}
+            >
+              <Screens slug={p.slug} screens={p.screens} />
+            </Block>
+          )}
+
           {p.proof && (
             <Block index={index()} label="measured">
               <ProofStrip proof={p.proof} />
@@ -436,7 +447,10 @@ export default async function ProjectPage({
             ...(p.timeline?.length
               ? {
                   releaseNotes: p.timeline
-                    .map((m) => `${m.date}: ${m.title}${m.body ? `. ${m.body}` : ""}`)
+                    .map(
+                      (m) =>
+                        `${m.date}: ${m.title}${m.body ? `. ${m.body}` : ""}`
+                    )
                     .join("\n"),
                 }
               : {}),
