@@ -78,6 +78,65 @@
           "Member MFA with step-up, OpenTelemetry per tenant, CodeQL on every change"
         ]
       }
+    },
+    {
+      "sha": "0df07ff",
+      "date": "2026-10-29",
+      "subject": "Update the Patchgrid case study to completion",
+      "words": {
+        "tagline": "Multi-tenant IT service management with isolation enforced by the database.",
+        "summary": "Patchgrid is a ticketing and operations platform for IT and security teams. Each company gets its own subdomain, and its data is isolated at the database level through five independent layers, not by remembering a WHERE clause. All fourteen milestones are built: four ITIL record types with SLA clocks, email intake, passkeys and per-tenant single sign-on, an operator back-office that never impersonates, signed webhooks, reports under 25 ms at 100,000 tickets, and a production rehearsal on emulated AWS.",
+        "problem": "Multi-tenant apps usually trust every query to filter by tenant. One forgotten filter leaks another customer's tickets. I wanted a platform where a cross-tenant read is not a bug you can write.",
+        "approach": [
+          {
+            "title": "Five layers of isolation",
+            "body": "Composite (orgId, id) foreign keys make a cross-tenant reference unrepresentable, because Postgres checks foreign keys with row security off. The tenant comes from the credential, never the host. Every repository method takes an explicit orgId. A Prisma client extension sets a transaction-local config and throws without context. Postgres enforces it all with forced row level security and an app role that cannot bypass it."
+          },
+          {
+            "title": "Four ITIL records, four lifecycles",
+            "body": "Incidents, service requests, problems and changes are modeled as different things with their own states and one transition endpoint. Priority is computed from impact and urgency, and a client that sends one gets a 400. SLA clocks run around the clock, pause while waiting on the requester, and are swept per tenant."
+          },
+          {
+            "title": "Everything a desk needs",
+            "body": "Mail to the workspace becomes a ticket if it passes DMARC, and replies thread onto it. A versioned knowledge base suggests articles while a requester types. Assets link to tickets. Queues keep saved views and act on two hundred tickets at once. Uploads go straight to object storage on a separate domain and are checked by their bytes, not their names."
+          },
+          {
+            "title": "Identity per workspace",
+            "body": "Passwords come with a second factor, an authenticator app or a passkey, and a workspace can require one. A workspace proves its email domain over DNS and connects its own OpenID Connect provider, and an SSO session opens that workspace and no other. One person can belong to many companies, with a different role and a separate session in each."
+          },
+          {
+            "title": "A platform layer that cannot peek",
+            "body": "Operators work at admin. with their own login and second factor, see metadata and never content, and read a workspace only in an owner-granted, read-only, time-boxed support session written to that workspace's audit log. API tokens are service accounts whose scopes intersect a role. Deleting a workspace leaves a nameless tombstone after 30 days."
+          },
+          {
+            "title": "Delivery you can replay",
+            "body": "A transactional outbox is read per tenant in transaction-id order below the snapshot horizon, so nothing is lost, repeated or skipped. Notifications, signed webhooks with retries and a circuit breaker, and reporting are its consumers. Reports come from their own read model so they never compete with the queues."
+          },
+          {
+            "title": "A production rehearsal, not a demo",
+            "body": "OpenTofu modules written for real AWS deploy it from nothing onto Floci, an AWS emulator, on every change to main: ECS services behind a load balancer with a wildcard certificate, RDS Postgres with roles RDS itself could create, ElastiCache with TLS, S3, SES and Secrets Manager under KMS. The isolation suite then runs again inside the VPC, and the browser suite through HTTPS."
+          },
+          {
+            "title": "Invariants you can run",
+            "body": "A tenancy suite asserts 14 catalog and 38 isolation invariants against a live database on every merge, a doctor script checks the roles and privileges, and every integration fixture creates two organizations so a leak fails a test. A Playwright suite drives two tenants through the browser, built around the negative cases."
+          },
+          {
+            "title": "Reviewed before shipping",
+            "body": "A threat model with thirteen trust boundaries and STRIDE for each, and five security reviews, at milestone 9 and at every milestone from 11 to 14, that found 58 issues, each fixed or recorded with its reason. Traces and metrics are labelled by tenant, so a Grafana board answers which tenant is slow."
+          }
+        ],
+        "highlights": [
+          "Subdomain per tenant across one monorepo: marketing, workspace, operator back-office and API",
+          "Row level security forced on every tenant table, composite keys across tenants",
+          "Priority derived from impact x urgency, four lifecycles behind one transition endpoint",
+          "Email intake gated by DMARC, knowledge base, assets, presigned uploads",
+          "Passkeys, step-up and per-tenant OpenID Connect single sign-on",
+          "No impersonation, ever: support sessions are granted, read-only, audited and time-boxed",
+          "Transactional outbox, Standard Webhooks, reports under 25 ms at 100,000 tickets",
+          "Deployed from nothing to emulated AWS by OpenTofu on every change to main",
+          "OpenTelemetry per tenant, CodeQL and a full-history secret scan on every change"
+        ]
+      }
     }
   ],
   "node-express-boilerplate": [
