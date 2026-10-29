@@ -168,11 +168,11 @@ export const projects: Project[] = [
   {
     slug: "patchgrid",
     name: "Patchgrid",
-    updatedAt: "2026-10-19",
+    updatedAt: "2026-10-29",
     tagline:
       "Multi-tenant IT service management with isolation enforced by the database.",
     summary:
-      "Patchgrid is a ticketing and operations platform for IT and security teams. Each company gets its own subdomain, and its data is isolated at the database level through five independent layers, not by remembering a WHERE clause. Twelve milestones in, it covers incidents, requests, problems and changes, SLA clocks, email intake, a knowledge base, assets, an operator back-office that never impersonates, signed webhooks and reports that answer in under 25 ms at 100,000 tickets.",
+      "Patchgrid is a ticketing and operations platform for IT and security teams. Each company gets its own subdomain, and its data is isolated at the database level through five independent layers, not by remembering a WHERE clause. All fourteen milestones are built: four ITIL record types with SLA clocks, email intake, passkeys and per-tenant single sign-on, an operator back-office that never impersonates, signed webhooks, reports under 25 ms at 100,000 tickets, and a production rehearsal on emulated AWS.",
     year: 2026,
     group: "platforms",
     kind: "SaaS platform",
@@ -187,25 +187,110 @@ export const projects: Project[] = [
       "BullMQ",
       "Turborepo",
       "Zod",
+      "WebAuthn",
       "OpenTelemetry",
       "Playwright",
       "Docker",
+      "OpenTofu",
     ],
     repo: "patchgrid",
     links: [
       { label: "Source", href: gh("patchgrid") },
-      { label: "Decisions", href: `${gh("patchgrid")}/tree/main/docs/decisions` },
+      {
+        label: "Documentation",
+        href: `${gh("patchgrid")}/blob/main/docs/README.md`,
+      },
+      {
+        label: "Decisions",
+        href: `${gh("patchgrid")}/tree/main/docs/decisions`,
+      },
       {
         label: "Threat model",
         href: `${gh("patchgrid")}/blob/main/docs/THREAT-MODEL.md`,
       },
     ],
-    status: "In active development",
+    status: "Complete, all milestones built",
+    stat: { label: "tests", value: "2,315" },
     featured: true,
-    platform: "Node.js 24, PostgreSQL 17 and Docker; runs locally by decision",
-    audience: "IT and security teams, and engineers who want to see tenancy done at the database",
+    platform:
+      "Node.js 24, PostgreSQL 17 and Docker; rehearsed on emulated AWS, not hosted by decision",
+    audience:
+      "IT and security teams, and engineers who want to see tenancy done at the database",
     plain:
-      "Patchgrid is a help desk for company IT teams. Many companies share one system, but the database itself refuses to show one company another company's tickets, even if a programmer makes a mistake. Staff raise incidents and requests, agents work them against response-time clocks, and every change is approved by someone other than its author.",
+      "Patchgrid is a help desk for company IT teams. Many companies share one system, but the database itself refuses to show one company another company's tickets, even if a programmer makes a mistake. Staff raise incidents and requests on the web or by email, agents work them against response-time clocks, and every change is approved by someone other than its author.",
+    screens: [
+      {
+        src: "queue",
+        title: "An agent's queue",
+        caption:
+          "Priorities computed from impact and urgency, deadlines counting down to the next target, overdue work marked.",
+      },
+      {
+        src: "incident",
+        title: "An incident, as the agent sees it",
+        caption:
+          "Only the transitions its state allows are offered, and the internal note is set visibly apart.",
+      },
+      {
+        src: "requester-incident",
+        title: "The same incident, as the requester sees it",
+        caption:
+          "The reply is there. The internal note is not, because the API never sent it.",
+      },
+      {
+        src: "new-ticket",
+        title: "Raising a ticket",
+        caption:
+          "There is no priority field. Matching knowledge base articles are suggested while the requester types.",
+      },
+      {
+        src: "change",
+        title: "A change awaiting approval",
+        caption:
+          "A plan, a window, a risk and a rollback, decided by someone other than whoever wrote it.",
+      },
+      {
+        src: "reports",
+        title: "Reports",
+        caption:
+          "SLA compliance, median and p90 time to resolve, and backlog by age, read from a model of their own.",
+      },
+      {
+        src: "webhook",
+        title: "A webhook",
+        caption:
+          "Standard Webhooks signatures, retries with backoff, a circuit breaker and a delivery log you can replay.",
+      },
+      {
+        src: "dana-acme",
+        title: "One person at Acme, as an admin",
+        caption:
+          "Each workspace is its own tenant, and each tab holds its own session.",
+      },
+      {
+        src: "dana-globex",
+        title: "The same person at Globex, as an agent",
+        caption: "Neither list ever shows the other company's tickets.",
+      },
+      {
+        src: "sso",
+        title: "Single sign-on per workspace",
+        caption:
+          "The workspace proves its email domain over DNS, then connects its own OpenID Connect provider.",
+      },
+      {
+        src: "backoffice",
+        title: "The operators' back-office",
+        caption:
+          "Workspace names, plans and status, never what is inside them, behind its own login and second factor.",
+      },
+      {
+        src: "grafana",
+        title: "Which tenant is slow",
+        caption:
+          "Traces and metrics carry a bounded tenant label. Here one workspace browses five times harder than the other.",
+      },
+    ],
     proof: [
       {
         value: "5",
@@ -213,14 +298,19 @@ export const projects: Project[] = [
         note: "keys, credential, repository, prisma, postgres rls",
       },
       {
-        value: "1,323",
-        label: "api tests",
-        note: "1,083 unit and 240 integration, plus 400 authorization and 50 tenancy assertions",
+        value: "2,315",
+        label: "automated tests",
+        note: "1,232 api unit, 278 integration, 402 authorization, 52 tenancy, 226 contract and 125 more",
       },
       {
-        value: "52",
+        value: "12",
+        label: "browser scenarios",
+        note: "two tenants and the negative cases; 9 also run through the https load balancer",
+      },
+      {
+        value: "59",
         label: "architecture decision records",
-        note: "5,618 lines of specification written before the code",
+        note: "10,257 lines of specification, kept true as the code changed",
       },
       {
         value: "< 25 ms",
@@ -228,14 +318,19 @@ export const projects: Project[] = [
         note: "from a dedicated read model, measured in the load check",
       },
       {
-        value: "16",
-        label: "security findings fixed",
-        note: "three independent reviews at milestone 9, all fixed with tests",
+        value: "58",
+        label: "security findings",
+        note: "five reviews, at milestones 9 and 11 to 14; each fixed or recorded with its reason",
       },
       {
-        value: "660",
-        label: "commits in 25 days",
-        note: "22 sep to 17 oct 2026",
+        value: "13",
+        label: "trust boundaries",
+        note: "stride per boundary in the threat model",
+      },
+      {
+        value: "934",
+        label: "commits in 38 days",
+        note: "22 sep to 29 oct 2026",
       },
     ],
     problem:
@@ -251,7 +346,11 @@ export const projects: Project[] = [
       },
       {
         title: "Everything a desk needs",
-        body: "Mail to the workspace becomes a ticket if it passes DMARC, and replies thread onto it. A versioned knowledge base suggests articles while a requester types. Assets link to tickets. Uploads go straight to object storage on a separate domain and are checked by their bytes, not their names.",
+        body: "Mail to the workspace becomes a ticket if it passes DMARC, and replies thread onto it. A versioned knowledge base suggests articles while a requester types. Assets link to tickets. Queues keep saved views and act on two hundred tickets at once. Uploads go straight to object storage on a separate domain and are checked by their bytes, not their names.",
+      },
+      {
+        title: "Identity per workspace",
+        body: "Passwords come with a second factor, an authenticator app or a passkey, and a workspace can require one. A workspace proves its email domain over DNS and connects its own OpenID Connect provider, and an SSO session opens that workspace and no other. One person can belong to many companies, with a different role and a separate session in each.",
       },
       {
         title: "A platform layer that cannot peek",
@@ -262,12 +361,16 @@ export const projects: Project[] = [
         body: "A transactional outbox is read per tenant in transaction-id order below the snapshot horizon, so nothing is lost, repeated or skipped. Notifications, signed webhooks with retries and a circuit breaker, and reporting are its consumers. Reports come from their own read model so they never compete with the queues.",
       },
       {
+        title: "A production rehearsal, not a demo",
+        body: "OpenTofu modules written for real AWS deploy it from nothing onto Floci, an AWS emulator, on every change to main: ECS services behind a load balancer with a wildcard certificate, RDS Postgres with roles RDS itself could create, ElastiCache with TLS, S3, SES and Secrets Manager under KMS. The isolation suite then runs again inside the VPC, and the browser suite through HTTPS.",
+      },
+      {
         title: "Invariants you can run",
-        body: "A tenancy suite asserts 13 catalog and 37 isolation invariants against a live database on every merge, a doctor script checks the roles and privileges, and every integration fixture creates two organizations so a leak fails a test. A Playwright suite drives two tenants through the browser, with negative cases.",
+        body: "A tenancy suite asserts 14 catalog and 38 isolation invariants against a live database on every merge, a doctor script checks the roles and privileges, and every integration fixture creates two organizations so a leak fails a test. A Playwright suite drives two tenants through the browser, built around the negative cases.",
       },
       {
         title: "Reviewed before shipping",
-        body: "A threat model with eleven trust boundaries, three independent read-only security reviews at milestone 9 that found 16 issues, all fixed in the same change set, and further reviews at each milestone since. Traces and metrics are labelled by tenant, so a Grafana board answers which tenant is slow.",
+        body: "A threat model with thirteen trust boundaries and STRIDE for each, and five security reviews, at milestone 9 and at every milestone from 11 to 14, that found 58 issues, each fixed or recorded with its reason. Traces and metrics are labelled by tenant, so a Grafana board answers which tenant is slow.",
       },
     ],
     highlights: [
@@ -275,13 +378,16 @@ export const projects: Project[] = [
       "Row level security forced on every tenant table, composite keys across tenants",
       "Priority derived from impact x urgency, four lifecycles behind one transition endpoint",
       "Email intake gated by DMARC, knowledge base, assets, presigned uploads",
+      "Passkeys, step-up and per-tenant OpenID Connect single sign-on",
       "No impersonation, ever: support sessions are granted, read-only, audited and time-boxed",
       "Transactional outbox, Standard Webhooks, reports under 25 ms at 100,000 tickets",
-      "Member MFA with step-up, OpenTelemetry per tenant, CodeQL on every change",
+      "Deployed from nothing to emulated AWS by OpenTofu on every change to main",
+      "OpenTelemetry per tenant, CodeQL and a full-history secret scan on every change",
     ],
     decisions: [
       {
-        chose: "a shared schema with row level security and composite foreign keys",
+        chose:
+          "a shared schema with row level security and composite foreign keys",
         over: "a database or schema per tenant, or row level security alone",
         why: "Per-tenant databases make migrations and reporting expensive. Row level security alone leaves one hole: Postgres checks foreign keys with row security off, so a reference across tenants is still writable. Composite (orgId, id) keys close it. The cost is a wider key on every table and an explicit orgId on every repository method.",
       },
@@ -306,9 +412,19 @@ export const projects: Project[] = [
         why: "Mocks give false confidence about the one thing that matters here, the database's behaviour. Testcontainers were slow to start. Every fixture creates two organizations so a leak is a failing test, not a finding.",
       },
       {
-        chose: "not deploying publicly",
+        chose: "database roles RDS itself could create",
+        over: "a superuser bootstrap",
+        why: "RDS has no superuser, so the roles were written for that from the start: no BYPASSRLS anywhere, and a doctor script asserts the app role is not a member of the table owner. Local development and the rehearsal enforce isolation the same way, at the cost of a more careful bootstrap.",
+      },
+      {
+        chose: "a production rehearsal on emulated AWS",
         over: "a hosted demo",
-        why: "It is a learning and portfolio project, and what it teaches is the architecture. Everything can be read, run and tested locally. The trade-off is stated: certificate renewal, real mail authentication and proxy trust are designed but not proven in production.",
+        why: "It is a learning and portfolio project, and what it teaches is the architecture. A hosted demo proves one deployment worked once; deploying from nothing to an emulator on every change proves the infrastructure code, the roles and the TLS paths every time, at no cost. The trade-off is stated: certificate renewal, real mail authentication and the emulator's own gaps are designed for but not proven on AWS.",
+      },
+      {
+        chose: "dropping the machine learning milestone",
+        over: "local triage and phishing models",
+        why: "The models would have added a second language, a GPU-sized container and a prompt-injection boundary without teaching more about isolation, authorization or delivery. The milestone was removed on the record, its number left unused, and the time went to identity and the production rehearsal.",
       },
     ],
     install: [
@@ -326,6 +442,11 @@ export const projects: Project[] = [
         command:
           "pnpm --filter @patchgrid/api run inbound:send -- --from rita@patchgrid.test --to acme",
         note: "add --dmarc fail to watch it refused",
+      },
+      {
+        label: "deploy to emulated aws and verify isolation inside the vpc",
+        command: "pnpm aws:up && pnpm aws:run verify",
+        note: "floci and opentofu; pnpm aws:down tears it down",
       },
     ],
     timeline: [
@@ -347,25 +468,48 @@ export const projects: Project[] = [
       {
         date: "2026-10-17",
         title: "Milestones 10 to 12",
-        body: "The demo seed, marketing site and production images, the decision not to deploy, the transactional outbox and webhooks, then reports, saved views and bulk actions. Next: passkeys and per-tenant OpenID Connect.",
+        body: "The demo seed, marketing site and production images, the decision not to deploy, the transactional outbox and webhooks, then reports, saved views and bulk actions.",
+      },
+      {
+        date: "2026-10-23",
+        title: "Milestone 13, identity",
+        body: "Passkeys, per-tenant OpenID Connect single sign-on with a DNS-proven domain, and external requesters. The machine learning milestone was dropped on the record.",
+      },
+      {
+        date: "2026-10-26",
+        title: "Milestone 14, the production rehearsal",
+        body: "OpenTofu modules for real AWS, deployed from nothing to Floci in CI, database roles RDS could create, and the browser suite through the HTTPS load balancer. Its review found 12 issues.",
+      },
+      {
+        date: "2026-10-29",
+        title: "Complete",
+        body: "Every milestone built and verified. The README became a forty-screen tour, regenerated from the seeded demo by one command.",
       },
     ],
     faq: [
       {
         q: "Is there a live demo?",
-        a: "No, by decision. It runs locally with Docker Compose and one command, with a seeded demo covering two companies and an operator. The deployment design and production images exist and CI builds them, but nothing is hosted.",
+        a: "No, by decision. It runs locally with one command and a seeded demo of two companies and an operator. Production is rehearsed instead: OpenTofu deploys it from nothing to Floci, an AWS emulator, on every change to main, and the isolation and browser suites run against that deployment.",
       },
       {
         q: "How do you know one tenant cannot read another's data?",
-        a: "Five layers, and proof for each: a tenancy suite with 50 assertions against a live database, a doctor script that checks the app role cannot bypass row level security, a browser test across two tenants, and integration fixtures that always create two organizations.",
+        a: "Five layers, and proof for each: a tenancy suite with 52 assertions against a live database, run again inside the emulated VPC, a doctor script that checks the app role cannot bypass row level security, a browser suite across two tenants, and integration fixtures that always create two organizations.",
       },
       {
         q: "Can a platform admin see customer tickets?",
         a: "No. The back-office sees workspace metadata, never content. Reading a workspace requires a support session the owner grants, which is read-only, time-boxed and written to that workspace's audit log.",
       },
       {
-        q: "Why is the AI triage not built yet?",
-        a: "Local ticket triage and a phishing-URL model are the last milestone because they need local models. The interfaces are in place; the models are not.",
+        q: "Can a company sign in with its own identity provider?",
+        a: "Yes. A workspace proves it owns its email domain with a DNS record, then connects its own OpenID Connect provider. Members are provisioned on first sign-in, and an SSO session opens that workspace and no other, so one company's provider cannot vouch for anyone elsewhere.",
+      },
+      {
+        q: "What happened to the AI triage?",
+        a: "It was dropped on purpose. Local triage and a phishing-URL model would have added a second language, a GPU-sized container and a new attack surface without teaching more about isolation. The decision is recorded, and phishing stays an ordinary category that routes to the security team.",
+      },
+      {
+        q: "Is it finished?",
+        a: "Yes. All fourteen planned milestones are built and verified, and the plan ends there. What a real deployment would still need, such as live mail authentication and certificate renewal, is written down rather than assumed.",
       },
     ],
     related: ["team-flow", "node-authentication-template", "urljail"],
@@ -404,7 +548,8 @@ export const projects: Project[] = [
     ],
     featured: true,
     platform: "Node.js 22 or later, PostgreSQL 16, Docker for the database",
-    audience: "developers starting a new API who do not want to wire auth, errors and CI again",
+    audience:
+      "developers starting a new API who do not want to wire auth, errors and CI again",
     plain:
       "Every web app needs a server behind it, and every new one starts with the same week of plumbing: logins, security checks, error handling, logging and automated tests. This is that week, done once and published so a developer can fork it and start on the actual product on day one.",
     proof: [
@@ -579,7 +724,8 @@ export const projects: Project[] = [
       },
     ],
     platform: "Node.js 22, PostgreSQL 16; hosted on Render's free tier",
-    audience: "teams that want a Jira-like backend to put their own front end on",
+    audience:
+      "teams that want a Jira-like backend to put their own front end on",
     plain:
       "TeamFlow is the engine behind a team planning tool, like a simplified Jira. It keeps each company's projects, sprints and tasks separate, decides who may do what, tells people when their work changes, and keeps a permanent record of every change. It has no screens of its own; any web or mobile app can sit on top of it.",
     proof: [
@@ -647,7 +793,8 @@ export const projects: Project[] = [
         why: "A stored hash can be revoked, so logout and password reset actually end sessions. The price is a table to clean, which a nightly job handles.",
       },
       {
-        chose: "soft deletes on users, organizations, projects, tasks and comments",
+        chose:
+          "soft deletes on users, organizations, projects, tasks and comments",
         over: "hard deletes",
         why: "Recovery without permanent loss, and the audit log keeps pointing at rows that still exist. Every query has to remember the deletedAt filter, which the services centralise.",
       },
@@ -695,7 +842,11 @@ export const projects: Project[] = [
         a: "Not yet. Jest is configured, and the pipeline type-checks, lints and builds on every push. Patchgrid, the successor, is where the testing discipline landed.",
       },
     ],
-    related: ["patchgrid", "node-authentication-template", "node-express-boilerplate"],
+    related: [
+      "patchgrid",
+      "node-authentication-template",
+      "node-express-boilerplate",
+    ],
   },
   {
     slug: "node-authentication-template",
@@ -894,7 +1045,12 @@ export const projects: Project[] = [
         a: "Each email is written to an outbox row in the same transaction as the change that caused it, then delivered by a worker with exponential backoff. The worker runs in-process or as a separate container.",
       },
     ],
-    related: ["node-express-boilerplate", "sleep-track", "jwt-toolkit", "patchgrid"],
+    related: [
+      "node-express-boilerplate",
+      "sleep-track",
+      "jwt-toolkit",
+      "patchgrid",
+    ],
   },
   {
     slug: "sleep-track",
@@ -937,8 +1093,10 @@ export const projects: Project[] = [
         href: `${gh("sleep-track-backend")}/blob/main/docs/analytics.md`,
       },
     ],
-    platform: "Python 3.13 and Node.js 24, with PostgreSQL 17 and Redis 8 in Docker",
-    audience: "anyone curious why some nights are better, and engineers reading a full-stack reference",
+    platform:
+      "Python 3.13 and Node.js 24, with PostgreSQL 17 and Redis 8 in Docker",
+    audience:
+      "anyone curious why some nights are better, and engineers reading a full-stack reference",
     plain:
       "SleepTrack is a diary for your nights. Tap a timer at bedtime or log a night in seconds, tag it with habits like caffeine or exercise, and it works out a score, your natural rhythm, how steady your schedule is and which habits help or hurt, then emails you a weekly report. Every night is kept in your own time zone, and you can try it with a click, no sign-up.",
     proof: [
@@ -1110,11 +1268,15 @@ export const projects: Project[] = [
         href: `${gh("deck-kit")}/blob/main/docs/authoring.md`,
       },
       { label: "Example decks", href: `${gh("deck-kit")}/tree/main/examples` },
-      { label: "v1.2.0 release", href: `${gh("deck-kit")}/releases/tag/v1.2.0` },
+      {
+        label: "v1.2.0 release",
+        href: `${gh("deck-kit")}/releases/tag/v1.2.0`,
+      },
     ],
     status: "v1.2.0 released, MIT licensed",
     platform: "Node.js 22.12 or later to build; any browser to present",
-    audience: "people who give talks and want them in a repository, not a cloud",
+    audience:
+      "people who give talks and want them in a repository, not a cloud",
     plain:
       "A talk needs slides, a script, a shorter version for when time runs out, and a plan for the moment the venue Wi-Fi fails. deck-kit keeps all of that in one folder: slides are small web pages, the presenter screen shows your notes and pace, and the whole talk builds into a single file that opens from a USB stick. AI helpers can draft and fact-check the talk, but you approve every step.",
     proof: [
@@ -1259,14 +1421,21 @@ export const projects: Project[] = [
     kind: "AI developer tooling",
     object: "toolbox",
     stock: "terracotta",
-    stack: ["TypeScript", "shadcn registry", "Claude Code", "Vitest", "GitHub Pages"],
+    stack: [
+      "TypeScript",
+      "shadcn registry",
+      "Claude Code",
+      "Vitest",
+      "GitHub Pages",
+    ],
     repo: "dotclaude",
     links: [
       { label: "Catalog", href: "https://dotclaude.khaledsaeed.tech/" },
       { label: "Source", href: gh("dotclaude") },
     ],
     platform: "Claude Code, or any project through the shadcn CLI",
-    audience: "developers who want their AI coding assistant to follow a procedure, not a vibe",
+    audience:
+      "developers who want their AI coding assistant to follow a procedure, not a vibe",
     plain:
       "An AI coding assistant is only as careful as the instructions you give it, and good instructions end up scattered across projects. dotclaude is a shelf of ready-made procedures, helpers and safety checks you can add to Claude Code with one command, so it reviews code, writes tests, handles git or checks citations the same careful way every time.",
     proof: [
@@ -1420,7 +1589,8 @@ export const projects: Project[] = [
     ],
     featured: true,
     platform: "Any browser; installable as a PWA; hosted on Cloudflare Workers",
-    audience: "students of the LIU MCCE program, and anyone who runs a course on scattered files",
+    audience:
+      "students of the LIU MCCE program, and anyone who runs a course on scattered files",
     plain:
       "Course files for a degree end up spread across a classroom app, chat groups and someone's drive, and past exams are the first thing to go missing. MCCE gathers all of it for one master's program into a single searchable site that updates itself every week, and adds the tools students actually need: a GPA calculator, a tuition planner and a map of which course needs which.",
     proof: [
@@ -1566,7 +1736,8 @@ export const projects: Project[] = [
     ],
     status: "v1.1.0 released",
     platform: "Python 3.13 or later, any operating system",
-    audience: "developers and security testers who need to know what a token really says",
+    audience:
+      "developers and security testers who need to know what a token really says",
     plain:
       "Websites recognise you with a small signed pass called a JWT. jwt-toolkit opens one up, shows what it claims and when it expires, checks whether it was signed safely, compares two of them, and shows a developer how an attacker would try to fake one, so they can make sure their own system refuses it. It runs on your machine and never sends tokens anywhere.",
     proof: [
@@ -1657,7 +1828,7 @@ export const projects: Project[] = [
       },
       {
         label: "try it without installing",
-        command: "uvx jwt-toolkit audit \"$TOKEN\"",
+        command: 'uvx jwt-toolkit audit "$TOKEN"',
       },
       {
         label: "gate a pipeline on a token's shape",
@@ -1809,7 +1980,8 @@ export const projects: Project[] = [
     install: [
       {
         label: "build the menu bar app",
-        command: "git clone https://github.com/KhaledSaeed18/wakehold && cd wakehold && open Wakehold.xcodeproj",
+        command:
+          "git clone https://github.com/KhaledSaeed18/wakehold && cd wakehold && open Wakehold.xcodeproj",
         note: "xcode 16 or later, macos 14 or later",
       },
       {
@@ -1888,12 +2060,17 @@ export const projects: Project[] = [
     repo: "repo-scout",
     links: [
       { label: "Source", href: gh("repo-scout") },
-      { label: "v1.0.0 release", href: `${gh("repo-scout")}/releases/tag/v1.0.0` },
+      {
+        label: "v1.0.0 release",
+        href: `${gh("repo-scout")}/releases/tag/v1.0.0`,
+      },
       { label: "UI showcase", href: `${gh("repo-scout")}#see-it-in-action` },
     ],
     status: "v1.0.0 released",
-    platform: "macOS, Linux and Windows, one binary per platform; git on the path",
-    audience: "engineers joining an unfamiliar codebase, and teams that want a quality gate in CI",
+    platform:
+      "macOS, Linux and Windows, one binary per platform; git on the path",
+    audience:
+      "engineers joining an unfamiliar codebase, and teams that want a quality gate in CI",
     plain:
       "Point Repo Scout at a software project on your own computer and it reads the code and its change history, then shows in your browser how the project is built, which parts are complicated and keep changing, who knows which parts, and where the hidden connections are. It sends nothing to the internet, and the same tool can fail a build when a change makes things worse.",
     proof: [
@@ -2080,7 +2257,8 @@ export const projects: Project[] = [
     ],
     status: "v3.0.0 released",
     platform: "Node.js 22.12 or later on macOS, Linux and Windows",
-    audience: "developers with a full disk, and teams that want a build to fail when a folder grows",
+    audience:
+      "developers with a full disk, and teams that want a build to fail when a folder grows",
     plain:
       "When a disk fills up, the hard part is finding out why. dat looks through a folder and tells you which sub-folders and files take the most room, which files are exact copies of each other and what has not been touched in years. It can also watch a folder, compare two folders, and refuse to let a project ship if its output grows past a limit you set.",
     proof: [
@@ -2327,7 +2505,8 @@ export const projects: Project[] = [
     install: [
       {
         label: "build and run in xcode",
-        command: "git clone https://github.com/KhaledSaeed18/gauge && cd gauge && open Package.swift",
+        command:
+          "git clone https://github.com/KhaledSaeed18/gauge && cd gauge && open Package.swift",
         note: "xcode 16 or later, macos 14 or later",
       },
       {
@@ -2461,7 +2640,8 @@ export const projects: Project[] = [
     install: [
       {
         label: "build and run in xcode",
-        command: "git clone https://github.com/KhaledSaeed18/sever && cd sever && open Sever.xcodeproj",
+        command:
+          "git clone https://github.com/KhaledSaeed18/sever && cd sever && open Sever.xcodeproj",
         note: "xcode 16 or later, macos 14 or later",
       },
       {
@@ -2594,7 +2774,8 @@ export const projects: Project[] = [
     install: [
       {
         label: "build and run in xcode",
-        command: "git clone https://github.com/KhaledSaeed18/baud.git && cd baud && open Baud.xcodeproj",
+        command:
+          "git clone https://github.com/KhaledSaeed18/baud.git && cd baud && open Baud.xcodeproj",
         note: "xcode 16 or later, macos 14 or later",
       },
       {
@@ -2688,7 +2869,8 @@ export const projects: Project[] = [
     status: "In active development",
     featured: true,
     platform: "Linux with KVM, cgroups v2 and BTF; developed on Fedora 44",
-    audience: "security teams triaging reported links, and anyone who wants to see what a page does before a person does",
+    audience:
+      "security teams triaging reported links, and anyone who wants to see what a page does before a person does",
     plain:
       "Someone sends you a link and you are not sure it is safe. urljail opens it inside a tiny throwaway virtual computer that is destroyed afterwards, and writes down everything the page tried to do: where it redirected, what it asked for, what it looked like. You never have to open the link yourself, and the page cannot tell it is being watched.",
     proof: [
@@ -2897,7 +3079,10 @@ export const projects: Project[] = [
         label: "Fedora COPR",
         href: "https://copr.fedorainfracloud.org/coprs/khaledsaeed18/osreflog/",
       },
-      { label: "v0.2.0 release", href: `${gh("osreflog")}/releases/tag/v0.2.0` },
+      {
+        label: "v0.2.0 release",
+        href: `${gh("osreflog")}/releases/tag/v0.2.0`,
+      },
       { label: "Roadmap", href: `${gh("osreflog")}/blob/main/docs/roadmap.md` },
       {
         label: "Architecture",
@@ -2910,8 +3095,10 @@ export const projects: Project[] = [
     ],
     status: "v0.2.0 on COPR, in active development",
     featured: true,
-    platform: "Fedora 44, 45 or rawhide on x86_64 with the root filesystem on btrfs",
-    audience: "Linux users and admins who know it worked last week, and want to know what changed",
+    platform:
+      "Fedora 44, 45 or rawhide on x86_64 with the root filesystem on btrfs",
+    audience:
+      "Linux users and admins who know it worked last week, and want to know what changed",
     plain:
       "When a Linux computer breaks, you usually know one thing: it worked last week. osreflog keeps a running record of every change to the system and what caused it, so it can show the exact change responsible, test each suspect in a throwaway copy until it finds the one that broke things, and safely put that one back.",
     proof: [
@@ -3136,8 +3323,10 @@ export const projects: Project[] = [
     ],
     status: "v1.0.0 stable, packaged for Fedora",
     featured: true,
-    platform: "Fedora 44, 45 or rawhide with GNOME 50 or 51; Intel laptops validated",
-    audience: "Linux laptop users who want the per-app battery view phones have had for years",
+    platform:
+      "Fedora 44, 45 or rawhide with GNOME 50 or 51; Intel laptops validated",
+    audience:
+      "Linux laptop users who want the per-app battery view phones have had for years",
     plain:
       "A phone tells you which apps drained the battery. A Linux laptop only shows a percentage. drainscope measures the energy the hardware actually used and works out each app's share, including what it burned while you were not looking at it, then shows it in a tile in the top bar, a desktop app and the terminal. Everything stays on your machine, and nothing runs as root.",
     proof: [
@@ -3341,7 +3530,8 @@ export const projects: Project[] = [
     repo: "CENG507-Project",
     links: [{ label: "Source", href: gh("CENG507-Project") }],
     platform: "QEMU on Linux, macOS or Windows with a bare-metal RISC-V GCC",
-    audience: "students meeting an RTOS for the first time, and anyone curious what runs before the kernel",
+    audience:
+      "students meeting an RTOS for the first time, and anyone curious what runs before the kernel",
     plain:
       "A real-time operating system is the small program that lets a microcontroller juggle several timed jobs at once. This project starts one up on a simulated open-standard processor with no manufacturer firmware helping it: the first instruction that runs is ours, memory is laid out by hand, and a hardware timer ticks a thousand times a second so two jobs can take turns.",
     proof: [
@@ -3471,8 +3661,10 @@ export const projects: Project[] = [
     stack: ["MATLAB", "GNU Octave", "FFT", "FIR filters"],
     repo: "EENG527-Project",
     links: [{ label: "Source", href: gh("EENG527-Project") }],
-    platform: "GNU Octave 6 or later with the signal package, or MATLAB with two small edits",
-    audience: "students meeting correlation and filter design, and anyone who wants the arithmetic behind a notch filter",
+    platform:
+      "GNU Octave 6 or later with the signal package, or MATLAB with two small edits",
+    audience:
+      "students meeting correlation and filter design, and anyone who wants the arithmetic behind a notch filter",
     plain:
       "Two small experiments in how computers handle signals. The first measures how late a noisy, fading echo of a beep arrives, by sliding the original over it until they line up. The second takes a recording with an annoying whistle in it, finds the whistle's pitch, and designs a filter that removes that one tone while leaving the rest of the sound alone.",
     proof: [
@@ -3538,7 +3730,8 @@ export const projects: Project[] = [
     install: [
       {
         label: "install octave with the signal package",
-        command: "brew install octave && octave --eval \"pkg load signal; disp('signal ok')\"",
+        command:
+          "brew install octave && octave --eval \"pkg load signal; disp('signal ok')\"",
         note: "fedora: dnf install octave octave-signal; ubuntu: apt install octave octave-signal",
       },
       {
@@ -3610,7 +3803,8 @@ export const projects: Project[] = [
       { label: "Source", href: gh("multilingual-translation-Transformers.js") },
     ],
     platform: "Any modern browser; about 300 MB downloaded once",
-    audience: "anyone who wants a private translator, and developers curious how far browser ML goes",
+    audience:
+      "anyone who wants a private translator, and developers curious how far browser ML goes",
     plain:
       "Online translators send your words to a company's servers. This page does the opposite: it downloads the translation model into your browser once, about the size of a short video, and from then on translates between 194 languages on your own machine. Nothing you type leaves the page.",
     proof: [
@@ -3740,8 +3934,10 @@ export const projects: Project[] = [
       { label: "Desktop app", href: gh("yalla-learn-desktop") },
     ],
     status: "Archived",
-    platform: "Web, iOS and Android through Expo, and Windows, macOS and Linux through Electron",
-    audience: "students, and anyone reviewing what a four-client senior project looks like",
+    platform:
+      "Web, iOS and Android through Expo, and Windows, macOS and Linux through Electron",
+    audience:
+      "students, and anyone reviewing what a four-client senior project looks like",
     plain:
       "Students juggle a dozen apps to study one subject. Yalla Learn put them in one place: upload a PDF and ask it questions, turn a topic into flashcards, a quiz, a mind map or a study plan, keep a focus timer and a task board, write a resume, and ask the community. It was built as my graduation project and is kept online as a record, not maintained.",
     proof: [
