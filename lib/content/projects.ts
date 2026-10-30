@@ -742,6 +742,7 @@ export const projects: Project[] = [
       },
     ],
     status: "v2 complete; runs locally, not hosted by decision",
+    featured: true,
     stat: { label: "tests", value: "489" },
     platform:
       "Bun 1.4, PostgreSQL 18 and Docker; runs locally, not hosted by decision",
@@ -3287,7 +3288,6 @@ export const projects: Project[] = [
       },
     ],
     status: "v0.2.0 on COPR, in active development",
-    featured: true,
     platform:
       "Fedora 44, 45 or rawhide on x86_64 with the root filesystem on btrfs",
     audience:

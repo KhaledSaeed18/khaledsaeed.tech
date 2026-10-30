@@ -11,7 +11,7 @@ export function SelectedWork({ index }: { index: number }) {
       index={index}
       label="selected work"
       title="Things I built because they should exist."
-      lede="Platforms that keep tenants apart at the database, and Linux tools that show their evidence: where the battery went, what a link really does, which change broke the system."
+      lede="Platforms that keep tenants apart at the database and a team's board live across browsers, and Linux tools that show their evidence: where the battery went, what a link really does."
       meta={
         <Link
           href="/work"
