@@ -20,6 +20,7 @@ import { Faq } from "@/components/work/faq"
 import { PlainWords } from "@/components/work/plain-words"
 import { ProjectRows } from "@/components/work/project-rows"
 import { RepoFacts } from "@/components/work/repo-facts"
+import { Repositories } from "@/components/work/repositories"
 import { Screens } from "@/components/work/screens"
 import { Timeline } from "@/components/work/timeline"
 import { TryIt } from "@/components/work/try-it"
@@ -108,11 +109,15 @@ export default async function ProjectPage({
   const p = getProject(slug)
   if (!p) notFound()
 
-  const [repos, release] = await Promise.all([
+  const [repos, release, ...partReleases] = await Promise.all([
     getMyRepos(),
     getLatestRelease(p.repo),
+    ...(p.repos ?? []).map((r) => getLatestRelease(r.repo)),
   ])
   const repo = repos[p.repo]
+  const releases = Object.fromEntries(
+    (p.repos ?? []).map((r, k) => [r.repo, partReleases[k]])
+  )
   const i = catalog.indexOf(p)
   const next = catalog[(i + 1) % catalog.length]
   const prev = catalog[(i - 1 + catalog.length) % catalog.length]
@@ -268,6 +273,16 @@ export default async function ProjectPage({
             </ol>
             <RevCuts section="approach" />
           </Block>
+
+          {p.repos && (
+            <Block
+              index={index()}
+              label="repositories"
+              meta={`${p.repos.length} on github`}
+            >
+              <Repositories repos={p.repos} facts={repos} releases={releases} />
+            </Block>
+          )}
 
           {p.screens && (
             <Block

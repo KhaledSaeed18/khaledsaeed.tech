@@ -75,6 +75,11 @@ export type Project = {
   decisions?: Decision[]
   /** Captured screens of the running product, under public/work/<slug>/. */
   screens?: Screen[]
+  /**
+   * When the project spans several repositories: each one's part, most
+   * central first. The case study prints them with live GitHub facts.
+   */
+  repos?: Repository[]
   /** The project's printings: releases and milestones, oldest first. */
   timeline?: Milestone[]
   /** Questions a reader is likely to ask, answered from the docs. */
@@ -111,6 +116,17 @@ export type Screen = {
   title: string
   /** What to look at in it, one sentence. */
   caption: string
+}
+
+export type Repository = {
+  /** Repository name under KhaledSaeed18: "yalla-learn-backend". */
+  repo: string
+  /** Its part in the project, sentence case: "The API every client talks to". */
+  role: string
+  /** What is in it and how far it got, two or three sentences. */
+  body: string
+  /** The notable parts of its stack, when they differ from the project's. */
+  stack?: string[]
 }
 
 export type Milestone = {
@@ -1274,6 +1290,18 @@ export const projects: Project[] = [
       "Docker",
     ],
     repo: "sleep-track-backend",
+    repos: [
+      {
+        repo: "sleep-track-backend",
+        role: "The API and analytics engine",
+        body: "An async FastAPI service on PostgreSQL and Redis with an ARQ worker for the weekly reports. Sessions rotate, passwords are hashed with Argon2id, every night is stored in the user's own time zone, and the analytics module turns logged nights into a score, trends, a chronotype estimate and habit correlations. 1,032 tests at 98% coverage.",
+      },
+      {
+        repo: "sleep-track-frontend",
+        role: "The web app",
+        body: "Next.js 16 and React 19 with daisyUI, typed end to end from the API's OpenAPI schema. A sleep timer, journal, analytics and insights, a command menu, light and dark themes, a one-click demo and a mock API so the whole interface runs with no backend. Playwright covers the flows.",
+      },
+    ],
     stat: { label: "tests", value: "1,032 at 98% coverage" },
     links: [
       { label: "API source", href: gh("sleep-track-backend") },
@@ -3982,11 +4010,11 @@ export const projects: Project[] = [
   {
     slug: "yalla-learn",
     name: "Yalla Learn",
-    updatedAt: "2026-10-19",
+    updatedAt: "2026-10-30",
     tagline:
       "My final year project: an AI learning platform across web, mobile, desktop and API.",
     summary:
-      "The senior project for my B.S. in Computer Engineering. A learning and productivity platform with AI chat over PDFs and images, mind maps, flashcards, study plans, quizzes and a voice assistant, plus a Pomodoro timer, kanban boards, a resume builder and a community with Q&A, a blog and a job board. Delivered as a Next.js web app, an Expo mobile app, an Electron desktop app and an Express backend, then archived.",
+      "The senior project for my B.S. in Computer Engineering. A learning and productivity platform with AI chat over PDFs and images, mind maps, flashcards, study plans, quizzes and a voice assistant, plus a Pomodoro timer, kanban boards, a resume builder and a community with Q&A, a blog and a job board. Delivered across four repositories: a Next.js web app, an Express API, an Expo mobile app for the campus marketplace and an Electron notebook, then marked as no longer maintained and kept public as a record.",
     year: 2025,
     group: "web",
     kind: "Final year project",
@@ -4010,18 +4038,64 @@ export const projects: Project[] = [
       { label: "Mobile app", href: gh("yalla-learn-app") },
       { label: "Desktop app", href: gh("yalla-learn-desktop") },
     ],
-    status: "Archived",
+    status: "Not maintained, kept as a record",
     platform:
       "Web, iOS and Android through Expo, and Windows, macOS and Linux through Electron",
     audience:
       "students, and anyone reviewing what a four-client senior project looks like",
     plain:
       "Students juggle a dozen apps to study one subject. Yalla Learn put them in one place: upload a PDF and ask it questions, turn a topic into flashcards, a quiz, a mind map or a study plan, keep a focus timer and a task board, write a resume, and ask the community. It was built as my graduation project and is kept online as a record, not maintained.",
+    repos: [
+      {
+        repo: "yalla-learn",
+        role: "The web app, where the whole platform lives",
+        body: "Next.js 15 and React 19 with Tailwind 4, Redux Toolkit for client state and React Query for the API. Every AI tool is here: chat over PDFs and images, mind maps, flashcards, quizzes, study plans, a concept explainer and AI web search through the AI SDK with Gemini and OpenAI, and a voice assistant through Vapi. Around it sit the Pomodoro timer, focus mode, kanban, expense tracker, resume builder, and the community's Q&A, blog and job board. 344 commits; the README opens with the notice that it is no longer maintained.",
+        stack: [
+          "Next.js 15",
+          "React 19",
+          "Tailwind CSS 4",
+          "Redux Toolkit",
+          "AI SDK",
+          "Vapi",
+        ],
+      },
+      {
+        repo: "yalla-learn-backend",
+        role: "The API every client talks to",
+        body: "Express and TypeScript on PostgreSQL through Prisma, organised as one module per feature: auth, user, blog, Q&A, jobs, kanban, expense tracker, listings, services and contact. JWT access and refresh tokens with TOTP two-factor codes, Zod validation on every route, sanitised HTML, rate limiting, and email through Nodemailer with Google OAuth2. Every response shares one envelope of status, code, message and data. 140 commits.",
+        stack: [
+          "Express",
+          "Prisma",
+          "PostgreSQL",
+          "Zod",
+          "speakeasy",
+          "Nodemailer",
+        ],
+      },
+      {
+        repo: "yalla-learn-app",
+        role: "The mobile app, a campus marketplace",
+        body: "Rather than squeeze the whole platform onto a phone, the Expo app took the slice that belongs there: students listing textbooks, electronics and study material, and offering or finding tutoring and other services, with search, filters and profiles against the same API. React Native 0.76 on Expo 52 with Expo Router, Gluestack UI and NativeWind, Redux Toolkit with persistence, and React Hook Form. 146 commits.",
+        stack: [
+          "React Native",
+          "Expo 52",
+          "Expo Router",
+          "Gluestack UI",
+          "NativeWind",
+        ],
+      },
+      {
+        repo: "yalla-learn-desktop",
+        role: "The desktop notebook",
+        body: "An Electron 31 app for markdown notes with a live preview, auto-save every three seconds and notes kept as plain files in a YallaLearn folder in the home directory, so nothing is locked in. The renderer runs sandboxed with context isolation and talks to the main process through a preload bridge; state is Jotai atoms. A 1.0.0 release shipped a Windows installer and a macOS disk image. 16 commits.",
+        stack: ["Electron 31", "React 18", "Jotai", "electron-vite"],
+      },
+    ],
     proof: [
       {
         value: "4",
-        label: "clients and services",
-        note: "web, mobile, desktop and the api, each its own repository",
+        label: "repositories",
+        note: "web, api, mobile and desktop, listed below with live github facts",
       },
       {
         value: "9",
@@ -4029,17 +4103,17 @@ export const projects: Project[] = [
         note: "pdf and image chat, mind maps, flashcards, study plans, quizzes, concept explainer, web search and a voice assistant",
       },
       {
-        value: "12",
-        label: "github stars across the four repositories",
-        note: "counted on 19 oct 2026, with four forks",
+        value: "646",
+        label: "commits across the four repositories",
+        note: "344 web, 140 api, 146 mobile and 16 desktop, counted on 30 oct 2026",
       },
     ],
     problem:
       "Students juggle a dozen tools to study one subject. The goal was one place that turns material into practice, on whatever device the student has in hand.",
     approach: [
       {
-        title: "Four clients, one backend",
-        body: "A Next.js web app, an Expo mobile app and an Electron desktop app share an Express and Prisma API on PostgreSQL, with JWT sessions, two-factor codes and email through OAuth2, so every account and every feature behaves the same across devices.",
+        title: "One API, three clients with different jobs",
+        body: "An Express and Prisma API on PostgreSQL carries the accounts, with JWT sessions, two-factor codes and email through OAuth2. The web app is the full platform. The mobile app takes the part that belongs on a phone, the campus marketplace of listings and services. The desktop app is a notebook that keeps notes as plain markdown files. Each client is its own repository, listed below.",
       },
       {
         title: "AI where it helps",
@@ -4051,9 +4125,9 @@ export const projects: Project[] = [
       },
     ],
     highlights: [
-      "Web, mobile, desktop and API in TypeScript",
+      "Web, API, mobile and desktop in TypeScript, four repositories",
       "Nine AI-powered study tools and five productivity tools",
-      "Delivered as my B.S. senior project, then archived with an honest notice",
+      "Delivered as my B.S. senior project, then marked not maintained with a notice that says so",
     ],
     decisions: [
       {
@@ -4067,9 +4141,9 @@ export const projects: Project[] = [
         why: "A student project needs the tools to work on launch day. One SDK made swapping models a configuration change; the price is that the archived version needs API keys to run.",
       },
       {
-        chose: "archiving with a notice",
-        over: "quietly letting it rot",
-        why: "The repository says plainly that it is not maintained and that some functions may be broken. That is more useful to a reader than a project that looks alive and is not.",
+        chose: "a plain notice at the top of the README",
+        over: "quietly letting it rot, or hiding the repositories",
+        why: "The web repository says in its first lines that it is not maintained and that some functions may be broken, while the code stays public and forkable. That is more useful to a reader than a project that looks alive and is not, and more honest than deleting the record.",
       },
     ],
     install: [
@@ -4089,13 +4163,17 @@ export const projects: Project[] = [
       {
         date: "2025-06",
         title: "Backend and web app delivered",
-        body: "The senior project submitted for the B.S. in Computer Engineering, then the repositories archived.",
+        body: "The senior project submitted for the B.S. in Computer Engineering, then the repositories marked as no longer maintained.",
       },
     ],
     faq: [
       {
         q: "Is it still running?",
         a: "No. It was a final year project and is no longer maintained. The code is public as a record, and some functions may be broken.",
+      },
+      {
+        q: "Why does the mobile app look different from the web app?",
+        a: "It covers a different slice. The web app is the whole platform; the mobile app is the campus marketplace, where students list study material and offer services, because that is what people reach for a phone to do. Both talk to the same API.",
       },
       {
         q: "Which AI models did it use?",
