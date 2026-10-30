@@ -3251,11 +3251,11 @@ export const projects: Project[] = [
   {
     slug: "osreflog",
     name: "osreflog",
-    updatedAt: "2026-10-19",
+    updatedAt: "2026-10-30",
     tagline:
       "A reflog for a Linux system: what changed, who changed it, and which change broke it.",
     summary:
-      "osreflog records every change to a Fedora system together with its cause: the package transaction, service, command or app that made it. It rebuilds the system as it was at any point, bisects a regression down to a single cause by testing each step in a throwaway container, a VM or a one-shot reboot on real hardware, and undoes that cause file by file. Version 0.2.0 ships from COPR with a GNOME app, and the 48-hour soak is running.",
+      "osreflog records every change to a Fedora system together with its cause: the package transaction, service, command or app that made it. It rebuilds the system as it was at any point, bisects a regression down to a single cause by testing each step in a throwaway container, a VM or a one-shot reboot on real hardware, and undoes that cause file by file. It ships from COPR with a GNOME app; 0.3.0 says what the kept snapshots cost in disk, attributes Flatpak and templated services correctly, and confines the daemon's workers under SELinux.",
     year: 2026,
     group: "systems",
     kind: "Change history for Linux",
@@ -3283,10 +3283,7 @@ export const projects: Project[] = [
         label: "Fedora COPR",
         href: "https://copr.fedorainfracloud.org/coprs/khaledsaeed18/osreflog/",
       },
-      {
-        label: "v0.2.0 release",
-        href: `${gh("osreflog")}/releases/tag/v0.2.0`,
-      },
+      { label: "Releases", href: `${gh("osreflog")}/releases` },
       { label: "Roadmap", href: `${gh("osreflog")}/blob/main/docs/roadmap.md` },
       {
         label: "Architecture",
@@ -3297,7 +3294,7 @@ export const projects: Project[] = [
         href: `${gh("osreflog")}/blob/main/docs/validation.md`,
       },
     ],
-    status: "v0.2.0 on COPR, in active development",
+    status: "On COPR, in active development",
     platform:
       "Fedora 44, 45 or rawhide on x86_64 with the root filesystem on btrfs",
     audience:
@@ -3369,7 +3366,7 @@ export const projects: Project[] = [
       },
       {
         title: "Cheap enough to leave on",
-        body: "The daemon uses 0.08% of one CPU at rest and a checkpoint adds under a second to a dnf transaction. Memory sits around 41 MB just started and grows with big diffs, capped by a 768 MB unit limit. The ledger is local, root-only SQLite with a hash chain, so tampering is evident. A 48-hour soak started on 17 October; its result is not published yet.",
+        body: "The daemon uses 0.08% of one CPU at rest and a checkpoint adds under a second to a dnf transaction. Memory sits around 41 MB just started and grows with big diffs, capped by a 768 MB unit limit. The ledger is local, root-only SQLite with a hash chain, so tampering is evident. The first soak ended after 6.1 hours at a restart; a second that survives restarts and shutdowns started on 20 October and needs 48 hours of samples before its result is published.",
       },
     ],
     highlights: [
@@ -3378,7 +3375,8 @@ export const projects: Project[] = [
       "Cause-level bisect in containers, in VMs that boot the snapshot's kernel, or on real hardware",
       "3-way undo that refuses on conflict, dry run by default, undoable itself",
       "5 of 5 seeded regressions found within the probe bound; a real regression found on metal in 3 probes",
-      "v0.2.0 installable from COPR on Fedora 44, 45 and rawhide, with a GNOME app",
+      "Installable from COPR on Fedora 44, 45 and rawhide, with a GNOME app",
+      "0.3.0 measures what the kept snapshots cost and cut 41,000 noise rows from one appstream refresh to a single cause",
     ],
     decisions: [
       {
@@ -3445,6 +3443,11 @@ export const projects: Project[] = [
         date: "2026-10-17",
         title: "v0.2.0",
         body: "The GNOME app grows search, headers, toasts and coloured diffs; system call filters, a sandboxed user agent and an SELinux module; CI and a release workflow. A 48-hour soak begins.",
+      },
+      {
+        date: "2026-10-20",
+        title: "v0.3.0",
+        body: "status reports the disk the kept snapshots hold as a range and doctor warns before they outgrow free space; retention is a config file. The live witness starts before the boot checkpoint. Flatpak's system installation is one cause instead of 41,000 unknown rows, templated units are attributed by name, and DHCP leases are noise. SELinux domains confine the summarizer and undo workers. A second soak that survives restarts begins.",
       },
     ],
     faq: [
