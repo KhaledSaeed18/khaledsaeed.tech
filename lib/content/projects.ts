@@ -698,7 +698,7 @@ export const projects: Project[] = [
     tagline:
       "A real-time, keyboard-first agile workspace on a single Postgres database.",
     summary:
-      "TeamFlow is a planning workspace for software teams: a board, a list, a calendar and sprint planning over the same tasks, with live updates, presence and descriptions written together character by character. Version 2 rewrites my first NestJS API as a Bun monorepo with a contract-first API, a transactional outbox feeding WebSockets, and one PostgreSQL database that also runs the job queue. The original API, which ranked first in its backend cohort, is kept at v1.0.0.",
+      "TeamFlow is a planning workspace for software teams: a board, a list, a calendar and sprint planning over the same tasks, with live updates, presence and descriptions written together character by character. Version 2 rewrites my first NestJS API as a Bun monorepo: a contract-first API that also serves REST and OpenAPI, a transactional outbox feeding WebSockets, one PostgreSQL database that also runs the job queue, and an Astro site with Starlight docs. The original API, which ranked first in its backend cohort, is kept at v1.0.0.",
     year: 2026,
     group: "platforms",
     kind: "Real-time web app",
@@ -725,12 +725,16 @@ export const projects: Project[] = [
     links: [
       { label: "Source", href: gh("team-flow") },
       {
-        label: "Documentation",
-        href: `${gh("team-flow")}/blob/main/docs/README.md`,
+        label: "Architecture",
+        href: `${gh("team-flow")}/blob/main/docs/ARCHITECTURE.md`,
       },
       {
         label: "Decisions",
         href: `${gh("team-flow")}/tree/main/docs/adr`,
+      },
+      {
+        label: "Documentation",
+        href: `${gh("team-flow")}/blob/main/docs/README.md`,
       },
       {
         label: "v1 API",
@@ -783,10 +787,46 @@ export const projects: Project[] = [
           "One search across tasks, projects, actions and what was said in comments, with typo tolerance.",
       },
       {
+        src: "inbox",
+        title: "The inbox",
+        caption:
+          "Mentions, comments and assignments, written in the same transaction as the change that caused them and pushed as live toasts.",
+      },
+      {
+        src: "audit",
+        title: "The audit log",
+        caption:
+          "Who changed what in the workspace, including the membership and invitation changes the auth library makes on its own.",
+      },
+      {
+        src: "phone",
+        title: "On a phone",
+        caption:
+          "The sidebar folds into a drawer, the board scrolls sideways and a task opens full screen.",
+      },
+      {
         src: "board-dark",
         title: "The board in the dark theme",
         caption:
           "A palette chosen step by step for dark, not the light one inverted.",
+      },
+      {
+        src: "site",
+        title: "The landing page",
+        caption:
+          "An Astro page with near-zero JavaScript and a small board you can drive from the keyboard while a teammate's card moves on its own.",
+      },
+      {
+        src: "docs",
+        title: "The docs",
+        caption:
+          "Starlight: getting started, a guide for every view, the architecture with tenancy and real-time explained, roles and configuration.",
+      },
+      {
+        src: "api-reference",
+        title: "The API reference",
+        caption:
+          "Generated from the same contract the web app calls, so it cannot drift: every operation with its schema, its errors and a request to copy.",
       },
     ],
     proof: [
@@ -816,34 +856,57 @@ export const projects: Project[] = [
     approach: [
       {
         title: "One contract for every caller",
-        body: "Every procedure is declared once in an oRPC contract with Zod schemas. The web app calls it with inferred types through TanStack Query, and the same contract serves a REST API under /api/v1 with an OpenAPI document and personal access tokens that can be read-only and expire.",
+        body: "Every procedure is declared once in an oRPC contract with Zod schemas, including the errors it can return. The web app calls it with inferred types through TanStack Query, and the same contract serves a REST API under /api/v1, an OpenAPI document and a Scalar reference, with personal access tokens that can be read-only and expire.",
+      },
+      {
+        title: "A request, layer by layer",
+        body: "Hono middleware adds a request id, structured logs and secure headers. Better Auth resolves the session or token, oRPC middleware builds the actor, the active organization and a tenant scope, the procedure validates input, a service authorizes against the loaded resource, and only the repository touches tables.",
       },
       {
         title: "Changes that cannot get lost",
-        body: "Each mutation writes the change, its activity row and its outbox event in one transaction. A worker relays the outbox through LISTEN/NOTIFY to a WebSocket gateway, so a restart drops nothing, and a client only applies an update whose version is newer than the one it holds. A stale write is a conflict, never a silent overwrite.",
+        body: "Each mutation writes the change, its activity row and its outbox event in one transaction. A worker relays the outbox through LISTEN/NOTIFY to every API node's WebSocket gateway, so a restart drops nothing, and a client only applies an update whose version is newer than the one it holds. A stale write is a conflict, never a silent overwrite.",
       },
       {
         title: "Writing together",
-        body: "Task descriptions are Yjs documents edited in Tiptap, with each person's caret labelled by name. The server persists them and projects them to plain text for full-text search.",
+        body: "Task descriptions are Yjs documents edited in Tiptap, with each person's caret labelled by name. The API hosts the Yjs provider on the same socket server, persists merged state with debounced writes and projects it to plain text for full-text search.",
       },
       {
         title: "Order without renumbering",
         body: "Board order is a fractional index, so a move writes one row and the client can compute the same key before the server answers. A random suffix keeps two people inserting into the same gap apart, and a nightly job re-keys any column whose keys have grown long, under a per-column advisory lock that moves share.",
       },
       {
+        title: "Metrics replayed, not counted",
+        body: "Burndown, scope change, cumulative flow, velocity and cycle time are pure functions over a sprint's append-only activity, in a domain package with no I/O. Nothing drifts, because nothing is a running total.",
+      },
+      {
         title: "One database does the rest",
-        body: "pg-boss runs email, daily or weekly digests and maintenance in the same Postgres, and search is Postgres full-text with trigram matching. Tenancy lives in the application: every repository takes a scope, foreign keys include the organization, and an isolation suite tries to cross it.",
+        body: "pg-boss runs email, daily or weekly digests and maintenance in the same Postgres, presence is shared between API nodes over NOTIFY, and search is Postgres full-text with trigram matching. The only other stateful service is S3-compatible storage for attachments.",
+      },
+      {
+        title: "Tenancy by construction",
+        body: "Every tenant-owned table carries the organization, repositories only accept a scope bound to one, foreign keys between tenant tables are composite so a row cannot point across workspaces, and a test walks the schema to make sure no table escapes the isolation suite.",
+      },
+      {
+        title: "A monorepo with one-way dependencies",
+        body: "Four apps (api, worker, web, site) over eight packages: contract, db, domain, auth, realtime, email, ui and shared configs. Apps depend on packages, the domain depends on nothing but Zod, and the web app can never import the database.",
       },
       {
         title: "Built for hands on the keyboard",
-        body: "React Aria components throughout, drag and drop that works by keyboard and screen reader, a ⌘K palette, shortcuts for every view, and a layout that folds down to a phone.",
+        body: "React Aria components throughout, drag and drop that works by keyboard and screen reader, a ⌘K palette, shortcuts for every view, light and dark themes, and a layout that folds down to a phone.",
+      },
+      {
+        title: "Documented where people look",
+        body: "An Astro landing page, Starlight docs with guides and the architecture, a generated API reference, fourteen decision records, and a README whose screenshots and demo are produced from the seeded stack by Playwright.",
       },
     ],
     highlights: [
       "Live board updates and presence over WebSockets, fed by a transactional outbox",
       "Descriptions written together with Yjs and named carets",
-      "Contract-first API: typed RPC for the app, REST and OpenAPI for everyone else",
+      "Contract-first API: typed RPC for the app, REST, OpenAPI and a generated reference for everyone else",
       "Sprint reports replayed from an append-only activity log",
+      "Postgres for data, jobs, fan-out and search; no Redis",
+      "Accessible drag and drop, a command palette and shortcuts everywhere",
+      "Astro site, Starlight docs and fourteen architecture decision records",
       "437 tests, unit and integration on real Postgres plus Playwright journeys",
     ],
     decisions: [
@@ -853,14 +916,34 @@ export const projects: Project[] = [
         why: "pg-boss and LISTEN/NOTIFY carry this load easily and leave one thing to run and back up. Patchgrid uses Redis and BullMQ, so between them the two projects show both sides of that choice.",
       },
       {
+        chose: "a transactional outbox",
+        over: "publishing events after the commit",
+        why: "An event written in the same transaction as its change can be late but never lost or invented. The cost is a relay process and a table to prune.",
+      },
+      {
+        chose: "a contract-first API with oRPC",
+        over: "hand-written routes and a separate schema",
+        why: "One declaration gives the web app its types, third parties their REST endpoints and everyone the OpenAPI document. The contract has to be designed before the handler, which is the point.",
+      },
+      {
         chose: "tenancy enforced in the application",
         over: "row level security in the database",
-        why: "Patchgrid already puts the boundary in Postgres. Here a scope every repository must take, composite foreign keys through the organization and an isolation test suite carry it, and the cost is that the discipline lives in review and tests.",
+        why: "Patchgrid already puts the boundary in Postgres. Here a scope every repository must take, composite foreign keys through the organization and a schema-walking test carry it, and the cost is that the discipline lives in review and tests.",
       },
       {
         chose: "fractional ranks for order",
         over: "integer positions",
         why: "A move writes one row and never renumbers its neighbours, which keeps optimistic updates simple. Keys can grow under repeated inserts into one gap, so a rebalance job exists, and it needed a lock shared with moves to stay correct.",
+      },
+      {
+        chose: "Yjs for descriptions",
+        over: "last write wins on a text field",
+        why: "Two people typing in the same paragraph merge instead of overwriting each other. The document lives as binary state with a plain-text projection, so search still works.",
+      },
+      {
+        chose: "notifications written in the causing transaction",
+        over: "a job that creates them later",
+        why: "A comment is never saved without the notifications it causes, or the other way round. Only email, which can wait and retry, is left to a job.",
       },
       {
         chose: "a Vite single-page app",
@@ -909,8 +992,8 @@ export const projects: Project[] = [
       },
       {
         date: "2026-10-30",
-        title: "Rank rebalancing and a phone layout",
-        body: "The last deferred ordering job, a drawer layout for phones, and a recorded demo of two people on one board.",
+        title: "v2.0.5",
+        body: "Rank rebalancing, the last deferred ordering job; a drawer layout for phones; and a recorded demo of two people on one board.",
       },
     ],
     faq: [
@@ -923,12 +1006,24 @@ export const projects: Project[] = [
         a: "Fields carry a version, so the second save of a stale copy is refused as a conflict; the board refreshes and says why. Descriptions merge character by character instead, and two cards dropped into the same gap get distinct positions.",
       },
       {
+        q: "How is the code organised?",
+        a: "A Bun and Turborepo monorepo: api, worker, web and site apps over contract, db, domain, auth, realtime, email and ui packages. Each API feature goes contract, repository, service, router and integration test, and dependencies only point from apps to packages.",
+      },
+      {
+        q: "How is it tested?",
+        a: "Unit and integration tests with bun test, the integration ones against real Postgres: each file gets a fresh database cloned from a migrated template in milliseconds. Playwright runs journeys against a seeded stack, including two people on one board and layout guards at desktop and phone sizes, and CI runs all of it on every pull request.",
+      },
+      {
+        q: "Is there documentation?",
+        a: "Yes, in three places: Starlight docs with guides and the architecture, a generated API reference served by the API, and a docs folder with the vision, roadmap, conventions and fourteen decision records.",
+      },
+      {
         q: "Can I try it?",
         a: "It is not hosted, by decision. Locally it is Docker for Postgres, storage and mail, then migrate, seed and one dev command. The seed has six weeks of history; open a second browser as maya@northwind.test to watch changes arrive.",
       },
       {
         q: "What happened to the first version?",
-        a: "The NestJS and Prisma API is tagged as v1.0.0 and kept in the repository. Version 2 is a rewrite, not an upgrade: a new stack, a web app, real-time and tests.",
+        a: "The NestJS and Prisma API is tagged as v1.0.0 and kept in the repository. Version 2 is a rewrite, not an upgrade: a new stack, a web app, real-time, docs and tests.",
       },
       {
         q: "How is it different from Patchgrid?",
