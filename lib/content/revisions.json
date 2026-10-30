@@ -572,6 +572,40 @@
           "Hooks are deterministic; advisory ones never block"
         ]
       }
+    },
+    {
+      "sha": "7169250",
+      "date": "2026-10-30",
+      "subject": "Add screens and the catalog rebuild to the dotclaude case study",
+      "words": {
+        "tagline": "A registry of Claude Code skills, agents, commands and hooks, installable in one line.",
+        "summary": "My collection of Claude Code extensions for engineering, git, testing, security and research workflows: 136 items in 17 plugins, generated from one source tree and validated in CI. It is distributed as a shadcn GitHub registry and as installable plugins, with a catalog site that ranks search results, filters by type, category and plugin, and gives every item and plugin a page of its own.",
+        "problem": "AI coding agents are only as good as the procedures you give them, and good procedures end up scattered across projects and dotfiles.",
+        "approach": [
+          {
+            "title": "Four kinds of extension",
+            "body": "Skills load themselves when a request matches, agents take whole side tasks in their own context, commands run on demand, and hooks fire on every event with no model judgment: a command guard, a sensitive-file guard, a stop gate that runs the tests before Claude can stop, format on edit."
+          },
+          {
+            "title": "Two ways to install",
+            "body": "Whole plugins through the Claude Code marketplace, where hooks activate on install, or single items through the shadcn CLI straight into a project's .claude folder."
+          },
+          {
+            "title": "One source, everything else generated",
+            "body": "Each item is a folder with a manifest. The registry files, the README catalog, the plugin tree, the site data, one crawlable page per item, the sitemap and llms.txt are generated from it, and CI fails if a generated file is stale."
+          },
+          {
+            "title": "A thesis toolkit",
+            "body": "One plugin covers a full research lifecycle: literature search, verified BibTeX, citation checking, statistics, methodology, LaTeX and Word output, with an examiner-style reviewer and a paper critic as agents."
+          }
+        ],
+        "highlights": [
+          "Catalog with ranked search, filters and a page per item at dotclaude.khaledsaeed.tech",
+          "86 skills, 17 agents, 18 commands and 15 hooks across 15 categories",
+          "Distributed as 17 plugins and as a shadcn GitHub registry",
+          "Hooks are deterministic; advisory ones never block"
+        ]
+      }
     }
   ],
   "mcce": [
@@ -611,6 +645,41 @@
       "words": {
         "tagline": "The study hub for my master's program: every course file, past exam and planner in one index.",
         "summary": "An independent, student-built index for the LIU M.S. in Computer and Communication Engineering. It syncs shared Google Drive folders into one searchable site every week, 895 files across 16 courses at the last crawl, and adds the plan of study, a prerequisite roadmap, a GPA calculator, a tuition planner, a directory of 400 tools and an in-browser PDF editor. No sign-in, no tracking, no backend.",
+        "problem": "Course material lived in three channels that each lost something: official slides with no past exams, and chat groups that were hard to search and not open to everyone.",
+        "approach": [
+          {
+            "title": "Drive as the source of truth",
+            "body": "A scheduled GitHub Action crawls three shared Drive folders through a service account every Monday, classifies every file by semester, course and material type, and commits the index back as JSON. The site has no backend: the index is the data, cached in the browser after the first visit."
+          },
+          {
+            "title": "The program on one screen",
+            "body": "Plan of study, a prerequisite roadmap drawn as a graph with credit totals, admissions tracks and tuition figures, with a planner that works a year of fees out in dollars and pounds, and a GPA calculator that projects the end of the program and shares a link."
+          },
+          {
+            "title": "Mark up a PDF without touching it",
+            "body": "Any indexed file opens in an editor with drawing, text, shapes, page rotation and reordering. The markup stays in the browser and saves as a copy, so the shared file in Drive never changes."
+          },
+          {
+            "title": "Everything else a student searches for",
+            "body": "A command palette with recents, past exams grouped by course and term, a feed of recent additions with RSS, and a directory of about 400 tools and 285 repositories by category, cost and licence, including a thesis toolkit by stage."
+          }
+        ],
+        "highlights": [
+          "Weekly automatic sync from Google Drive, link check the hour after",
+          "Search with filters, command palette, course pages and past exams",
+          "GPA projection, tuition planner and a prerequisite roadmap",
+          "In-browser PDF editor for any indexed file",
+          "Installable PWA that works offline, on Cloudflare Workers"
+        ]
+      }
+    },
+    {
+      "sha": "8ab9403",
+      "date": "2026-10-30",
+      "subject": "Add captured screens to Repo Scout, SleepTrack, deck-kit and MCCE",
+      "words": {
+        "tagline": "The study hub for my master's program: every course file, past exam and planner in one index.",
+        "summary": "An independent, student-built index for the LIU M.S. in Computer and Communication Engineering. It syncs shared Google Drive folders into one searchable site every week, 899 files across 16 courses at the last crawl, and adds the plan of study, a prerequisite roadmap, a GPA calculator, a tuition planner, a directory of 400 tools and an in-browser PDF editor. No sign-in, no tracking, no backend.",
         "problem": "Course material lived in three channels that each lost something: official slides with no past exams, and chat groups that were hard to search and not open to everyone.",
         "approach": [
           {
