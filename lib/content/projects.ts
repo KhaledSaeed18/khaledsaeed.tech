@@ -742,7 +742,7 @@ export const projects: Project[] = [
       },
     ],
     status: "v2 complete; runs locally, not hosted by decision",
-    stat: { label: "tests", value: "437" },
+    stat: { label: "tests", value: "489" },
     platform:
       "Bun 1.4, PostgreSQL 18 and Docker; runs locally, not hosted by decision",
     audience:
@@ -831,17 +831,17 @@ export const projects: Project[] = [
     ],
     proof: [
       {
-        value: "399",
+        value: "431",
         label: "unit and integration tests",
-        note: "bun test across eight packages, api tests against real postgres, counted on 30 oct 2026",
+        note: "bun test across eight packages, api tests against real postgres, including lock-order tests, counted on 30 oct 2026",
       },
       {
-        value: "38",
+        value: "58",
         label: "browser tests",
-        note: "playwright journeys against a fresh, seeded stack, including two people on one board",
+        note: "playwright journeys against a fresh, seeded stack: two people on one board, guests, failures, phone layouts",
       },
       {
-        value: "52",
+        value: "53",
         label: "rest operations",
         note: "from the openapi document the contract generates, served at /api/v1",
       },
@@ -907,7 +907,7 @@ export const projects: Project[] = [
       "Postgres for data, jobs, fan-out and search; no Redis",
       "Accessible drag and drop, a command palette and shortcuts everywhere",
       "Astro site, Starlight docs and fourteen architecture decision records",
-      "437 tests, unit and integration on real Postgres plus Playwright journeys",
+      "489 tests, unit and integration on real Postgres plus Playwright journeys",
     ],
     decisions: [
       {
@@ -994,6 +994,11 @@ export const projects: Project[] = [
         date: "2026-10-30",
         title: "v2.0.5",
         body: "Rank rebalancing, the last deferred ordering job; a drawer layout for phones; and a recorded demo of two people on one board.",
+      },
+      {
+        date: "2026-10-30",
+        title: "v2.0.7",
+        body: "Two full review rounds and a hands-on QA pass: deadlocks, read-only archives, auth hardening and failure states fixed, each with a test that reproduces it.",
       },
     ],
     faq: [
