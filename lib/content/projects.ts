@@ -1086,7 +1086,7 @@ export const projects: Project[] = [
         href: `${gh("node-authentication-template")}/blob/main/CHANGELOG.md`,
       },
     ],
-    status: "v3.2.0 released",
+    status: "Released and maintained",
     platform: "Node.js 24, PostgreSQL 18; Redis optional",
     audience: "teams that need sign-in done properly before the product exists",
     plain:
@@ -1467,7 +1467,7 @@ export const projects: Project[] = [
         href: `${gh("deck-kit")}/releases/tag/v1.2.0`,
       },
     ],
-    status: "v1.2.0 released, MIT licensed",
+    status: "Released, MIT licensed",
     platform: "Node.js 22.12 or later to build; any browser to present",
     audience:
       "people who give talks and want them in a repository, not a cloud",
@@ -2262,7 +2262,7 @@ export const projects: Project[] = [
       },
       { label: "UI showcase", href: `${gh("repo-scout")}#see-it-in-action` },
     ],
-    status: "v1.0.0 released",
+    status: "Released as a single binary for six targets",
     platform:
       "macOS, Linux and Windows, one binary per platform; git on the path",
     audience:
@@ -3527,7 +3527,7 @@ export const projects: Project[] = [
         href: `${gh("drainscope")}/blob/v1.0.0/docs/attribution-model.md`,
       },
     ],
-    status: "v1.0.0 stable, packaged for Fedora",
+    status: "Stable, packaged for Fedora",
     featured: true,
     platform:
       "Fedora 44, 45 or rawhide with GNOME 50 or 51; Intel laptops validated",
