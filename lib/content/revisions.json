@@ -217,6 +217,50 @@
           "Revived in April 2026 onto Express 5, Prisma 7 and TypeScript 6"
         ]
       }
+    },
+    {
+      "sha": "042e756",
+      "date": "2026-10-30",
+      "subject": "Note TeamFlow v2.0.8 and recount the Express boilerplate forks",
+      "words": {
+        "tagline": "A production-grade Express and TypeScript starter that other developers actually fork.",
+        "summary": "A fully wired Express 5, TypeScript 6 and Prisma 7 backend with layered clean architecture, a single dependency injection container, JWT and CSRF security, structured logging, OpenAPI docs, two test layers with enforced coverage, and security scanning on every change. It ships one AGENTS.md that six AI coding tools read through symlinks, plus slash commands that scaffold a new resource across all eight layers.",
+        "problem": "Most Express starters stop at hello world. Teams then spend weeks wiring auth, errors, logging and pipelines, and every project does it slightly differently.",
+        "approach": [
+          {
+            "title": "Layered by responsibility",
+            "body": "Routes, controllers, services and repositories each own one job and talk only to the layer below. A singleton container is the only place in the codebase where a repository, service or controller is constructed, so any layer can be swapped or tested alone."
+          },
+          {
+            "title": "Security as defaults",
+            "body": "A 15-minute access token and a 7-day refresh token live in signed HttpOnly cookies and never appear in a response body. A double-submit CSRF token guards every mutating route, with Helmet headers and per-route rate limits on from the first request."
+          },
+          {
+            "title": "Errors with a shape",
+            "body": "A typed error hierarchy and Prisma error mapping mean every failure leaves the API in the same predictable response format, with a correlation id in the structured log line that matches it."
+          },
+          {
+            "title": "Two test layers with a floor",
+            "body": "Unit tests mock the repositories and finish in milliseconds. Integration tests drive the real app against a RAM-disk Postgres, and every one checks the valid case, bad input, no session, no CSRF token and not found. Coverage thresholds fail the build when they drop."
+          },
+          {
+            "title": "Automation around the code",
+            "body": "Pre-commit hooks on staged files, conventional commits, CodeQL, TruffleHog on verified secrets only, dependency review and Dependabot run on every change. Swagger UI is generated at /api-docs."
+          },
+          {
+            "title": "Agents that follow the rules",
+            "body": "One AGENTS.md teaches the hard rules, such as no process.env outside config and no raw error responses, and the files for Claude Code, Gemini, Codex, Cursor, Copilot and Windsurf are symlinks to it. Six slash commands scaffold a resource, a middleware, a test or an OpenAPI block the same way every time."
+          }
+        ],
+        "highlights": [
+          "36 stars and 9 forks from developers starting new services",
+          "Clean architecture with one DI container and interfaces at every boundary",
+          "Signed HttpOnly cookies for both tokens plus CSRF double-submit",
+          "Unit and integration suites with coverage thresholds enforced in CI",
+          "One AGENTS.md read by six AI coding tools, six scaffolding slash commands",
+          "Revived in April 2026 onto Express 5, Prisma 7 and TypeScript 6"
+        ]
+      }
     }
   ],
   "team-flow": [
@@ -669,6 +713,50 @@
           "Stable JSON errors and a validated PyPI publishing workflow"
         ]
       }
+    },
+    {
+      "sha": "6f07aa2",
+      "date": "2026-10-30",
+      "subject": "Update the jwt-toolkit case study for v1.2.0",
+      "words": {
+        "tagline": "Inspect, compare and stress-test JWTs, with verification you can read.",
+        "summary": "A Python security CLI for debugging token changes, checking signatures and testing your own verifier. Version 1.1 added token diffs, EdDSA and practical key inputs; 1.2 is a hardening release from an end-to-end review, where attack-shaped tokens fail verification like any other bad token and the audit grades the key material you supply. The JWS logic stays readable on top of cryptography, without pyjwt or python-jose.",
+        "problem": "A decoded token can look convincing while its verifier accepts an invalid expiry, ignores a critical header or trusts the wrong algorithm. Debugging those failures also means comparing claims, handling real keys and getting dependable results into CI.",
+        "approach": [
+          {
+            "title": "Make verification boundaries explicit",
+            "body": "Verification matches algorithm names case-sensitively, rejects unsupported crit headers and non-finite or non-numeric time claims, and expires a token at its exp second. Headers and payloads must be JSON objects. These fixes close acceptance edge cases and turn malformed input into a reported error instead of a crash."
+          },
+          {
+            "title": "Explain what changed between tokens",
+            "body": "The new diff command walks nested headers and payloads with JSON Pointer paths, highlighting identity, permission and lifetime fields. It preserves array order and JSON types, and distinguishes encoding-only changes from changed claims. JSON output and an optional failure exit code make it useful for regression checks; comparison does not verify either token."
+          },
+          {
+            "title": "Work with the keys applications use",
+            "body": "Ed25519, Ed448 and EdDSA join HMAC, RSA, RSA-PSS and ECDSA, including OKP keys from JWKS. X.509 certificates and encrypted private keys reduce key-conversion work. Secret files keep HMAC values out of command arguments, while payload files, relative lifetimes and raw secret output make test fixtures easier to script."
+          },
+          {
+            "title": "Crack the candidates you actually supplied",
+            "body": "Wordlist lines retain spaces, leading # characters and non-UTF-8 bytes, so valid candidates are no longer silently changed or skipped. Bounded batches run in worker processes to bypass CPython's GIL, preserving the first match in wordlist order. Small lists avoid process startup costs, and a bundled list makes the command usable immediately after installation."
+          },
+          {
+            "title": "Keep security findings honest",
+            "body": "Keyless audits flag risky headers, missing claims and weak configurations; --require now checks every named claim, including custom ones. Forge produces attack-shaped tokens for your own verifier and labels header-only variants whose rejection cannot rule out the named flaw. Untrusted text renders literally, preventing crafted claims from crashing or restyling terminal reports."
+          },
+          {
+            "title": "Ship a CLI that automation can trust",
+            "body": "Every --json failure path returns an error document with a stable code. Wordlist downloads stay on verified TLS and use the installed release's tag. Before PyPI publication, the tagged commit must pass tests, coverage, lint, types and security checks, and its tag must match the package version. Trusted Publishing adds distribution attestations."
+          }
+        ],
+        "highlights": [
+          "Seven PyPI releases since May 2026, installable with pipx or uv",
+          "Token diffs with JSON Pointer paths and CI exit codes",
+          "EdDSA, JWKS, certificates and encrypted private keys",
+          "UTC and relative timestamps for decoded time claims",
+          "Bundled wordlist and bounded process-based cracking",
+          "Stable JSON errors and a validated PyPI publishing workflow"
+        ]
+      }
     }
   ],
   "wakehold": [
@@ -933,6 +1021,51 @@
           "Published with npm provenance after tests on macOS, Linux and Windows"
         ]
       }
+    },
+    {
+      "sha": "1fb83d5",
+      "date": "2026-10-30",
+      "subject": "Update the dir-analysis-tool case study for v3.2.0",
+      "words": {
+        "tagline": "Find out what is taking up space: largest folders, duplicates, stale files and size budgets for CI, in one pass.",
+        "summary": "dat is a memory-bounded directory analyzer for the terminal and for CI. It walks a tree once and reports the largest folders and files, duplicated content, empty and stale files and a breakdown by type, then prints it as a table, JSON, Markdown, CSV or a single-file HTML report. Version 3 adds directory diffs, a watch mode, size budgets that fail a build, and a typed library API that returns exactly what the CLI prints.",
+        "problem": "Disk audits either load everything into memory or give you a wall of output you cannot act on or pipe anywhere. The ones that are fast tend to lie a little: they count hard links twice, follow symlink cycles, or skip unreadable paths without saying so.",
+        "approach": [
+          {
+            "title": "One walk, bounded memory",
+            "body": "Every file is stat'ed exactly once. Top-N lists live in bounded heaps, one concurrency limiter covers every filesystem call so wide trees cannot exhaust handles, and depth-first scheduling keeps the queue small. The author's benchmark holds about 9 MB for 140,000 files."
+          },
+          {
+            "title": "Duplicates in three stages",
+            "body": "Files are grouped by size first. Candidates over 256 KiB are then compared by a SHA-256 sample of their first and last 64 KiB, and only survivors get a full streaming hash with reused buffers. Most files are never read in full, which made duplicates about four times faster than version 2."
+          },
+          {
+            "title": "Answers that point somewhere",
+            "body": "The headline is the largest folders, and a folder that is 95% one child folds into it so the list points at where the data lives instead of repeating parents. Large, stale, empty and duplicate files come with totals you can act on, and ordering is by size then path, never discovery order."
+          },
+          {
+            "title": "Budgets, diffs and a watch",
+            "body": "Rules like size<=2MB or duplicates=0 fail a build with exit code 2 and name the rule. dat compare lists what was added, removed and changed between two trees, by content on request. dat watch follows a folder with native filesystem events and streams NDJSON."
+          },
+          {
+            "title": "Five outputs, one shape",
+            "body": "Pretty, JSON with a versioned schema, Markdown for a pull request summary, CSV with a section column and neutralised formula cells, and an HTML report in a single file with inline charts and a content security policy that blocks all network access. Progress and warnings go to stderr; stdout carries only the report."
+          },
+          {
+            "title": "A library that is the CLI",
+            "body": "analyze, compare and every renderer are exported as typed ESM, and the library's return value is exactly what --format json prints. Releases are cut by semantic-release from conventional commits with npm provenance, after a matrix of three operating systems and three Node versions passes."
+          }
+        ],
+        "highlights": [
+          "Largest folders, largest files, duplicates, stale and empty files, type breakdown",
+          "Size budgets for CI that exit 2, directory diffs and a watch mode",
+          "Pretty, JSON, Markdown, CSV and single-file HTML output",
+          "Hard links counted once, symlink cycles detected, unreadable paths reported",
+          "Typed library API with the same results as the CLI",
+          "Zero runtime dependencies since 3.1, with an in-house gitignore matcher",
+          "Published with npm provenance after tests on macOS, Linux and Windows"
+        ]
+      }
     }
   ],
   "gauge": [
@@ -1181,6 +1314,35 @@
           "Web, mobile, desktop and API in TypeScript",
           "Nine AI-powered study tools and five productivity tools",
           "Delivered as my B.S. senior project, then archived with an honest notice"
+        ]
+      }
+    },
+    {
+      "sha": "fd379d2",
+      "date": "2026-10-30",
+      "subject": "Rewrite the Yalla Learn case study around its four repositories",
+      "words": {
+        "tagline": "My final year project: an AI learning platform across web, mobile, desktop and API.",
+        "summary": "The senior project for my B.S. in Computer Engineering. A learning and productivity platform with AI chat over PDFs and images, mind maps, flashcards, study plans, quizzes and a voice assistant, plus a Pomodoro timer, kanban boards, a resume builder and a community with Q&A, a blog and a job board. Delivered across four repositories: a Next.js web app, an Express API, an Expo mobile app for the campus marketplace and an Electron notebook, then marked as no longer maintained and kept public as a record.",
+        "problem": "Students juggle a dozen tools to study one subject. The goal was one place that turns material into practice, on whatever device the student has in hand.",
+        "approach": [
+          {
+            "title": "One API, three clients with different jobs",
+            "body": "An Express and Prisma API on PostgreSQL carries the accounts, with JWT sessions, two-factor codes and email through OAuth2. The web app is the full platform. The mobile app takes the part that belongs on a phone, the campus marketplace of listings and services. The desktop app is a notebook that keeps notes as plain markdown files. Each client is its own repository, listed below."
+          },
+          {
+            "title": "AI where it helps",
+            "body": "Chat with PDFs and images, generate mind maps, flashcards, quizzes with scoring and explanations, concept explanations and study plans from any topic, with an AI web search and a voice assistant, built on the AI SDK with Gemini and OpenAI models behind it."
+          },
+          {
+            "title": "The rest of a student's day",
+            "body": "A Pomodoro timer and focus mode, kanban boards with drag and drop, an expense tracker, a resume builder with templates, and a community with questions and answers, a blog and a job portal."
+          }
+        ],
+        "highlights": [
+          "Web, API, mobile and desktop in TypeScript, four repositories",
+          "Nine AI-powered study tools and five productivity tools",
+          "Delivered as my B.S. senior project, then marked not maintained with a notice that says so"
         ]
       }
     }
@@ -2040,6 +2202,59 @@
           "3-way undo that refuses on conflict, dry run by default, undoable itself",
           "5 of 5 seeded regressions found within the probe bound; a real regression found on metal in 3 probes",
           "v0.2.0 installable from COPR on Fedora 44, 45 and rawhide, with a GNOME app"
+        ]
+      }
+    },
+    {
+      "sha": "4d4efa3",
+      "date": "2026-10-30",
+      "subject": "Update the osreflog case study for v0.3.0",
+      "words": {
+        "tagline": "A reflog for a Linux system: what changed, who changed it, and which change broke it.",
+        "summary": "osreflog records every change to a Fedora system together with its cause: the package transaction, service, command or app that made it. It rebuilds the system as it was at any point, bisects a regression down to a single cause by testing each step in a throwaway container, a VM or a one-shot reboot on real hardware, and undoes that cause file by file. It ships from COPR with a GNOME app; 0.3.0 says what the kept snapshots cost in disk, attributes Flatpak and templated services correctly, and confines the daemon's workers under SELinux.",
+        "problem": "When a Linux desktop breaks, you know one thing: it worked last week. Package history covers packages only, the journal shows events but not state, and snapshot tools show the whole system at a moment but not what changed between two snapshots, who changed it, or which change broke things. There is no git bisect for an operating system.",
+        "approach": [
+          {
+            "title": "Two witnesses",
+            "body": "A live witness records who changes each file as it happens, with a filesystem-wide fanotify mark and eBPF tracing every write back to its process and package transaction. A state witness proves what changed between read-only btrfs snapshots from the send stream. When they disagree, for example a change made while the daemon was stopped, the gap is reported instead of smoothed over."
+          },
+          {
+            "title": "Causes, not files",
+            "body": "Changes are grouped into causes: a dnf transaction, a systemd service, a terminal command, an app writing a setting. Writes a daemon makes on someone's behalf over D-Bus, from tools like timedatectl or nmcli, are credited to the caller. osreflog why shows who changed a file and a readable diff of what it means."
+          },
+          {
+            "title": "Git's vocabulary on purpose",
+            "body": "log, show, diff, why, bisect and undo work on causes, and references read like git's reflog: c42, @{1}, @{boot-1}, @{yesterday}. Diffs are computed after each checkpoint and cached, so the diff after a real dnf transaction comes back in 6 ms."
+          },
+          {
+            "title": "Bisect down to one cause, in three tiers",
+            "body": "Snapshots are coarse, so osreflog rebuilds the states between them by replaying causes into a writable clone. Each step is tested in a throwaway systemd-nspawn container in under a second, in a QEMU VM that boots the clone's own kernel over virtiofs in about 14 seconds, or, for regressions that only show on real hardware, by one reboot into a one-shot boot entry. Every replay says whether it was exact or approximate."
+          },
+          {
+            "title": "Undo without rolling back",
+            "body": "osreflog undo reverts one cause path by path as a 3-way merge, leaving alone anything that changed since and refusing on conflict. Package causes are handed to dnf. Dry run is the default, a checkpoint is taken before every apply, replaced files go to an attic, and an undo can itself be undone. GNOME settings get the same treatment through dconf."
+          },
+          {
+            "title": "Observe before touching",
+            "body": "Nothing wrote to the live root until a write gate passed: the full undo matrix in a contained scratch root, with symlink-swap races and magic links refused by openat2 resolution, 3,541 race runs and no escape. Metal probes waited for a boot gate tested in a nested VM first, with a boot doctor checking the default entry at every boot. Config parsers run in a sandboxed worker and were each fuzzed for an hour. Secrets are never stored and command lines are redacted."
+          },
+          {
+            "title": "A desktop app, packaged and hardened",
+            "body": "A GTK and libadwaita app browses history, shows what changed since, previews an undo and walks a bisect, with search, coloured diffs and toasts. Signed COPR packages cover Fedora 44, 45 and rawhide, and were installed on a fresh Fedora 44 VM with every check passing. Version 0.2.0 added system call filters, a sandboxed user agent and an SELinux module; systemd rates the user agent's exposure at 1.0, down from 8.0."
+          },
+          {
+            "title": "Cheap enough to leave on",
+            "body": "The daemon uses 0.08% of one CPU at rest and a checkpoint adds under a second to a dnf transaction. Memory sits around 41 MB just started and grows with big diffs, capped by a 768 MB unit limit. The ledger is local, root-only SQLite with a hash chain, so tampering is evident. The first soak ended after 6.1 hours at a restart; a second that survives restarts and shutdowns started on 20 October and needs 48 hours of samples before its result is published."
+          }
+        ],
+        "highlights": [
+          "Every change to /etc and system state recorded with its cause",
+          "A live fanotify and eBPF witness reconciled with btrfs send-stream diffs",
+          "Cause-level bisect in containers, in VMs that boot the snapshot's kernel, or on real hardware",
+          "3-way undo that refuses on conflict, dry run by default, undoable itself",
+          "5 of 5 seeded regressions found within the probe bound; a real regression found on metal in 3 probes",
+          "Installable from COPR on Fedora 44, 45 and rawhide, with a GNOME app",
+          "0.3.0 measures what the kept snapshots cost and cut 41,000 noise rows from one appstream refresh to a single cause"
         ]
       }
     }
