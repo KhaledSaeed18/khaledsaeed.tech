@@ -1638,11 +1638,11 @@ export const projects: Project[] = [
   {
     slug: "dotclaude",
     name: "dotclaude",
-    updatedAt: "2026-10-19",
+    updatedAt: "2026-10-30",
     tagline:
       "A registry of Claude Code skills, agents, commands and hooks, installable in one line.",
     summary:
-      "My collection of Claude Code extensions for engineering, git, testing, security and research workflows: 136 items in 17 plugins, generated from one source tree and validated in CI. It is distributed as a shadcn GitHub registry and as installable plugins, with a searchable static catalog site.",
+      "My collection of Claude Code extensions for engineering, git, testing, security and research workflows: 136 items in 17 plugins, generated from one source tree and validated in CI. It is distributed as a shadcn GitHub registry and as installable plugins, with a catalog site that ranks search results, filters by type, category and plugin, and gives every item and plugin a page of its own.",
     year: 2026,
     group: "tools",
     kind: "AI developer tooling",
@@ -1653,6 +1653,7 @@ export const projects: Project[] = [
       "shadcn registry",
       "Claude Code",
       "Vitest",
+      "Playwright",
       "GitHub Pages",
     ],
     repo: "dotclaude",
@@ -1682,9 +1683,58 @@ export const projects: Project[] = [
         note: "the thesis plugin, from research question to latex",
       },
       {
-        value: "116",
+        value: "118",
         label: "tests on the tooling",
         note: "the validator rejects stubs and descriptions without a trigger",
+      },
+      {
+        value: "44",
+        label: "browser tests on the catalog",
+        note: "playwright, on a desktop and a phone profile, in ci on every push",
+      },
+    ],
+    screens: [
+      {
+        src: "catalog",
+        title: "The catalog",
+        caption:
+          "The marketplace command first, then type tabs, category, plugin and sort controls that stay put while the list scrolls. Every count answers what you would get by picking it.",
+      },
+      {
+        src: "search",
+        title: "A search, narrowed to skills",
+        caption:
+          "Results are ranked, not just filtered: a name match outranks a title match, which outranks a word in the description, and the matches are marked.",
+      },
+      {
+        src: "item",
+        title: "A skill's page",
+        caption:
+          "Both install routes side by side, the files it lands as, the full manifest with a table of contents, and the other items in its plugin.",
+      },
+      {
+        src: "plugin",
+        title: "A plugin's page",
+        caption:
+          "What one install gives you, grouped by type, with the quick install and the rest of the marketplace beside it.",
+      },
+      {
+        src: "plugins",
+        title: "The plugins index",
+        caption:
+          "Three bundles to start with, then every other plugin as a card with its command and first few items.",
+      },
+      {
+        src: "install",
+        title: "The install guide",
+        caption:
+          "Plugin or single item, step by step, with a comparison table for the choice and an explainer for the four kinds of file.",
+      },
+      {
+        src: "dark",
+        title: "Dark theme, hooks only",
+        caption:
+          "The theme follows the system and can be switched; the choice is remembered.",
       },
     ],
     problem:
@@ -1708,7 +1758,7 @@ export const projects: Project[] = [
       },
     ],
     highlights: [
-      "Catalog with search and filters at dotclaude.khaledsaeed.tech",
+      "Catalog with ranked search, filters and a page per item at dotclaude.khaledsaeed.tech",
       "86 skills, 17 agents, 18 commands and 15 hooks across 15 categories",
       "Distributed as 17 plugins and as a shadcn GitHub registry",
       "Hooks are deterministic; advisory ones never block",
@@ -1717,7 +1767,12 @@ export const projects: Project[] = [
       {
         chose: "a static catalog with no build step",
         over: "a site framework",
-        why: "Pages are generated with everything else, so the site never needs editing when an item changes, and it deploys to GitHub Pages with no dependencies.",
+        why: "Pages are generated with everything else, so the site never needs editing when an item changes, and it deploys to GitHub Pages with no dependencies. The October 2026 redesign kept that: a new stylesheet, one script and new page templates, still zero runtime dependencies.",
+      },
+      {
+        chose: "filters in the query string",
+        over: "state in the URL hash",
+        why: "A query string is a real URL: crawlers index it, the browser's back button walks through it, and the 404 page can post a search to it. Old hash links still redirect, so nothing bookmarked before the rebuild broke.",
       },
       {
         chose: "plugins and the shadcn registry both",
@@ -1763,8 +1818,13 @@ export const projects: Project[] = [
       },
       {
         date: "2026-10-14",
-        title: "Latest push",
-        body: "Plugins, hooks and site pages kept in step; 212 commits so far.",
+        title: "Portable workflows",
+        body: "Plugins, hooks and site pages kept in step; 212 commits by then.",
+      },
+      {
+        date: "2026-10-30",
+        title: "The catalog rebuilt",
+        body: "A new design with light and dark themes, ranked search, type tabs and category, plugin and sort controls, results grouped by category, keyboard navigation and a mobile menu. Plugins and the install guide became real pages, every item and plugin page gained a sidebar with a quick install, a table of contents and its siblings, and 44 Playwright tests run in CI on a desktop and a phone profile.",
       },
     ],
     faq: [
