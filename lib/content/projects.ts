@@ -1911,9 +1911,9 @@ export const projects: Project[] = [
     tagline:
       "Inspect, compare and stress-test JWTs, with verification you can read.",
     summary:
-      "A Python security CLI for debugging token changes, checking signatures and testing your own verifier. Version 1.1.0 adds token diffs, EdDSA and practical key inputs while tightening parsing, claim validation and scriptable errors. The JWS logic stays readable on top of cryptography, without pyjwt or python-jose.",
+      "A Python security CLI for debugging token changes, checking signatures and testing your own verifier. Version 1.1 added token diffs, EdDSA and practical key inputs; 1.2 is a hardening release from an end-to-end review, where attack-shaped tokens fail verification like any other bad token and the audit grades the key material you supply. The JWS logic stays readable on top of cryptography, without pyjwt or python-jose.",
     year: 2026,
-    updatedAt: "2026-10-19",
+    updatedAt: "2026-10-30",
     group: "tools",
     kind: "Security CLI",
     object: "key",
@@ -1922,13 +1922,10 @@ export const projects: Project[] = [
     repo: "jwt-toolkit",
     links: [
       { label: "PyPI", href: "https://pypi.org/project/jwt-toolkit/" },
-      {
-        label: "v1.1.0 release",
-        href: `${gh("jwt-toolkit")}/releases/tag/v1.1.0`,
-      },
+      { label: "Releases", href: `${gh("jwt-toolkit")}/releases` },
       { label: "Source", href: gh("jwt-toolkit") },
     ],
-    status: "v1.1.0 released",
+    status: "Released on PyPI, maintained",
     platform: "Python 3.13 or later, any operating system",
     audience:
       "developers and security testers who need to know what a token really says",
@@ -1938,7 +1935,7 @@ export const projects: Project[] = [
       {
         value: "583",
         label: "passing tests",
-        note: "v1.1.0, local pytest run on 17 oct 2026",
+        note: "v1.1.0, local pytest run on 17 oct 2026; 1.2.0 added mypy strict to the gate",
       },
       {
         value: "93.94%",
@@ -1951,9 +1948,9 @@ export const projects: Project[] = [
         note: "hmac, rsa, rsa-pss, ecdsa and eddsa families; none is never accepted",
       },
       {
-        value: "6",
+        value: "7",
         label: "pypi releases",
-        note: "25 may to 17 oct 2026, each attested through trusted publishing",
+        note: "25 may to 19 oct 2026, each attested through trusted publishing",
       },
     ],
     problem:
@@ -1985,7 +1982,7 @@ export const projects: Project[] = [
       },
     ],
     highlights: [
-      "v1.1.0 released on 17 October 2026, installable with pipx or uv",
+      "Seven PyPI releases since May 2026, installable with pipx or uv",
       "Token diffs with JSON Pointer paths and CI exit codes",
       "EdDSA, JWKS, certificates and encrypted private keys",
       "UTC and relative timestamps for decoded time claims",
@@ -2046,6 +2043,11 @@ export const projects: Project[] = [
         date: "2026-10-17",
         title: "v1.1.0",
         body: "The diff command, EdDSA, secret and payload files, certificates and encrypted keys, the bundled wordlist with worker processes, stricter verification and stable JSON errors.",
+      },
+      {
+        date: "2026-10-19",
+        title: "v1.2.0",
+        body: "Hardening from an end-to-end review: alg none, mis-cased and cross-family algorithms now fail verify with exit 1 like any bad signature; audit grades guessable secrets, short HMAC keys and RSA under 2048 bits; crack gains JSON output, Bearer prefixes are accepted everywhere, and errors go to stderr. No JSON field renamed, no new dependency.",
       },
     ],
     faq: [
