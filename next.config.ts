@@ -29,6 +29,17 @@ const nextConfig: NextConfig = {
     remotePatterns: [{ protocol: "https", hostname: "media2.dev.to" }],
   },
   poweredByHeader: false,
+  // Case studies taken off the press keep their address: readers and
+  // search engines land on the catalog instead of a 404.
+  async redirects() {
+    return [
+      {
+        source: "/work/multilingual-translation",
+        destination: "/work",
+        permanent: true,
+      },
+    ]
+  },
   // Baseline hardening for every response. No CSP: a strict one needs
   // per-request nonces for Next's inline scripts, which would make every
   // static page dynamic.
