@@ -75,6 +75,61 @@ export async function getMyRepos(): Promise<Record<string, RepoFacts>> {
   return out
 }
 
+type Release = {
+  tag_name: string
+  name: string | null
+  html_url: string
+  published_at: string
+  draft: boolean
+  prerelease: boolean
+}
+
+type Tag = { name: string; commit: { sha: string; url: string } }
+
+/** The newest printing of a repository, as GitHub reports it. */
+export type LatestRelease = {
+  /** The tag as written: "v1.2.0". */
+  tag: string
+  /** Where the release notes are, or the tag's tree when there are none. */
+  url: string
+  /** ISO timestamp; null when only a tag exists and its date was not read. */
+  publishedAt: string | null
+  /** True when the version comes from a bare tag with no GitHub release. */
+  tagOnly: boolean
+}
+
+/**
+ * The latest release of one of my repositories, refreshed daily. Falls back
+ * to the newest tag when the repository tags without publishing releases,
+ * and to null when it has neither, so a case study never prints a version
+ * that the repository does not carry.
+ */
+export async function getLatestRelease(
+  repo: string
+): Promise<LatestRelease | null> {
+  const rel = await gh<Release>(`/repos/${USER}/${repo}/releases/latest`)
+  if (rel && !rel.draft) {
+    return {
+      tag: rel.tag_name,
+      url: rel.html_url,
+      publishedAt: rel.published_at,
+      tagOnly: false,
+    }
+  }
+  const tags = await gh<Tag[]>(`/repos/${USER}/${repo}/tags?per_page=1`)
+  const tag = tags?.[0]
+  if (!tag) return null
+  const commit = await gh<{ commit: { committer: { date: string } } }>(
+    `/repos/${USER}/${repo}/commits/${tag.commit.sha}`
+  )
+  return {
+    tag: tag.name,
+    url: `https://github.com/${USER}/${repo}/releases/tag/${tag.name}`,
+    publishedAt: commit?.commit.committer.date ?? null,
+    tagOnly: true,
+  }
+}
+
 /** Star counts for my own repositories, keyed by repo name. */
 export async function getMyStars(): Promise<Record<string, number>> {
   const repos = await getMyRepos()

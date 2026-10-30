@@ -33,7 +33,7 @@ import {
   withArticle,
   type Project,
 } from "@/lib/content/projects"
-import { getMyRepos } from "@/lib/data/github"
+import { getLatestRelease, getMyRepos } from "@/lib/data/github"
 import { pageMeta } from "@/lib/metadata"
 import { formatNumber } from "@/lib/format"
 import { revisionsOf } from "@/lib/revisions"
@@ -55,8 +55,12 @@ function caseStudyDescription(p: Project) {
   return mid.length <= 160 ? mid : `${p.tagline} By Khaled Saeed.`
 }
 
-/** The last version in the timeline, if it is one: "v1.1.0". */
-const versionOf = (p: Project) =>
+/**
+ * The version a case study is about: the repository's latest release when
+ * GitHub answered, otherwise the last version in the written timeline.
+ */
+const versionOf = (p: Project, live?: { tag: string } | null) =>
+  live?.tag ??
   p.timeline
     ?.map((m) => m.title)
     .filter((t) => /^v?\d+\.\d+/.test(t))
@@ -104,12 +108,16 @@ export default async function ProjectPage({
   const p = getProject(slug)
   if (!p) notFound()
 
-  const repo = (await getMyRepos())[p.repo]
+  const [repos, release] = await Promise.all([
+    getMyRepos(),
+    getLatestRelease(p.repo),
+  ])
+  const repo = repos[p.repo]
   const i = catalog.indexOf(p)
   const next = catalog[(i + 1) % catalog.length]
   const prev = catalog[(i - 1 + catalog.length) % catalog.length]
   const related = p.related ? projectsBySlug(p.related) : []
-  const version = versionOf(p)
+  const version = versionOf(p, release)
 
   const revisions = revisionsOf(p)
 
@@ -327,7 +335,9 @@ export default async function ProjectPage({
                     ))}
                   </ul>
                 </div>
-                {repo && <RepoFacts repo={p.repo} facts={repo} />}
+                {repo && (
+                  <RepoFacts repo={p.repo} facts={repo} release={release} />
+                )}
               </div>
             </div>
           </Block>

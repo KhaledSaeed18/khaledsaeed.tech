@@ -1,18 +1,54 @@
-import type { RepoFacts as Facts } from "@/lib/data/github"
+import type * as React from "react"
+
+import type { LatestRelease, RepoFacts as Facts } from "@/lib/data/github"
 import { formatDate, formatNumber } from "@/lib/format"
 
 /**
  * The repository as GitHub reports it, refreshed daily: stars, forks,
- * license, primary language and the last push. Rendered only when the
- * fetch succeeded, so an outage leaves a gap instead of a wrong number.
+ * license, primary language, the latest release and the last push. Rendered
+ * only when the fetch succeeded, so an outage leaves a gap instead of a
+ * wrong number. The release cell is what keeps a case study's version
+ * current without a copy change: tag the repository and the site follows.
  */
-export function RepoFacts({ repo, facts }: { repo: string; facts: Facts }) {
-  const cells: [string, string][] = [
+export function RepoFacts({
+  repo,
+  facts,
+  release,
+}: {
+  repo: string
+  facts: Facts
+  release?: LatestRelease | null
+}) {
+  const cells: [string, React.ReactNode][] = [
     ["stars", formatNumber(facts.stars)],
     ["forks", formatNumber(facts.forks)],
-    ...(facts.license ? ([["license", facts.license]] as [string, string][]) : []),
+    ...(facts.license
+      ? ([["license", facts.license]] as [string, string][])
+      : []),
     ...(facts.language
       ? ([["language", facts.language]] as [string, string][])
+      : []),
+    ...(release
+      ? ([
+          [
+            release.tagOnly ? "latest tag" : "latest release",
+            <a
+              key="release"
+              href={release.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hit-area underline decoration-border underline-offset-4 transition-colors hover:decoration-brand"
+            >
+              {release.tag}
+              {release.publishedAt && (
+                <span className="text-muted-foreground">
+                  {" "}
+                  {formatDate(release.publishedAt).toLowerCase()}
+                </span>
+              )}
+            </a>,
+          ],
+        ] as [string, React.ReactNode][])
       : []),
     ["last push", formatDate(facts.pushedAt).toLowerCase()],
   ]
