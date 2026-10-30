@@ -184,7 +184,7 @@ export const projects: Project[] = [
   {
     slug: "patchgrid",
     name: "Patchgrid",
-    updatedAt: "2026-10-29",
+    updatedAt: "2026-10-30",
     tagline:
       "Multi-tenant IT service management with isolation enforced by the database.",
     summary:
@@ -500,6 +500,11 @@ export const projects: Project[] = [
         date: "2026-10-29",
         title: "Complete",
         body: "Every milestone built and verified. The README became a forty-screen tour, regenerated from the seeded demo by one command.",
+      },
+      {
+        date: "2026-10-30",
+        title: "v1.0.0",
+        body: "The completed platform tagged as its first release, so the version on this page comes from the repository from now on.",
       },
     ],
     faq: [
