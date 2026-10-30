@@ -2418,7 +2418,7 @@ export const projects: Project[] = [
   {
     slug: "dir-analysis-tool",
     name: "dir-analysis-tool",
-    updatedAt: "2026-10-19",
+    updatedAt: "2026-10-30",
     tagline:
       "Find out what is taking up space: largest folders, duplicates, stale files and size budgets for CI, in one pass.",
     summary:
@@ -2442,16 +2442,13 @@ export const projects: Project[] = [
     links: [
       { label: "npm", href: "https://www.npmjs.com/package/dir-analysis-tool" },
       { label: "Source", href: gh("dir-analysis-tool") },
-      {
-        label: "v3.0.0 release",
-        href: `${gh("dir-analysis-tool")}/releases/tag/v3.0.0`,
-      },
+      { label: "Releases", href: `${gh("dir-analysis-tool")}/releases` },
       {
         label: "Changelog",
         href: `${gh("dir-analysis-tool")}/blob/main/CHANGELOG.md`,
       },
     ],
-    status: "v3.0.0 released",
+    status: "Released on npm, maintained",
     platform: "Node.js 22.12 or later on macOS, Linux and Windows",
     audience:
       "developers with a full disk, and teams that want a build to fail when a folder grows",
@@ -2513,6 +2510,7 @@ export const projects: Project[] = [
       "Pretty, JSON, Markdown, CSV and single-file HTML output",
       "Hard links counted once, symlink cycles detected, unreadable paths reported",
       "Typed library API with the same results as the CLI",
+      "Zero runtime dependencies since 3.1, with an in-house gitignore matcher",
       "Published with npm provenance after tests on macOS, Linux and Windows",
     ],
     decisions: [
@@ -2582,6 +2580,16 @@ export const projects: Project[] = [
         date: "2026-10-18",
         title: "v3.0.0",
         body: "Engine and CLI rewritten: largest folders, compare, watch, budgets, Markdown output, a library API, a versioned JSON schema and staged SHA-256 duplicates. Old flag names still work with a warning.",
+      },
+      {
+        date: "2026-10-21",
+        title: "v3.1.0",
+        body: "The last runtime dependencies removed: gitignore rules matched by an in-house matcher that honours bare wildcards, duplicate candidates hashed with one read per small file, and unreadable folders no longer reported as empty.",
+      },
+      {
+        date: "2026-10-29",
+        title: "v3.2.0",
+        body: "An official agent skill ships in the package, so a coding agent can run size, duplicate and budget checks the way the docs intend.",
       },
     ],
     faq: [
