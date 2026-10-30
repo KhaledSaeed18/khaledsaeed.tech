@@ -694,152 +694,340 @@ export const projects: Project[] = [
   {
     slug: "team-flow",
     name: "TeamFlow",
-    updatedAt: "2026-10-19",
+    updatedAt: "2026-10-30",
     tagline:
-      "A multi-tenant agile workspace API with sprints, RBAC and a full audit trail.",
+      "A real-time, keyboard-first agile workspace on a single Postgres database.",
     summary:
-      "TeamFlow is a SaaS-style backend for organizations, projects, sprints and tasks. Organizations are isolated through membership, roles are enforced by guards, and every change lands in an immutable audit log. Started in a 96-hour backend program where I ranked first in the cohort, then grown over five months into 78 documented endpoints with notifications over Server-Sent Events and email.",
+      "TeamFlow is a planning workspace for software teams: a board, a list, a calendar and sprint planning over the same tasks, with live updates, presence and descriptions written together character by character. Version 2 rewrites my first NestJS API as a Bun monorepo: a contract-first API that also serves REST and OpenAPI, a transactional outbox feeding WebSockets, one PostgreSQL database that also runs the job queue, and an Astro site with Starlight docs. The original API, which ranked first in its backend cohort, is kept at v1.0.0.",
     year: 2026,
     group: "platforms",
-    kind: "Backend API",
+    kind: "Real-time web app",
     object: "cards",
     stock: "bone",
     stack: [
-      "NestJS",
-      "Prisma",
+      "Bun",
+      "Hono",
+      "oRPC",
+      "Drizzle",
       "PostgreSQL",
-      "JWT",
-      "SSE",
-      "Resend",
-      "UploadThing",
-      "Swagger",
-      "Docker",
+      "Better Auth",
+      "pg-boss",
+      "WebSockets",
+      "Yjs",
+      "React",
+      "TanStack",
+      "React Aria",
+      "Astro",
+      "Playwright",
+      "Turborepo",
     ],
     repo: "team-flow",
     links: [
       { label: "Source", href: gh("team-flow") },
       {
-        label: "API docs",
-        href: "https://team-flow-tmtz.onrender.com/api/docs",
+        label: "Architecture",
+        href: `${gh("team-flow")}/blob/main/docs/ARCHITECTURE.md`,
+      },
+      {
+        label: "Decisions",
+        href: `${gh("team-flow")}/tree/main/docs/adr`,
+      },
+      {
+        label: "Documentation",
+        href: `${gh("team-flow")}/blob/main/docs/README.md`,
+      },
+      {
+        label: "v1 API",
+        href: `${gh("team-flow")}/tree/v1.0.0`,
       },
     ],
-    platform: "Node.js 22, PostgreSQL 16; hosted on Render's free tier",
+    status: "v2 complete; runs locally, not hosted by decision",
+    stat: { label: "tests", value: "437" },
+    platform:
+      "Bun 1.4, PostgreSQL 18 and Docker; runs locally, not hosted by decision",
     audience:
-      "teams that want a Jira-like backend to put their own front end on",
+      "small product teams, and engineers who want to see real-time sync done carefully",
     plain:
-      "TeamFlow is the engine behind a team planning tool, like a simplified Jira. It keeps each company's projects, sprints and tasks separate, decides who may do what, tells people when their work changes, and keeps a permanent record of every change. It has no screens of its own; any web or mobile app can sit on top of it.",
+      "TeamFlow is a planning board for a software team, like a lighter Jira. When one person moves a card or edits a task, everyone looking at the same board sees it within a second, and two people can write the same description at once without overwriting each other. Everything works from the keyboard, and the whole product runs on a single database.",
+    screens: [
+      {
+        src: "board",
+        title: "The board, with a task open",
+        caption:
+          "Cards move by pointer, keyboard or screen reader, and the panel beside them is the same task everyone else sees, live.",
+      },
+      {
+        src: "list",
+        title: "The list",
+        caption:
+          "Virtualized, sorted by priority and filtered by person, label and status; the result can be saved as a private or shared view.",
+      },
+      {
+        src: "calendar",
+        title: "The calendar",
+        caption:
+          "Tasks by due date. Drag a card to another day, or into the tray to clear its date.",
+      },
+      {
+        src: "planning",
+        title: "Sprint planning",
+        caption:
+          "The active sprint above the backlog, with work dragged between them by mouse or keyboard.",
+      },
+      {
+        src: "report",
+        title: "A sprint report",
+        caption:
+          "Burndown, scope change, cumulative flow, velocity and cycle time, all replayed from the activity log rather than stored as totals.",
+      },
+      {
+        src: "palette",
+        title: "The command palette",
+        caption:
+          "One search across tasks, projects, actions and what was said in comments, with typo tolerance.",
+      },
+      {
+        src: "inbox",
+        title: "The inbox",
+        caption:
+          "Mentions, comments and assignments, written in the same transaction as the change that caused them and pushed as live toasts.",
+      },
+      {
+        src: "audit",
+        title: "The audit log",
+        caption:
+          "Who changed what in the workspace, including the membership and invitation changes the auth library makes on its own.",
+      },
+      {
+        src: "phone",
+        title: "On a phone",
+        caption:
+          "The sidebar folds into a drawer, the board scrolls sideways and a task opens full screen.",
+      },
+      {
+        src: "board-dark",
+        title: "The board in the dark theme",
+        caption:
+          "A palette chosen step by step for dark, not the light one inverted.",
+      },
+      {
+        src: "site",
+        title: "The landing page",
+        caption:
+          "An Astro page with near-zero JavaScript and a small board you can drive from the keyboard while a teammate's card moves on its own.",
+      },
+      {
+        src: "docs",
+        title: "The docs",
+        caption:
+          "Starlight: getting started, a guide for every view, the architecture with tenancy and real-time explained, roles and configuration.",
+      },
+      {
+        src: "api-reference",
+        title: "The API reference",
+        caption:
+          "Generated from the same contract the web app calls, so it cannot drift: every operation with its schema, its errors and a request to copy.",
+      },
+    ],
     proof: [
       {
-        value: "78",
-        label: "documented endpoints",
-        note: "13 modules, swagger generated from the decorators",
+        value: "399",
+        label: "unit and integration tests",
+        note: "bun test across eight packages, api tests against real postgres, counted on 30 oct 2026",
       },
       {
-        value: "18",
-        label: "database models",
-        note: "with 12 enums and soft deletes on the five that matter",
+        value: "38",
+        label: "browser tests",
+        note: "playwright journeys against a fresh, seeded stack, including two people on one board",
       },
       {
-        value: "37",
-        label: "audited actions",
-        note: "before and after snapshots, ip and user agent, secrets redacted",
+        value: "52",
+        label: "rest operations",
+        note: "from the openapi document the contract generates, served at /api/v1",
       },
       {
-        value: "13",
-        label: "github stars",
-        note: "counted on the repository on 19 oct 2026",
+        value: "14",
+        label: "architecture decisions",
+        note: "written as adrs before or with the code they govern",
       },
     ],
     problem:
-      "Agile tooling needs more than CRUD: tenant isolation, a real permission model, notifications that arrive on time, and a history nobody can quietly edit.",
+      "Most task boards are fine for one person and quietly wrong for five. Two people drag the same card, one save overwrites another, and a refresh is the only way to learn what changed. I wanted a board where concurrent work converges by design, and where every change can be explained after the fact.",
     approach: [
       {
-        title: "Organization as the boundary",
-        body: "Every query is scoped through membership, a composite unique keeps one membership per person per organization, and a four-tier role hierarchy of owner, admin, member and viewer is enforced with guards. A global super admin role exists for operations.",
+        title: "One contract for every caller",
+        body: "Every procedure is declared once in an oRPC contract with Zod schemas, including the errors it can return. The web app calls it with inferred types through TanStack Query, and the same contract serves a REST API under /api/v1, an OpenAPI document and a Scalar reference, with personal access tokens that can be read-only and expire.",
       },
       {
-        title: "Work modeled properly",
-        body: "Tasks carry priorities, story points, subtasks, dependencies, labels, attachments, watchers and threaded comments, get human-readable keys like PROJ-42, and keep an automatic activity timeline of every field change.",
+        title: "A request, layer by layer",
+        body: "Hono middleware adds a request id, structured logs and secure headers. Better Auth resolves the session or token, oRPC middleware builds the actor, the active organization and a tenant scope, the procedure validates input, a service authorizes against the loaded resource, and only the repository touches tables.",
       },
       {
-        title: "Sessions that end",
-        body: "Fifteen-minute access tokens and seven-day refresh tokens stored hashed; a refresh revokes the old token and issues a new pair, logout revokes, and a password reset revokes them all. Email verification by one-time code is required before the first login.",
+        title: "Changes that cannot get lost",
+        body: "Each mutation writes the change, its activity row and its outbox event in one transaction. A worker relays the outbox through LISTEN/NOTIFY to every API node's WebSocket gateway, so a restart drops nothing, and a client only applies an update whose version is newer than the one it holds. A stale write is a conflict, never a silent overwrite.",
       },
       {
-        title: "Events that reach people",
-        body: "One service persists each notification, pushes it over Server-Sent Events and emails it through eight branded templates. Four scheduled jobs expire invitations, warn about due and overdue tasks and purge old refresh tokens.",
+        title: "Writing together",
+        body: "Task descriptions are Yjs documents edited in Tiptap, with each person's caret labelled by name. The API hosts the Yjs provider on the same socket server, persists merged state with debounced writes and projects it to plain text for full-text search.",
       },
       {
-        title: "Shipped as a container",
-        body: "A multi-stage Alpine image runs the migrations on start and exposes a health check. Swagger is generated from the decorators and served live, and the pipeline type-checks, lints and builds on every push.",
+        title: "Order without renumbering",
+        body: "Board order is a fractional index, so a move writes one row and the client can compute the same key before the server answers. A random suffix keeps two people inserting into the same gap apart, and a nightly job re-keys any column whose keys have grown long, under a per-column advisory lock that moves share.",
+      },
+      {
+        title: "Metrics replayed, not counted",
+        body: "Burndown, scope change, cumulative flow, velocity and cycle time are pure functions over a sprint's append-only activity, in a domain package with no I/O. Nothing drifts, because nothing is a running total.",
+      },
+      {
+        title: "One database does the rest",
+        body: "pg-boss runs email, daily or weekly digests and maintenance in the same Postgres, presence is shared between API nodes over NOTIFY, and search is Postgres full-text with trigram matching. The only other stateful service is S3-compatible storage for attachments.",
+      },
+      {
+        title: "Tenancy by construction",
+        body: "Every tenant-owned table carries the organization, repositories only accept a scope bound to one, foreign keys between tenant tables are composite so a row cannot point across workspaces, and a test walks the schema to make sure no table escapes the isolation suite.",
+      },
+      {
+        title: "A monorepo with one-way dependencies",
+        body: "Four apps (api, worker, web, site) over eight packages: contract, db, domain, auth, realtime, email, ui and shared configs. Apps depend on packages, the domain depends on nothing but Zod, and the web app can never import the database.",
+      },
+      {
+        title: "Built for hands on the keyboard",
+        body: "React Aria components throughout, drag and drop that works by keyboard and screen reader, a ⌘K palette, shortcuts for every view, light and dark themes, and a layout that folds down to a phone.",
+      },
+      {
+        title: "Documented where people look",
+        body: "An Astro landing page, Starlight docs with guides and the architecture, a generated API reference, fourteen decision records, and a README whose screenshots and demo are produced from the seeded stack by Playwright.",
       },
     ],
     highlights: [
-      "Ranked 1st in the MAPS backend cohort with this project",
-      "JWT access and refresh rotation with OTP email verification",
-      "Immutable audit log with before and after snapshots",
-      "Notifications over SSE and email, four scheduled jobs",
-      "Live, documented REST API",
+      "Live board updates and presence over WebSockets, fed by a transactional outbox",
+      "Descriptions written together with Yjs and named carets",
+      "Contract-first API: typed RPC for the app, REST, OpenAPI and a generated reference for everyone else",
+      "Sprint reports replayed from an append-only activity log",
+      "Postgres for data, jobs, fan-out and search; no Redis",
+      "Accessible drag and drop, a command palette and shortcuts everywhere",
+      "Astro site, Starlight docs and fourteen architecture decision records",
+      "437 tests, unit and integration on real Postgres plus Playwright journeys",
     ],
     decisions: [
       {
-        chose: "isolation by membership scoping in the application",
+        chose: "one PostgreSQL for data, jobs and fan-out",
+        over: "Redis with a separate queue",
+        why: "pg-boss and LISTEN/NOTIFY carry this load easily and leave one thing to run and back up. Patchgrid uses Redis and BullMQ, so between them the two projects show both sides of that choice.",
+      },
+      {
+        chose: "a transactional outbox",
+        over: "publishing events after the commit",
+        why: "An event written in the same transaction as its change can be late but never lost or invented. The cost is a relay process and a table to prune.",
+      },
+      {
+        chose: "a contract-first API with oRPC",
+        over: "hand-written routes and a separate schema",
+        why: "One declaration gives the web app its types, third parties their REST endpoints and everyone the OpenAPI document. The contract has to be designed before the handler, which is the point.",
+      },
+      {
+        chose: "tenancy enforced in the application",
         over: "row level security in the database",
-        why: "Guards and a composite unique on membership were enough for the program's scope and kept the schema simple. Patchgrid, built after it, moves the same boundary into Postgres so a forgotten filter cannot leak.",
+        why: "Patchgrid already puts the boundary in Postgres. Here a scope every repository must take, composite foreign keys through the organization and a schema-walking test carry it, and the cost is that the discipline lives in review and tests.",
       },
       {
-        chose: "rotating refresh tokens stored hashed",
-        over: "a long-lived stateless refresh token",
-        why: "A stored hash can be revoked, so logout and password reset actually end sessions. The price is a table to clean, which a nightly job handles.",
+        chose: "fractional ranks for order",
+        over: "integer positions",
+        why: "A move writes one row and never renumbers its neighbours, which keeps optimistic updates simple. Keys can grow under repeated inserts into one gap, so a rebalance job exists, and it needed a lock shared with moves to stay correct.",
       },
       {
-        chose:
-          "soft deletes on users, organizations, projects, tasks and comments",
-        over: "hard deletes",
-        why: "Recovery without permanent loss, and the audit log keeps pointing at rows that still exist. Every query has to remember the deletedAt filter, which the services centralise.",
+        chose: "Yjs for descriptions",
+        over: "last write wins on a text field",
+        why: "Two people typing in the same paragraph merge instead of overwriting each other. The document lives as binary state with a plain-text projection, so search still works.",
+      },
+      {
+        chose: "notifications written in the causing transaction",
+        over: "a job that creates them later",
+        why: "A comment is never saved without the notifications it causes, or the other way round. Only email, which can wait and retry, is left to a job.",
+      },
+      {
+        chose: "a Vite single-page app",
+        over: "a server-rendered framework",
+        why: "Everything is behind sign-in and live over a socket, so server rendering buys little. The public pages that do need indexing are a separate Astro site with Starlight docs.",
       },
     ],
     install: [
       {
-        label: "clone it and start postgres",
+        label: "clone it and start the services",
         command:
-          "git clone https://github.com/KhaledSaeed18/team-flow.git && cd team-flow && pnpm install && cp .env.example .env && docker compose up -d",
-        note: "node 22, pnpm, docker; resend and uploadthing keys in .env",
+          "git clone https://github.com/KhaledSaeed18/team-flow.git && cd team-flow && bun install && cp .env.example .env && bun run infra:up",
+        note: "bun 1.4 or later and docker; postgres, s3-compatible storage and mailpit",
       },
       {
-        label: "migrate and run",
-        command: "pnpm prisma:migrate && pnpm start:dev",
-        note: "swagger at localhost:3000/api/docs",
+        label: "migrate, seed and run",
+        command: "bun run db:migrate && bun run db:seed && bun run dev",
+        note: "sign in at localhost:5173 as demo@teamflow.dev with teamflow-demo",
       },
     ],
     timeline: [
       {
         date: "2026-02-21",
         title: "First commit",
-        body: "The NestJS scaffold at the start of the backend program.",
+        body: "The NestJS API, started in a 96-hour backend program where it ranked first in the cohort.",
       },
       {
         date: "2026-07-13",
-        title: "Latest merge",
-        body: "119 commits through pull requests from dev into main, deployed to Render after each green pipeline.",
+        title: "v1 complete",
+        body: "78 documented endpoints, notifications over Server-Sent Events and email, and 119 commits merged through pull requests.",
+      },
+      {
+        date: "2026-10-29",
+        title: "v1.0.0 kept, v2 specified",
+        body: "The API tagged as v1.0.0. A vision, an architecture, a roadmap of ten milestones and the first decisions were written before the monorepo.",
+      },
+      {
+        date: "2026-10-29",
+        title: "v2.0.0",
+        body: "All ten milestones released: workspaces, projects and workflows, the web app, real-time, planning and reports, collaboration, shared descriptions, search, the public API and the docs site.",
+      },
+      {
+        date: "2026-10-30",
+        title: "v2.0.1 to v2.0.4",
+        body: "Fixes from a three-way bug review, full-width layouts with a layout guard, and one brand across the app, docs, email and README.",
+      },
+      {
+        date: "2026-10-30",
+        title: "v2.0.5",
+        body: "Rank rebalancing, the last deferred ordering job; a drawer layout for phones; and a recorded demo of two people on one board.",
       },
     ],
     faq: [
       {
-        q: "How are tenants kept apart?",
-        a: "Every resource is reached through an organization. A membership guard checks you belong, a roles guard checks your minimum role, and a composite unique keeps one membership per user per organization. It is application-level scoping, not database row security.",
+        q: "How do live updates reach everyone?",
+        a: "A change and its event are committed together. A worker relays new events through Postgres LISTEN/NOTIFY to every API node, which pushes them over WebSockets to people subscribed to that project. Clients patch their cache only when the version moves forward, so a late event never undoes a newer one.",
       },
       {
-        q: "Can I try it without deploying?",
-        a: "Yes. The Swagger UI is live on a free tier, so the first request after a quiet period can take close to a minute. Locally it is Docker for Postgres, one migrate command and one start command.",
+        q: "What happens when two people edit the same task?",
+        a: "Fields carry a version, so the second save of a stale copy is refused as a conflict; the board refreshes and says why. Descriptions merge character by character instead, and two cards dropped into the same gap get distinct positions.",
       },
       {
-        q: "Is there a front end?",
-        a: "No. It is a documented REST API meant to sit under any web, mobile or third-party client.",
+        q: "How is the code organised?",
+        a: "A Bun and Turborepo monorepo: api, worker, web and site apps over contract, db, domain, auth, realtime, email and ui packages. Each API feature goes contract, repository, service, router and integration test, and dependencies only point from apps to packages.",
       },
       {
-        q: "Are there automated tests?",
-        a: "Not yet. Jest is configured, and the pipeline type-checks, lints and builds on every push. Patchgrid, the successor, is where the testing discipline landed.",
+        q: "How is it tested?",
+        a: "Unit and integration tests with bun test, the integration ones against real Postgres: each file gets a fresh database cloned from a migrated template in milliseconds. Playwright runs journeys against a seeded stack, including two people on one board and layout guards at desktop and phone sizes, and CI runs all of it on every pull request.",
+      },
+      {
+        q: "Is there documentation?",
+        a: "Yes, in three places: Starlight docs with guides and the architecture, a generated API reference served by the API, and a docs folder with the vision, roadmap, conventions and fourteen decision records.",
+      },
+      {
+        q: "Can I try it?",
+        a: "It is not hosted, by decision. Locally it is Docker for Postgres, storage and mail, then migrate, seed and one dev command. The seed has six weeks of history; open a second browser as maya@northwind.test to watch changes arrive.",
+      },
+      {
+        q: "What happened to the first version?",
+        a: "The NestJS and Prisma API is tagged as v1.0.0 and kept in the repository. Version 2 is a rewrite, not an upgrade: a new stack, a web app, real-time, docs and tests.",
+      },
+      {
+        q: "How is it different from Patchgrid?",
+        a: "On purpose, in almost every layer. Patchgrid is NestJS, Next.js, Prisma with row level security, Redis and BullMQ, and server-sent events. TeamFlow is Bun, Hono with oRPC, Drizzle with application-level tenancy, Postgres alone for jobs and fan-out, and WebSockets with Yjs.",
       },
     ],
     related: [

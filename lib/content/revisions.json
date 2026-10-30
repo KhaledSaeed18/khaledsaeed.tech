@@ -288,6 +288,115 @@
           "Live, documented REST API"
         ]
       }
+    },
+    {
+      "sha": "b0ec147",
+      "date": "2026-10-30",
+      "subject": "Rewrite the TeamFlow case study for v2",
+      "words": {
+        "tagline": "A real-time, keyboard-first agile workspace on a single Postgres database.",
+        "summary": "TeamFlow is a planning workspace for software teams: a board, a list, a calendar and sprint planning over the same tasks, with live updates, presence and descriptions written together character by character. Version 2 rewrites my first NestJS API as a Bun monorepo with a contract-first API, a transactional outbox feeding WebSockets, and one PostgreSQL database that also runs the job queue. The original API, which ranked first in its backend cohort, is kept at v1.0.0.",
+        "problem": "Most task boards are fine for one person and quietly wrong for five. Two people drag the same card, one save overwrites another, and a refresh is the only way to learn what changed. I wanted a board where concurrent work converges by design, and where every change can be explained after the fact.",
+        "approach": [
+          {
+            "title": "One contract for every caller",
+            "body": "Every procedure is declared once in an oRPC contract with Zod schemas. The web app calls it with inferred types through TanStack Query, and the same contract serves a REST API under /api/v1 with an OpenAPI document and personal access tokens that can be read-only and expire."
+          },
+          {
+            "title": "Changes that cannot get lost",
+            "body": "Each mutation writes the change, its activity row and its outbox event in one transaction. A worker relays the outbox through LISTEN/NOTIFY to a WebSocket gateway, so a restart drops nothing, and a client only applies an update whose version is newer than the one it holds. A stale write is a conflict, never a silent overwrite."
+          },
+          {
+            "title": "Writing together",
+            "body": "Task descriptions are Yjs documents edited in Tiptap, with each person's caret labelled by name. The server persists them and projects them to plain text for full-text search."
+          },
+          {
+            "title": "Order without renumbering",
+            "body": "Board order is a fractional index, so a move writes one row and the client can compute the same key before the server answers. A random suffix keeps two people inserting into the same gap apart, and a nightly job re-keys any column whose keys have grown long, under a per-column advisory lock that moves share."
+          },
+          {
+            "title": "One database does the rest",
+            "body": "pg-boss runs email, daily or weekly digests and maintenance in the same Postgres, and search is Postgres full-text with trigram matching. Tenancy lives in the application: every repository takes a scope, foreign keys include the organization, and an isolation suite tries to cross it."
+          },
+          {
+            "title": "Built for hands on the keyboard",
+            "body": "React Aria components throughout, drag and drop that works by keyboard and screen reader, a ⌘K palette, shortcuts for every view, and a layout that folds down to a phone."
+          }
+        ],
+        "highlights": [
+          "Live board updates and presence over WebSockets, fed by a transactional outbox",
+          "Descriptions written together with Yjs and named carets",
+          "Contract-first API: typed RPC for the app, REST and OpenAPI for everyone else",
+          "Sprint reports replayed from an append-only activity log",
+          "437 tests, unit and integration on real Postgres plus Playwright journeys"
+        ]
+      }
+    },
+    {
+      "sha": "6a1531e",
+      "date": "2026-10-30",
+      "subject": "Deepen the TeamFlow case study",
+      "words": {
+        "tagline": "A real-time, keyboard-first agile workspace on a single Postgres database.",
+        "summary": "TeamFlow is a planning workspace for software teams: a board, a list, a calendar and sprint planning over the same tasks, with live updates, presence and descriptions written together character by character. Version 2 rewrites my first NestJS API as a Bun monorepo: a contract-first API that also serves REST and OpenAPI, a transactional outbox feeding WebSockets, one PostgreSQL database that also runs the job queue, and an Astro site with Starlight docs. The original API, which ranked first in its backend cohort, is kept at v1.0.0.",
+        "problem": "Most task boards are fine for one person and quietly wrong for five. Two people drag the same card, one save overwrites another, and a refresh is the only way to learn what changed. I wanted a board where concurrent work converges by design, and where every change can be explained after the fact.",
+        "approach": [
+          {
+            "title": "One contract for every caller",
+            "body": "Every procedure is declared once in an oRPC contract with Zod schemas, including the errors it can return. The web app calls it with inferred types through TanStack Query, and the same contract serves a REST API under /api/v1, an OpenAPI document and a Scalar reference, with personal access tokens that can be read-only and expire."
+          },
+          {
+            "title": "A request, layer by layer",
+            "body": "Hono middleware adds a request id, structured logs and secure headers. Better Auth resolves the session or token, oRPC middleware builds the actor, the active organization and a tenant scope, the procedure validates input, a service authorizes against the loaded resource, and only the repository touches tables."
+          },
+          {
+            "title": "Changes that cannot get lost",
+            "body": "Each mutation writes the change, its activity row and its outbox event in one transaction. A worker relays the outbox through LISTEN/NOTIFY to every API node's WebSocket gateway, so a restart drops nothing, and a client only applies an update whose version is newer than the one it holds. A stale write is a conflict, never a silent overwrite."
+          },
+          {
+            "title": "Writing together",
+            "body": "Task descriptions are Yjs documents edited in Tiptap, with each person's caret labelled by name. The API hosts the Yjs provider on the same socket server, persists merged state with debounced writes and projects it to plain text for full-text search."
+          },
+          {
+            "title": "Order without renumbering",
+            "body": "Board order is a fractional index, so a move writes one row and the client can compute the same key before the server answers. A random suffix keeps two people inserting into the same gap apart, and a nightly job re-keys any column whose keys have grown long, under a per-column advisory lock that moves share."
+          },
+          {
+            "title": "Metrics replayed, not counted",
+            "body": "Burndown, scope change, cumulative flow, velocity and cycle time are pure functions over a sprint's append-only activity, in a domain package with no I/O. Nothing drifts, because nothing is a running total."
+          },
+          {
+            "title": "One database does the rest",
+            "body": "pg-boss runs email, daily or weekly digests and maintenance in the same Postgres, presence is shared between API nodes over NOTIFY, and search is Postgres full-text with trigram matching. The only other stateful service is S3-compatible storage for attachments."
+          },
+          {
+            "title": "Tenancy by construction",
+            "body": "Every tenant-owned table carries the organization, repositories only accept a scope bound to one, foreign keys between tenant tables are composite so a row cannot point across workspaces, and a test walks the schema to make sure no table escapes the isolation suite."
+          },
+          {
+            "title": "A monorepo with one-way dependencies",
+            "body": "Four apps (api, worker, web, site) over eight packages: contract, db, domain, auth, realtime, email, ui and shared configs. Apps depend on packages, the domain depends on nothing but Zod, and the web app can never import the database."
+          },
+          {
+            "title": "Built for hands on the keyboard",
+            "body": "React Aria components throughout, drag and drop that works by keyboard and screen reader, a ⌘K palette, shortcuts for every view, light and dark themes, and a layout that folds down to a phone."
+          },
+          {
+            "title": "Documented where people look",
+            "body": "An Astro landing page, Starlight docs with guides and the architecture, a generated API reference, fourteen decision records, and a README whose screenshots and demo are produced from the seeded stack by Playwright."
+          }
+        ],
+        "highlights": [
+          "Live board updates and presence over WebSockets, fed by a transactional outbox",
+          "Descriptions written together with Yjs and named carets",
+          "Contract-first API: typed RPC for the app, REST, OpenAPI and a generated reference for everyone else",
+          "Sprint reports replayed from an append-only activity log",
+          "Postgres for data, jobs, fan-out and search; no Redis",
+          "Accessible drag and drop, a command palette and shortcuts everywhere",
+          "Astro site, Starlight docs and fourteen architecture decision records",
+          "437 tests, unit and integration on real Postgres plus Playwright journeys"
+        ]
+      }
     }
   ],
   "dotclaude": [
