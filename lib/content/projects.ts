@@ -1270,7 +1270,7 @@ export const projects: Project[] = [
   {
     slug: "sleep-track",
     name: "SleepTrack",
-    updatedAt: "2026-10-19",
+    updatedAt: "2026-10-30",
     tagline:
       "A sleep journal with an analytics engine: an async FastAPI service and a Next.js and daisyUI app.",
     summary:
@@ -1411,6 +1411,50 @@ export const projects: Project[] = [
         why: "ARQ runs on the Redis already there, and an eager implementation runs jobs in-process for tests and single-container deployments. ARQ is in maintenance mode, which is accepted with the migration path contained to one adapter.",
       },
     ],
+    screens: [
+      {
+        src: "dashboard",
+        title: "The dashboard",
+        caption:
+          "Last night's arc against the goal, the sleep score, a timer to tap at bedtime, seven-night averages and the last thirty nights as bars.",
+      },
+      {
+        src: "analytics",
+        title: "Analytics",
+        caption:
+          "Nightly duration, score and quality over a chosen range, and when you sleep as bars from bedtime to wake time against your bedtime window.",
+      },
+      {
+        src: "insights",
+        title: "Insights",
+        caption:
+          "Patterns found in the nights, ranked by how much they matter: a tag that lowers quality, one that helps, a weekend shift, and tips.",
+      },
+      {
+        src: "journal",
+        title: "The journal",
+        caption:
+          "Every logged night with its tags, mood and notes, editable in place.",
+      },
+      {
+        src: "weekly-report",
+        title: "The weekly report",
+        caption:
+          "The same report the worker emails on Monday, rendered in the app.",
+      },
+      {
+        src: "command-menu",
+        title: "The command menu",
+        caption:
+          "Log a night, start the timer, export your data or jump anywhere, with the keyboard shortcuts shown beside each entry.",
+      },
+      {
+        src: "landing",
+        title: "The landing page",
+        caption:
+          "What the app does and a one-click demo; this capture runs against the in-browser mock API, with no backend at all.",
+      },
+    ],
     install: [
       {
         label: "run the api, database, redis and mail catcher",
@@ -1468,7 +1512,7 @@ export const projects: Project[] = [
   {
     slug: "deck-kit",
     name: "deck-kit",
-    updatedAt: "2026-10-19",
+    updatedAt: "2026-10-30",
     tagline:
       "HTML slides, a synced presenter view and one file that runs with Wi-Fi off.",
     summary:
@@ -1580,6 +1624,44 @@ export const projects: Project[] = [
         chose: "shortcuts by physical key",
         over: "by letter",
         why: "The same keys work on AZERTY and Arabic layouts, and Ctrl, Cmd and Alt are left to the browser.",
+      },
+    ],
+    screens: [
+      {
+        src: "title",
+        title: "The Wi-Fi example deck",
+        caption:
+          "The title slide of the first example, a neo-brutalist theme on the same engine as every other deck.",
+      },
+      {
+        src: "slide",
+        title: "A slide fully stepped",
+        caption:
+          "A table and its three conclusions after every step has been revealed; each step is its own line in the presenter's script.",
+      },
+      {
+        src: "presenter",
+        title: "The presenter window",
+        caption:
+          "The current slide at its live step, the next slide, the script with the current step marked, the pace against the plan, and a link status to the audience window.",
+      },
+      {
+        src: "overview",
+        title: "The overview grid",
+        caption:
+          "Every slide as a card, reached with one key; arrows move and Enter jumps.",
+      },
+      {
+        src: "slide2",
+        title: "Mid-slide",
+        caption:
+          "A diagram slide after its first step, with three more to reveal.",
+      },
+      {
+        src: "help",
+        title: "The keyboard reference",
+        caption:
+          "Every key the engine answers, shown in the deck with a single question mark.",
       },
     ],
     install: [
@@ -1850,11 +1932,11 @@ export const projects: Project[] = [
   {
     slug: "mcce",
     name: "MCCE",
-    updatedAt: "2026-10-19",
+    updatedAt: "2026-10-30",
     tagline:
       "The study hub for my master's program: every course file, past exam and planner in one index.",
     summary:
-      "An independent, student-built index for the LIU M.S. in Computer and Communication Engineering. It syncs shared Google Drive folders into one searchable site every week, 895 files across 16 courses at the last crawl, and adds the plan of study, a prerequisite roadmap, a GPA calculator, a tuition planner, a directory of 400 tools and an in-browser PDF editor. No sign-in, no tracking, no backend.",
+      "An independent, student-built index for the LIU M.S. in Computer and Communication Engineering. It syncs shared Google Drive folders into one searchable site every week, 899 files across 16 courses at the last crawl, and adds the plan of study, a prerequisite roadmap, a GPA calculator, a tuition planner, a directory of 400 tools and an in-browser PDF editor. No sign-in, no tracking, no backend.",
     year: 2026,
     group: "web",
     kind: "Web app",
@@ -1882,7 +1964,7 @@ export const projects: Project[] = [
       "Course files for a degree end up spread across a classroom app, chat groups and someone's drive, and past exams are the first thing to go missing. MCCE gathers all of it for one master's program into a single searchable site that updates itself every week, and adds the tools students actually need: a GPA calculator, a tuition planner and a map of which course needs which.",
     proof: [
       {
-        value: "895",
+        value: "899",
         label: "files indexed",
         note: "28.8 gb across 276 folders, crawl of 12 oct 2026",
       },
@@ -1946,6 +2028,56 @@ export const projects: Project[] = [
         why: "GPA entries and saved files stay in the browser. Nothing to leak, nothing to maintain, and the site stays open to every student, not only members of a chat group.",
       },
     ],
+    screens: [
+      {
+        src: "home",
+        title: "The home page",
+        caption:
+          "The whole program indexed: 899 files and 279 folders from three Drive sources, synced weekly, with the tools a student reaches for most.",
+      },
+      {
+        src: "course",
+        title: "All courses",
+        caption:
+          "Every course of the program by year and semester, each with its description, credits, prerequisites and indexed files.",
+      },
+      {
+        src: "plan",
+        title: "The plan of study",
+        caption:
+          "The curriculum year by year with semester groups, requirements and prerequisite notes.",
+      },
+      {
+        src: "gpa",
+        title: "The GPA calculator",
+        caption:
+          "Type course averages and the semester and cumulative GPA, academic standing and the best final GPA still within reach follow; grades stay in the browser.",
+      },
+      {
+        src: "tools",
+        title: "The tools directory",
+        caption:
+          "About 400 tools in 25 categories with their cost up front, filterable by badge and searchable.",
+      },
+      {
+        src: "tuition",
+        title: "Tuition and fees",
+        caption:
+          "The official rates in both currencies and a planner that turns the credits you intend to take into semester and year totals.",
+      },
+      {
+        src: "search",
+        title: "Search",
+        caption:
+          "Every file name across the index, searched as you type and kept working offline.",
+      },
+      {
+        src: "dark",
+        title: "The thesis guide, dark theme",
+        caption:
+          "How the two-part thesis runs, with the dark theme that follows the system or toggles with one key.",
+      },
+    ],
     install: [
       {
         label: "use it",
@@ -1976,6 +2108,11 @@ export const projects: Project[] = [
         date: "2026-10-12",
         title: "Latest index",
         body: "895 files across 16 courses; 872 commits by 19 October.",
+      },
+      {
+        date: "2026-10-26",
+        title: "Latest sync",
+        body: "899 files and 279 folders from three Drive sources; 900 commits by the end of October.",
       },
     ],
     faq: [
@@ -2324,7 +2461,7 @@ export const projects: Project[] = [
   {
     slug: "repo-scout",
     name: "Repo Scout",
-    updatedAt: "2026-10-19",
+    updatedAt: "2026-10-30",
     tagline:
       "Explore a codebase through architecture maps, hotspots, ownership and Git history, all on your machine.",
     summary:
@@ -2447,6 +2584,56 @@ export const projects: Project[] = [
         chose: "unsigned binaries with signed provenance",
         over: "paying for code-signing certificates",
         why: "Checksums, a software bill of materials and GitHub build attestations let anyone verify what built the archive and from which commit. macOS asks you to clear the quarantine flag once.",
+      },
+    ],
+    screens: [
+      {
+        src: "overview",
+        title: "The overview of a scanned repository",
+        caption:
+          "Lines, files, commits, contributors, dependencies and duplicate blocks at a glance, then languages, a year of commit activity, the top hotspots and who commits most.",
+      },
+      {
+        src: "architecture",
+        title: "The import graph",
+        caption:
+          "Folders as nodes, imports as arrows weighted by how many files cross them, with the circular dependency and the entry points called out underneath.",
+      },
+      {
+        src: "hotspots",
+        title: "Hotspots",
+        caption:
+          "Files ranked by how often they change and how complex they are, so the next refactor starts where bugs tend to appear.",
+      },
+      {
+        src: "knowledge",
+        title: "Knowledge and bus factor",
+        caption:
+          "Who owns which folder, how much code sits with an author who has gone quiet, and a bus factor of one stated plainly.",
+      },
+      {
+        src: "coupling",
+        title: "Change coupling",
+        caption:
+          "Pairs of files that keep changing in the same commits, with the expected pairs explained by an import, a test or a lockfile, and the hidden ones flagged.",
+      },
+      {
+        src: "metrics",
+        title: "Metrics",
+        caption:
+          "Size and complexity by language, with every scan kept so the numbers show their trend after the next one.",
+      },
+      {
+        src: "activity",
+        title: "Activity",
+        caption:
+          "Commits over time and by weekday and hour, for one repository or across the whole portfolio.",
+      },
+      {
+        src: "dark",
+        title: "The dark theme",
+        caption:
+          "The same architecture page in the dark theme; light, dark and system all ship.",
       },
     ],
     install: [
