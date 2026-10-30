@@ -556,12 +556,12 @@ export const projects: Project[] = [
       {
         value: "36",
         label: "github stars",
-        note: "counted on the repository on 19 oct 2026",
+        note: "counted on the repository on 30 oct 2026; the live count is in the github block below",
       },
       {
-        value: "8",
+        value: "9",
         label: "forks",
-        note: "developers starting new services from it",
+        note: "developers starting new services from it, counted the same day",
       },
       {
         value: "12",
@@ -603,7 +603,7 @@ export const projects: Project[] = [
       },
     ],
     highlights: [
-      "36 stars and 8 forks from developers starting new services",
+      "36 stars and 9 forks from developers starting new services",
       "Clean architecture with one DI container and interfaces at every boundary",
       "Signed HttpOnly cookies for both tokens plus CSRF double-submit",
       "Unit and integration suites with coverage thresholds enforced in CI",
@@ -998,8 +998,8 @@ export const projects: Project[] = [
       },
       {
         date: "2026-10-30",
-        title: "v2.0.7",
-        body: "Two full review rounds and a hands-on QA pass: deadlocks, read-only archives, auth hardening and failure states fixed, each with a test that reproduces it.",
+        title: "v2.0.7 and v2.0.8",
+        body: "Two full review rounds and a hands-on QA pass: deadlocks, read-only archives, auth hardening and failure states fixed, each with a test that reproduces it. 2.0.8 refreshed every screenshot to the current app.",
       },
     ],
     faq: [
