@@ -2241,6 +2241,44 @@ export const projects: Project[] = [
         why: "A CI gate needs to match on a code that will still exist next year. Codes are frozen and the JSON shape only ever gains fields.",
       },
     ],
+    screens: [
+      {
+        src: "decode",
+        title: "Decoding a token",
+        caption:
+          "Header and payload as highlighted JSON, the time claims in UTC and relative to now, and a reminder that decoding checks nothing.",
+      },
+      {
+        src: "audit",
+        title: "A keyless audit",
+        caption:
+          "An HS256 token graded without its key: the verdict first, then every finding with the field it concerns and what to change.",
+      },
+      {
+        src: "verify",
+        title: "Verify, then a forged copy",
+        caption:
+          "One RS256 key accepts the signed token and rejects its alg: none copy, which exits 1 like any other bad signature.",
+      },
+      {
+        src: "diff",
+        title: "What changed between two tokens",
+        caption:
+          "Role, scope and lifetime changes by JSON Pointer path, notable ones marked, and --exit-code returning 1 for a CI check. Neither token is verified.",
+      },
+      {
+        src: "forge",
+        title: "Attack-shaped variants",
+        caption:
+          "Ten variants to throw at your own verifier, each tied to its CVE where one exists, with the header-only ones labelled because rejecting them proves less.",
+      },
+      {
+        src: "crack",
+        title: "A weak secret, then a strong one",
+        caption:
+          "The bundled wordlist finds changeme at candidate 237 in 4 ms, the command exits 1, and generate-secret prints a 256-bit replacement.",
+      },
+    ],
     install: [
       {
         label: "install with pipx or uv",
