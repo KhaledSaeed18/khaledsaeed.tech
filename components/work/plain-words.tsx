@@ -20,7 +20,7 @@ export function PlainWords({
         <span className="text-brand">{"//"}</span>
         <span className="ml-2">in plain words</span>
       </p>
-      <p className="mt-4 max-w-3xl text-lg leading-relaxed text-pretty sm:text-xl">
+      <p className="mt-4 text-lg leading-relaxed text-pretty sm:text-xl">
         {text}
       </p>
       {audience && (
