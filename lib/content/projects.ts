@@ -2907,7 +2907,7 @@ export const projects: Project[] = [
       {
         date: "2026-10-29",
         title: "v3.2.0",
-        body: "An official agent skill ships in the package, so a coding agent can run size, duplicate and budget checks the way the docs intend.",
+        body: "An official agent skill in the repository, installed with npx skills add, so a coding agent can run size, duplicate and budget checks the way the docs intend.",
       },
     ],
     faq: [
