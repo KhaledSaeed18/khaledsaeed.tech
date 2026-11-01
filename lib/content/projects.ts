@@ -2820,6 +2820,44 @@ export const projects: Project[] = [
         why: "Piping dat into jq or a step summary has to work without flags. Progress, warnings and status go to stderr and the progress line only draws when stderr is a terminal.",
       },
     ],
+    screens: [
+      {
+        src: "terminal",
+        title: "A scan in the terminal",
+        caption:
+          "This site's working copy with node_modules included: 31,145 files in 131 ms, the breakdown by type, then the five largest folders and files.",
+      },
+      {
+        src: "report",
+        title: "The HTML report",
+        caption:
+          "One self-contained file with the totals, the space duplicates could give back, a path filter and the breakdown by type as a chart.",
+      },
+      {
+        src: "duplicates",
+        title: "Duplicate groups",
+        caption:
+          "Each group leads with what removing the copies would reclaim; opened, it lists every copy and the SHA-256 they share.",
+      },
+      {
+        src: "budgets",
+        title: "A budget failing",
+        caption:
+          "Three rules on this site's public folder: two fail with their actual values, and the exit code is 2, so a CI step stops there.",
+      },
+      {
+        src: "compare",
+        title: "Comparing two releases",
+        caption:
+          "dat's own npm package, v3.0.0 against v3.2.0: the size change, a renamed chunk, and every changed file with its size before and after.",
+      },
+      {
+        src: "folders",
+        title: "Largest folders in the report",
+        caption:
+          "The same tree ranked by folder, each bar scaled to the largest, with the file count beside it.",
+      },
+    ],
     install: [
       {
         label: "run it on a folder without installing",
