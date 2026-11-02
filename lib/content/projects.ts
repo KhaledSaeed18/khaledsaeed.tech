@@ -1235,6 +1235,44 @@ export const projects: Project[] = [
         why: "The authorize endpoint hands an interaction id to your own front end, which signs the user in through the normal API. No implicit or hybrid flow, PKCE S256 is mandatory, and dynamic client registration and back-channel logout are deliberately not built.",
       },
     ],
+    screens: [
+      {
+        src: "docs",
+        title: "The API reference",
+        caption:
+          "The Scalar reference served at /docs from the OpenAPI document, with the routes grouped into auth, two-factor, sessions, passwords, passkeys, users and OpenID Connect.",
+      },
+      {
+        src: "signup",
+        title: "Sign up, verify, sign in",
+        caption:
+          "An account created with curl, the six-digit code read back from the dev inbox, then a sign-in that returns an ES256 access token and an opaque refresh token.",
+      },
+      {
+        src: "verify-email",
+        title: "The verification email",
+        caption:
+          "The code as it arrives, caught by Mailpit in development, with its fifteen-minute expiry stated.",
+      },
+      {
+        src: "oidc",
+        title: "Tokens other services can check",
+        caption:
+          "The discovery document advertises ES256 and PKCE S256, and jwt-toolkit verifies the access token against the published JWKS. Its HTTP warning is expected on localhost.",
+      },
+      {
+        src: "reuse",
+        title: "A replayed refresh token",
+        caption:
+          "Reusing a rotated refresh token after the ten-second grace is caught as TOKEN_REUSED, its successor stops working, and the session's access token is refused.",
+      },
+      {
+        src: "alert-email",
+        title: "The alert that follows",
+        caption:
+          "The same replay emails the account owner that the session was signed out, with the time and IP address.",
+      },
+    ],
     install: [
       {
         label: "run the whole stack",
