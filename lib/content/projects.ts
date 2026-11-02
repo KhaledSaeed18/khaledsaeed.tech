@@ -653,6 +653,44 @@ export const projects: Project[] = [
         why: "Six copies of the same rules drift. Symlinks mean a rule changed once is changed everywhere, and the repository stays readable to every tool.",
       },
     ],
+    screens: [
+      {
+        src: "endpoints",
+        title: "The API reference",
+        caption:
+          "The Swagger UI served at /api-docs: auth and notes routes grouped, each group's rate limit stated, and the routes that need a token marked.",
+      },
+      {
+        src: "tryit",
+        title: "A request sent from the docs",
+        caption:
+          "A sign-up sent through Try it out with a CSRF token: the generated curl command, the 201 response and the security headers that came back.",
+      },
+      {
+        src: "session",
+        title: "A session from the terminal",
+        caption:
+          "Fetching a CSRF token, signing up, signing in and creating a note with curl, the tokens kept in a cookie jar.",
+      },
+      {
+        src: "errors",
+        title: "Errors in one envelope",
+        caption:
+          "Field-level validation errors, a missing token, and the sixth auth request in 15 minutes refused with 429 and RateLimit headers. The stack trace development mode adds is removed with jq.",
+      },
+      {
+        src: "logs",
+        title: "Structured logs",
+        caption:
+          "pnpm dev starting up: the port and URLs, then each request with its correlation ID and the Prisma query behind it.",
+      },
+      {
+        src: "tests",
+        title: "The unit layer",
+        caption:
+          "37 unit tests in 840 ms with v8 coverage at 97.6% of statements, and the two uncovered lines named.",
+      },
+    ],
     install: [
       {
         label: "clone it and start the database",
