@@ -2417,7 +2417,7 @@ export const projects: Project[] = [
   {
     slug: "wakehold",
     name: "Wakehold",
-    updatedAt: "2026-10-19",
+    updatedAt: "2026-11-02",
     tagline:
       "Keeps a Mac awake exactly as long as the work is alive, then lets it sleep.",
     summary:
@@ -2437,6 +2437,38 @@ export const projects: Project[] = [
     audience: "anyone who runs builds, servers or coding agents on a Mac",
     plain:
       "Macs go to sleep after a few idle minutes, which kills a long download, a build or an AI agent working overnight. The usual fix is a switch you flip on and forget. Wakehold instead watches the thing you care about and keeps the Mac awake only while it is running, then lets it sleep or shuts it down for you.",
+    screens: [
+      {
+        src: "menu",
+        title: "The menu, holding four sessions",
+        caption:
+          "A build, a dev server port, a Claude Code session and a timer each hold the Mac awake, every one with its own End; the countdown sits in the menu bar.",
+      },
+      {
+        src: "power",
+        title: "Power",
+        caption:
+          "The live power state, the battery rules that pause a hold, and the opt-in hold that keeps a closed laptop awake while a session runs.",
+      },
+      {
+        src: "integrations",
+        title: "Integrations",
+        caption:
+          "Whether the CLI is installed, whether Claude Code's hooks are connected, and the commands any other agent points its hooks at.",
+      },
+      {
+        src: "arabic",
+        title: "Settings in Arabic",
+        caption:
+          "Every screen is localised, and the window mirrors right to left from the language the app runs in.",
+      },
+      {
+        src: "durations",
+        title: "Durations",
+        caption:
+          "The default a click on the menu bar eye starts, and the quick picks the menu offers.",
+      },
+    ],
     proof: [
       {
         value: "6",
@@ -2444,9 +2476,9 @@ export const projects: Project[] = [
         note: "timer, process, port, command, agent and app",
       },
       {
-        value: "97",
+        value: "116",
         label: "automated tests",
-        note: "swift testing, 81 in the kit and 16 in the app",
+        note: "swift testing, 95 in the kit and 21 in the app",
       },
       {
         value: "0",
@@ -2454,9 +2486,9 @@ export const projects: Project[] = [
         note: "the control endpoint is a unix socket, mode 0600",
       },
       {
-        value: "602 KB",
+        value: "638 KB",
         label: "cli binary",
-        note: "release build, arm64, measured on 19 oct 2026",
+        note: "release build, arm64, measured on 2 nov 2026",
       },
     ],
     problem:
@@ -2492,6 +2524,7 @@ export const projects: Project[] = [
       "Watches processes, ports, commands, agents, apps and timers",
       "Hooks for Claude Code, Codex, Gemini CLI and Cursor with crash-safe leases",
       "Post-session sleep, shutdown, restart or notify; battery guardrails",
+      "Opt-in hold that keeps a closed laptop awake while a session runs",
       "Localised in English and Arabic, with mirrored layout",
       "Native Swift with IOKit power assertions, no Electron",
     ],
@@ -2509,7 +2542,12 @@ export const projects: Project[] = [
       {
         chose: "preventing idle display sleep",
         over: "the system-wide PreventSystemSleep assertion",
-        why: "The system assertion only applies on AC power and fights the user closing the lid. Keeping the lid-closed case out of scope avoids a root helper and keeps every action in user space.",
+        why: "The system assertion only applies on AC power and still does not stop the sleep that closing the lid forces. Idle sleep is the case every session needs, and it needs no privileges.",
+      },
+      {
+        chose: "a one-line sudoers rule for the lid-closed hold",
+        over: "a privileged helper daemon",
+        why: "Closing the lid sleeps the Mac whatever any app asserts; only the root-only pmset disablesleep setting overrides it. One admin prompt installs a rule, checked by visudo first, that lets one user run exactly that command on and off. That avoids a signed helper and XPC, but the setting outlives the app, so Wakehold clears it on quit and again on the next launch.",
       },
       {
         chose: "no App Sandbox",
@@ -2551,11 +2589,16 @@ export const projects: Project[] = [
         title: "Other holds in the menu",
         body: "Every process's sleep assertion read from IOKit and listed with its reason.",
       },
+      {
+        date: "2026-11-02",
+        title: "Lid closed, and a real app around it",
+        body: "An opt-in hold that keeps a closed laptop awake while a session runs, a click to toggle with the menu on a right click, sessions listed and ended from the menu, and settings rebuilt as a sidebar of panes. Tested end to end by driving the app, which found and fixed a menu crash and an agent lease that could never come back.",
+      },
     ],
     faq: [
       {
         q: "Does Wakehold need Accessibility or Screen Recording permission?",
-        a: "No. The only system prompt is Automation for System Events, and only if you arm shut down or restart as a post-session action. The notify action asks for notification permission.",
+        a: "No. The only system prompt is Automation for System Events, and only if you arm shut down or restart as a post-session action. The notify action asks for notification permission, and turning on the lid-closed hold asks for an admin password once.",
       },
       {
         q: "Does the CLI work without the app running?",
@@ -2563,7 +2606,7 @@ export const projects: Project[] = [
       },
       {
         q: "Does it keep the Mac awake with the lid closed?",
-        a: "Not without an external display. That needs the system-level assertion or a root helper, which Wakehold deliberately avoids.",
+        a: "Yes, if you turn it on. A one-time admin prompt installs a rule that lets Wakehold switch system sleep off, and it does so only while a session holds: a two hour timer keeps a closed Mac awake for those two hours, a build until it exits. When the last session ends, the Mac sleeps.",
       },
       {
         q: "Is there a download or a Homebrew formula?",
