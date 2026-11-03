@@ -3094,7 +3094,7 @@ export const projects: Project[] = [
   {
     slug: "gauge",
     name: "Gauge",
-    updatedAt: "2026-10-19",
+    updatedAt: "2026-11-03",
     tagline:
       "Pixel-precise rulers, guides, a measuring tape, a color sampler and a loupe over the whole macOS desktop.",
     summary:
@@ -3111,6 +3111,44 @@ export const projects: Project[] = [
     audience: "designers and front-end developers checking that things line up",
     plain:
       "When you build a screen, things need to line up and be the right size, but the ruler in one app cannot reach into another. Gauge draws see-through rulers and guide lines over the whole Mac screen, measures any distance, picks up the colour under the pointer and magnifies pixels, so you can check any app against any mockup.",
+    screens: [
+      {
+        src: "hero",
+        title: "Rulers, guides and a measurement",
+        caption:
+          "Numbered guides sit on the page's content edges, button row and card row, and the middle card measures 664 by 352 physical pixels.",
+      },
+      {
+        src: "crosshair",
+        title: "Crosshair",
+        caption:
+          "Full-screen lines through the pointer with a live pixel readout, here on the corner of the secondary button.",
+      },
+      {
+        src: "loupe",
+        title: "Loupe",
+        caption:
+          "The anti-aliased edge of a headline letter, magnified with a pixel grid, the exact coordinate and its colour.",
+      },
+      {
+        src: "sampler",
+        title: "Color sampler",
+        caption:
+          "The sRGB colour under the pointer as hex and RGB; a click copies it in the format chosen in settings.",
+      },
+      {
+        src: "settings",
+        title: "Menu and settings",
+        caption:
+          "Every tool and its shortcut in the menu bar, next to the measure settings with their copy formats and badges.",
+      },
+      {
+        src: "guides",
+        title: "Guides",
+        caption:
+          "Place a guide at an exact pixel, nudge any guide with its stepper, or select guides by display and remove them.",
+      },
+    ],
     proof: [
       {
         value: "6",
@@ -3125,7 +3163,7 @@ export const projects: Project[] = [
       {
         value: "1.1 MB",
         label: "release binary",
-        note: "arm64, built on 19 oct 2026; no dependencies outside the system frameworks",
+        note: "arm64, built on 3 nov 2026; no dependencies outside the system frameworks",
       },
       {
         value: "0",
@@ -3138,7 +3176,7 @@ export const projects: Project[] = [
     approach: [
       {
         title: "Real pixels",
-        body: "Tick labels respect each screen's backing scale factor, so 100 means 100 actual display pixels on any screen. Guides are stored in physical pixels per display, and a small core library owns every point-to-pixel conversion so the arithmetic is unit tested without a screen.",
+        body: "Tick labels respect each screen's backing scale factor, so 100 means 100 actual display pixels on any screen. Guides are stored in physical pixels per display, and a small core library owns every point-to-pixel conversion and the measurement math, so 17 unit tests cover it without a screen.",
       },
       {
         title: "Out of the way",
@@ -3159,7 +3197,7 @@ export const projects: Project[] = [
     ],
     highlights: [
       "Rulers, guides, measure, crosshair, color sampler and loupe on every display",
-      "Five global shortcuts without Accessibility permission",
+      "Six global shortcuts without Accessibility permission",
       "Two-point measurement with distance and angle",
       "Copy a size as dimensions, plain, units, CSS or with position",
       "Pure Swift Package Manager project, Swift 6 language mode",
@@ -3171,9 +3209,14 @@ export const projects: Project[] = [
         why: "The legacy APIs only return the desktop on current macOS, so the colour under a window came back wrong. ScreenCaptureKit returns the real composite and can exclude Gauge's own overlays, at the cost of a Screen Recording prompt for those two tools only.",
       },
       {
+        chose: "an explicit sRGB capture read through CoreGraphics",
+        over: "the capture's default output",
+        why: "By default the captured image carries no colour space, and reading it as sRGB lifted the dark channels: a #0EA5E9 button sampled as #5FB4EA. Asking for sRGB and colour-matching the one pixel in CoreGraphics reads it as #17A6E9, within rounding.",
+      },
+      {
         chose: "Carbon hot keys for the global shortcuts",
         over: "an event tap",
-        why: "RegisterEventHotKey works without Accessibility permission, which keeps the install to a single open command. The in-mode keys use a global monitor instead, which may need Input Monitoring; the menu bar is the fallback.",
+        why: "RegisterEventHotKey works without Accessibility permission, which keeps the install to a single open command. While a tool is active its panel takes keyboard focus without switching apps, so Esc, Delete and Command C reach Gauge with no Input Monitoring and never leak into the app underneath.",
       },
       {
         chose: "guide numbers derived from position",
@@ -3209,11 +3252,16 @@ export const projects: Project[] = [
         title: "Color sampler and loupe",
         body: "Two-point lines, copy formats, exact-pixel guides, a tested geometry core and the switch to ScreenCaptureKit.",
       },
+      {
+        date: "2026-11-03",
+        title: "Hands-on test pass",
+        body: "Every tool driven on two displays and nine bugs fixed: a blank window at launch, keys leaking into other apps, washed-out sampled colours, an ignored start-hidden setting and a clipped settings pane among them.",
+      },
     ],
     faq: [
       {
         q: "Does Gauge need Screen Recording permission?",
-        a: "Only for the color sampler and the loupe, which read the screen through ScreenCaptureKit. Grant it once in Privacy and Security, then reopen Gauge. Rulers, guides, measure and crosshair work without it.",
+        a: "Only for the color sampler and the loupe, which read the screen through ScreenCaptureKit. Grant it once in Privacy and Security, then reopen Gauge; clicking the notice those tools show opens that pane. A copy you build yourself is signed ad hoc, so remove and grant it again after a rebuild. Rulers, guides, measure and crosshair work without it.",
       },
       {
         q: "Does the overlay block my clicks?",
@@ -3225,7 +3273,7 @@ export const projects: Project[] = [
       },
       {
         q: "Is there a signed download?",
-        a: "Not yet. Build it from the Swift package in Xcode, or run the bundled script that assembles an app from a release build. It runs on Apple Silicon and Intel Macs on macOS 14 or later.",
+        a: "Not yet. Build it from the Swift package in Xcode, or run the bundled script that assembles and ad hoc signs an app from a release build. It runs on Apple Silicon and Intel Macs on macOS 14 or later.",
       },
     ],
     related: ["wakehold", "sever", "baud"],
